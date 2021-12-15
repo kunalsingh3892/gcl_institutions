@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "45810398300",
+    "project_id": "gcl-business",
+    "storage_bucket": "gcl-business.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:45810398300:android:0579a3fce435ff3431e299",
+        "android_client_info": {
+          "package_name": "com.gcl.business"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "45810398300-lqujh9pktslro3s739kt32qf5md5odgg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJHw3GlKdf4cG_QEIU3MDxL0SZx71LTyQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "45810398300-lqujh9pktslro3s739kt32qf5md5odgg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
