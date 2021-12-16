@@ -71,7 +71,7 @@ class _ChangePageState extends State<HomePage> {
         email_id = prefs.getString('email_id').toString();
         _mobile = prefs.getString('mobile_no').toString();
         user_id = prefs.getString('user_id').toString();
-       /* order_id = prefs.getString('order_id').toString();
+        /* order_id = prefs.getString('order_id').toString();
         class_id = prefs.getString('class_id').toString();
         board_id = prefs.getString('board_id').toString();*/
         profile_image = prefs.getString('profile_image').toString();
@@ -83,7 +83,6 @@ class _ChangePageState extends State<HomePage> {
   }
 
   Future _homeData() async {
-
     Map<String, String> headers = {
       // 'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -100,27 +99,24 @@ class _ChangePageState extends State<HomePage> {
       "institute_id": user_id,
     });
     if (response.statusCode == 200) {
-
       var data = json.decode(response.body);
       print(data);
       setState(() {
-
         bestPerformance = data['Response']['bestPerformance'].toString();
         total_student = data['Response']['total-student'].toString();
         total_test_taken = data['Response']['total-test-taken'].toString();
         total_batch = data['Response']['total-batch'].toString();
-        bestPerformancename = data['Response']['bestPerformancename'].toString();
+        bestPerformancename =
+            data['Response']['bestPerformancename'].toString();
         lasttestgiven = data['Response']['lasttestgiven'].toString();
         activestudent = data['Response']['activestudent'].toString();
-        avgPerformance = double.parse(data['Response']['avgPerformance'].toString());
+        avgPerformance =
+            double.parse(data['Response']['avgPerformance'].toString());
         banner = data['Response']['banner'].toString();
-
       });
-
 
       return data;
     } else {
-
       throw Exception('Something went wrong');
     }
   }
@@ -155,8 +151,8 @@ class _ChangePageState extends State<HomePage> {
   TextStyle normalText12 = GoogleFonts.montserrat(
       fontSize: 12, fontWeight: FontWeight.w400, color: Color(0xff2E2A4A));
 
-  Widget _buildWikiCategory(String icon, String label,
-      Color color, Color circle_color) {
+  Widget _buildWikiCategory(
+      String icon, String label, Color color, Color circle_color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
 
@@ -181,7 +177,7 @@ class _ChangePageState extends State<HomePage> {
             ),
           ),
           const SizedBox(height: 8.0),
-         /* Text(
+          /* Text(
             label1,
             maxLines: 2,
             softWrap: true,
@@ -204,6 +200,7 @@ class _ChangePageState extends State<HomePage> {
       ),
     );
   }
+
   Future<void> _launchInBrowser(String url) async {
     if (await canLaunch(url)) {
       await launch(
@@ -216,6 +213,7 @@ class _ChangePageState extends State<HomePage> {
       throw 'Could not launch $url';
     }
   }
+
   buildUserInfo(context) => Container(
         color: Colors.white,
         padding: EdgeInsets.only(bottom: 20.0, left: 30, top: 50),
@@ -345,20 +343,22 @@ class _ChangePageState extends State<HomePage> {
         )) ??
         false;
   }
+
   _launchCaller(String s) async {
-    var url = "tel:"+s;
+    var url = "tel:" + s;
     if (await canLaunch(url)) {
       await launch(url);
     } else {
       throw 'Could not launch $url';
     }
   }
+
   Future<void> whatsAppOpen(String s) async {
-    var whatsappUrl = "whatsapp://send?phone=+91"+s;
+    var whatsappUrl = "whatsapp://send?phone=+91" + s;
     await canLaunch(whatsappUrl)
         ? launch(whatsappUrl)
         : showAlertDialog(
-        context, ALERT_DIALOG_TITLE, "There is no whatsapp installed");
+            context, ALERT_DIALOG_TITLE, "There is no whatsapp installed");
   }
 
   Widget buildDrawerItem() {
@@ -366,26 +366,23 @@ class _ChangePageState extends State<HomePage> {
       child: Container(
         color: Colors.white,
         padding: EdgeInsets.symmetric(horizontal: 10.0),
-        child:
-    
-            SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  for (Draw item in drawerItems)
-                    InkWell(
-                      onTap: () {
-                        if (item.title == "Home") {
-                          Navigator.pop(context);
-                          Navigator.pushNamed(context, '/dashboard');
-                        }
-                        else if (item.title == "Profile") {
-                         /* Navigator.pop(context);
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              for (Draw item in drawerItems)
+                InkWell(
+                  onTap: () {
+                    if (item.title == "Home") {
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, '/dashboard');
+                    } else if (item.title == "Profile") {
+                      /* Navigator.pop(context);
                           Navigator.pushNamed(context, '/update-profile');*/
-                        }
+                    }
 
-                       /* else if (item.title == "Performance") {
+                    /* else if (item.title == "Performance") {
                           Navigator.pop(context);
                           Navigator.pushNamed(
                             context,
@@ -405,184 +402,176 @@ class _ChangePageState extends State<HomePage> {
                             },
                           );
                         }*/
-                      },
-                      child: ListTile(
-                        leading: Text(
-                          item.title,
-                          style: normalText6,
-                        ),
-                      ),
-                    ),
-                  //upgrade(),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, '/privacy-policy');
-                           },
-
-                    child: ListTile(
-                      leading: Text(
-                       "Privacy Policy",
-                        style: normalText6,
-                      ),
+                  },
+                  child: ListTile(
+                    leading: Text(
+                      item.title,
+                      style: normalText6,
                     ),
                   ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, '/refund-policies');
-                    },
-
-                    child: ListTile(
-                      leading: Text(
-                        "Refund Policy",
-                        style: normalText6,
-                      ),
-                    ),
+                ),
+              //upgrade(),
+              InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/privacy-policy');
+                },
+                child: ListTile(
+                  leading: Text(
+                    "Privacy Policy",
+                    style: normalText6,
                   ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, '/t-c');
-                    },
-
-                    child: ListTile(
-                      leading: Text(
-                        "Terms and Conditions",
-                        style: normalText6,
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, '/settings');
-                    },
-
-                    child: ListTile(
-                      leading: Text(
-                        "Settings",
-                        style: normalText6,
-                      ),
-                    ),
-                  ),
-
-                  Container(
-                    padding: EdgeInsets.only(left: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        InkWell(
-                          onTap: (){
-                            _launchCaller("9560102856");
-                          },
-                          child: Image(
-                            image: AssetImage("assets/images/telephone.png"),
-                            height: 30.0,
-                            width: 30,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        InkWell(
-                          onTap: (){
-                            whatsAppOpen("9560102856");
-                          },
-                          child: Image(
-                            image: AssetImage("assets/images/whatsapp.png"),
-                            height: 35.0,
-                            width: 35,
-                          ),
-                        ),
-
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(left: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        InkWell(
-                          onTap: (){
-                            _launchInBrowser("https://www.facebook.com/Grewal-Academy-218288866835782/");
-
-                          },
-                          child: Image(
-                            image: AssetImage("assets/images/facebook.png"),
-                            height: 35.0,
-                            width: 35,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        InkWell(
-                          onTap: (){
-                            _launchInBrowser("https://www.youtube.com/channel/UCJnneibYlAUKBH6SiLa1Z9Q");
-
-                          },
-                          child: Image(
-                            image: AssetImage("assets/images/youtube.png"),
-                            height: 35.0,
-                            width: 35,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-
-                        InkWell(
-                          onTap: (){
-                            _launchInBrowser("https://www.instagram.com/invites/contact/?i=1wacb3ps73z2r&utm_content=mnnvbxj");
-
-                          },
-                          child: Image(
-                            image: AssetImage("assets/images/instagram.png"),
-                            height: 35.0,
-                            width: 35,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 60),
-                    child: InkWell(
-                      onTap: () async {
-                        _logoutPop();
-                      },
-                      child: ListTile(
-                        leading: Image.asset(
-                          "assets/images/log_out.png",
-                          height: 20,
-                        ),
-                        title: Text(
-                          'LogOut',
-                          style: TextStyle(
-                              color: Color(0xff2E2A4A),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-           
-        
+              InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/refund-policies');
+                },
+                child: ListTile(
+                  leading: Text(
+                    "Refund Policy",
+                    style: normalText6,
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/t-c');
+                },
+                child: ListTile(
+                  leading: Text(
+                    "Terms and Conditions",
+                    style: normalText6,
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/settings');
+                },
+                child: ListTile(
+                  leading: Text(
+                    "Settings",
+                    style: normalText6,
+                  ),
+                ),
+              ),
 
+              Container(
+                padding: EdgeInsets.only(left: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    InkWell(
+                      onTap: () {
+                        _launchCaller("9560102856");
+                      },
+                      child: Image(
+                        image: AssetImage("assets/images/telephone.png"),
+                        height: 30.0,
+                        width: 30,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        whatsAppOpen("9560102856");
+                      },
+                      child: Image(
+                        image: AssetImage("assets/images/whatsapp.png"),
+                        height: 35.0,
+                        width: 35,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                padding: EdgeInsets.only(left: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    InkWell(
+                      onTap: () {
+                        _launchInBrowser(
+                            "https://www.facebook.com/Grewal-Academy-218288866835782/");
+                      },
+                      child: Image(
+                        image: AssetImage("assets/images/facebook.png"),
+                        height: 35.0,
+                        width: 35,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        _launchInBrowser(
+                            "https://www.youtube.com/channel/UCJnneibYlAUKBH6SiLa1Z9Q");
+                      },
+                      child: Image(
+                        image: AssetImage("assets/images/youtube.png"),
+                        height: 35.0,
+                        width: 35,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        _launchInBrowser(
+                            "https://www.instagram.com/invites/contact/?i=1wacb3ps73z2r&utm_content=mnnvbxj");
+                      },
+                      child: Image(
+                        image: AssetImage("assets/images/instagram.png"),
+                        height: 35.0,
+                        width: 35,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 60),
+                child: InkWell(
+                  onTap: () async {
+                    _logoutPop();
+                  },
+                  child: ListTile(
+                    leading: Image.asset(
+                      "assets/images/log_out.png",
+                      height: 20,
+                    ),
+                    title: Text(
+                      'LogOut',
+                      style: TextStyle(
+                          color: Color(0xff2E2A4A),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
+
   Widget announce(Size deviceSize) {
     return Container(
       padding: EdgeInsets.only(left: 15, right: 15, bottom: 10, top: 10),
@@ -595,7 +584,7 @@ class _ChangePageState extends State<HomePage> {
       ),
       child: CarouselSlider.builder(
           options: CarouselOptions(
-          //  height: deviceSize.height * 0.20,
+            //  height: deviceSize.height * 0.20,
             initialPage: 1,
             viewportFraction: 1.0,
             enableInfiniteScroll: true,
@@ -611,9 +600,7 @@ class _ChangePageState extends State<HomePage> {
           itemBuilder: (BuildContext context, int itemIndex) {
             if (itemIndex == 1) {
               return InkWell(
-                  onTap: () {
-
-                  },
+                  onTap: () {},
                   child: Container(
                     padding: EdgeInsets.only(
                         top: 20, bottom: 10, left: 10, right: 10),
@@ -684,7 +671,7 @@ class _ChangePageState extends State<HomePage> {
                                     alignment: Alignment.center,
                                     child: Image(
                                       image:
-                                      AssetImage("assets/images/hand.png"),
+                                          AssetImage("assets/images/hand.png"),
                                       height: 20.0,
                                       width: 20.0,
                                     ),
@@ -709,7 +696,7 @@ class _ChangePageState extends State<HomePage> {
                         SizedBox(
                           height: 10.0,
                         ),
-                       /* Align(
+                        /* Align(
                           alignment: Alignment.center,
                           child: Container(
                             child: Row(
@@ -736,22 +723,20 @@ class _ChangePageState extends State<HomePage> {
                           ),
                         ),
 */
-
                       ],
                     ),
                   ));
             } else {
               return InkWell(
-                  onTap: () {
-
-                  },
+                  onTap: () {},
                   child: Container(
                     padding: EdgeInsets.only(
                         top: 10, bottom: 1, left: 10, right: 10),
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: banner!=""?NetworkImage(banner):AssetImage(
-                            'assets/images/back.jpeg'),
+                        image: banner != ""
+                            ? NetworkImage(banner)
+                            : AssetImage('assets/images/back.jpeg'),
                         fit: BoxFit.fill,
                       ),
                       borderRadius: BorderRadius.only(
@@ -787,9 +772,8 @@ class _ChangePageState extends State<HomePage> {
         ),*/
         body: isInternetOn
             ? SingleChildScrollView(
-                child: Column(
-                    children: <Widget>[
-                   /* Container(
+                child: Column(children: <Widget>[
+                  /* Container(
                       child:
 
                           new Stack(
@@ -1174,8 +1158,8 @@ class _ChangePageState extends State<HomePage> {
                       ),
                     ),*/
 
-                  Column( children: <Widget>[
-                    announce( deviceSize),
+                  Column(children: <Widget>[
+                    announce(deviceSize),
                     SizedBox(
                       height: 10.0,
                     ),
@@ -1190,20 +1174,14 @@ class _ChangePageState extends State<HomePage> {
                             ),
                           ],
                           borderRadius: new BorderRadius.only(
-                              topLeft:
-                              const Radius.circular(15.0),
-                              bottomLeft:
-                              const Radius.circular(15.0),
-                              bottomRight:
-                              const Radius.circular(15.0),
-                              topRight:
-                              const Radius.circular(15.0))),
-                      margin:
-                      EdgeInsets.symmetric(horizontal: 20.0),
+                              topLeft: const Radius.circular(15.0),
+                              bottomLeft: const Radius.circular(15.0),
+                              bottomRight: const Radius.circular(15.0),
+                              topRight: const Radius.circular(15.0))),
+                      margin: EdgeInsets.symmetric(horizontal: 20.0),
                       padding: EdgeInsets.symmetric(vertical: 20),
                       child: Column(
-                          mainAxisAlignment:
-                          MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Align(
                               alignment: Alignment.topLeft,
@@ -1211,8 +1189,7 @@ class _ChangePageState extends State<HomePage> {
                                 padding: EdgeInsets.symmetric(
                                   horizontal: 10.0,
                                 ),
-                                child: Text("My Progress",
-                                    style: normalText9),
+                                child: Text("My Progress", style: normalText9),
                               ),
                             ),
                             Container(
@@ -1221,8 +1198,7 @@ class _ChangePageState extends State<HomePage> {
                                   Align(
                                     alignment: Alignment.center,
                                     child: Container(
-                                      child:
-                                      new CircularPercentIndicator(
+                                      child: new CircularPercentIndicator(
                                         //  radius: 45.0,
                                         animation: true,
                                         animationDuration: 1200,
@@ -1230,41 +1206,28 @@ class _ChangePageState extends State<HomePage> {
                                         lineWidth: 5.0,
                                         arcType: ArcType.HALF,
                                         percent: avgPerformance / 100,
-                                        backgroundColor:
-                                        Color(0xffF2F2F2),
+                                        backgroundColor: Color(0xffF2F2F2),
 
                                         center: Padding(
-                                          padding:
-                                          const EdgeInsets
-                                              .only(
-                                              left: 5,
-                                              right: 5,
-                                              top: 30),
-                                          child: Column(
-                                              children: <Widget>[
-                                                Text(
-                                                    avgPerformance.toString() +
-                                                        "%",
-                                                    style:
-                                                    normalText10),
-                                                Center(
-                                                  child: Text(
-                                                      "Avg. Performance",
-                                                      style:
-                                                      normalText8),
-                                                ),
-                                              ]),
+                                          padding: const EdgeInsets.only(
+                                              left: 5, right: 5, top: 30),
+                                          child: Column(children: <Widget>[
+                                            Text(
+                                                avgPerformance.toString() + "%",
+                                                style: normalText10),
+                                            Center(
+                                              child: Text("Avg. Performance",
+                                                  style: normalText8),
+                                            ),
+                                          ]),
                                         ),
-                                        linearGradient:
-                                        LinearGradient(
+                                        linearGradient: LinearGradient(
                                           colors: [
                                             Color(0xff017EFF),
                                             Color(0xff017EFF),
                                           ],
-                                          begin: FractionalOffset
-                                              .topCenter,
-                                          end: FractionalOffset
-                                              .bottomCenter,
+                                          begin: FractionalOffset.topCenter,
+                                          end: FractionalOffset.bottomCenter,
                                         ),
                                       ),
                                     ),
@@ -1272,68 +1235,57 @@ class _ChangePageState extends State<HomePage> {
                                   Align(
                                     alignment: Alignment.center,
                                     child: Container(
-                                      padding: EdgeInsets.only(
-                                          top: 80),
+                                      padding: EdgeInsets.only(top: 80),
                                       child: Column(
                                           mainAxisAlignment:
-                                          MainAxisAlignment
-                                              .center,
+                                              MainAxisAlignment.center,
                                           crossAxisAlignment:
-                                          CrossAxisAlignment
-                                              .center,
+                                              CrossAxisAlignment.center,
                                           children: <Widget>[
                                             Row(
                                                 mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .center,
+                                                    MainAxisAlignment.center,
                                                 crossAxisAlignment:
-                                                CrossAxisAlignment
-                                                    .center,
-                                                children: <
-                                                    Widget>[
+                                                    CrossAxisAlignment.center,
+                                                children: <Widget>[
                                                   Container(
-                                                    width:120,
+                                                    width: 120,
                                                     child: Column(
                                                         mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
+                                                            MainAxisAlignment
+                                                                .center,
                                                         crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                        children: <
-                                                            Widget>[
-                                                          Text(
-                                                              total_student,
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: <Widget>[
+                                                          Text(total_student,
                                                               style:
-                                                              normalText11),
+                                                                  normalText11),
                                                           Text(
                                                               "No. of Students",
                                                               style:
-                                                              normalText12),
+                                                                  normalText12),
                                                         ]),
                                                   ),
                                                   SizedBox(
                                                     width: 20,
                                                   ),
                                                   Container(
-                                                    width:120,
+                                                    width: 120,
                                                     child: Column(
                                                         mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
+                                                            MainAxisAlignment
+                                                                .center,
                                                         crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                        children: <
-                                                            Widget>[
-                                                          Text(
-                                                              total_batch,
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: <Widget>[
+                                                          Text(total_batch,
                                                               style:
-                                                              normalText11),
-                                                          Text(
-                                                              "No. of Batches",
+                                                                  normalText11),
+                                                          Text("No. of Batches",
                                                               style:
-                                                              normalText12),
+                                                                  normalText12),
                                                         ]),
                                                   ),
                                                 ]),
@@ -1342,56 +1294,48 @@ class _ChangePageState extends State<HomePage> {
                                             ),
                                             Row(
                                                 mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .center,
+                                                    MainAxisAlignment.center,
                                                 crossAxisAlignment:
-                                                CrossAxisAlignment
-                                                    .center,
-                                                children: <
-                                                    Widget>[
+                                                    CrossAxisAlignment.center,
+                                                children: <Widget>[
                                                   Container(
-                                                    width:120,
+                                                    width: 120,
                                                     child: Column(
                                                         mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
+                                                            MainAxisAlignment
+                                                                .center,
                                                         crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                        children: <
-                                                            Widget>[
-                                                          Text(
-                                                              total_test_taken,
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: <Widget>[
+                                                          Text(total_test_taken,
                                                               style:
-                                                              normalText11),
-                                                          Text(
-                                                              "Total Tests",
+                                                                  normalText11),
+                                                          Text("Total Tests",
                                                               style:
-                                                              normalText12),
+                                                                  normalText12),
                                                         ]),
                                                   ),
                                                   SizedBox(
                                                     width: 20,
                                                   ),
                                                   Container(
-                                                    width:120,
+                                                    width: 120,
                                                     child: Column(
                                                         mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
+                                                            MainAxisAlignment
+                                                                .center,
                                                         crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                        children: <
-                                                            Widget>[
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: <Widget>[
                                                           Text(
                                                               bestPerformancename,
                                                               style:
-                                                              normalText11),
-                                                          Text(
-                                                              "Best Performer",
+                                                                  normalText11),
+                                                          Text("Best Performer",
                                                               style:
-                                                              normalText12),
+                                                                  normalText12),
                                                         ]),
                                                   ),
                                                 ]),
@@ -1400,56 +1344,49 @@ class _ChangePageState extends State<HomePage> {
                                             ),
                                             Row(
                                                 mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .center,
+                                                    MainAxisAlignment.center,
                                                 crossAxisAlignment:
-                                                CrossAxisAlignment
-                                                    .center,
-                                                children: <
-                                                    Widget>[
+                                                    CrossAxisAlignment.center,
+                                                children: <Widget>[
                                                   Container(
-                                                    width:120,
+                                                    width: 120,
                                                     child: Column(
                                                         mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
+                                                            MainAxisAlignment
+                                                                .center,
                                                         crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                        children: <
-                                                            Widget>[
-                                                          Text(
-                                                              lasttestgiven,
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: <Widget>[
+                                                          Text(lasttestgiven,
                                                               style:
-                                                              normalText11),
+                                                                  normalText11),
                                                           Text(
                                                               "Last test given",
                                                               style:
-                                                              normalText12),
+                                                                  normalText12),
                                                         ]),
                                                   ),
                                                   SizedBox(
                                                     width: 20,
                                                   ),
                                                   Container(
-                                                    width:120,
+                                                    width: 120,
                                                     child: Column(
                                                         mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
+                                                            MainAxisAlignment
+                                                                .center,
                                                         crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                        children: <
-                                                            Widget>[
-                                                          Text(
-                                                              activestudent,
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: <Widget>[
+                                                          Text(activestudent,
                                                               style:
-                                                              normalText11),
+                                                                  normalText11),
                                                           Text(
                                                               "Active Students",
                                                               style:
-                                                              normalText12),
+                                                                  normalText12),
                                                         ]),
                                                   ),
                                                 ]),
@@ -1461,99 +1398,46 @@ class _ChangePageState extends State<HomePage> {
                             )
                           ]),
                     ),
-
                   ]),
-
-                      SizedBox(
-                        height: 20.0,
-                      ),
-                    Container(
-                      padding: EdgeInsets.only(
-                        left: 15,
-                        right: 15,
-                        bottom: 5,
-                      ),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: InkWell(
-                              onTap: () {
-
-                                Navigator.pushNamed(context, '/sign-up');
-                              },
-                              child: _buildWikiCategory(
-                                  "assets/images/tp.png",
-                                  "Student Registration",
-                                  Color(0xff567DF4),
-                                  Color(0xffEEF7FE)),
-                            ),
-                          ),
-                          const SizedBox(width: 16.0),
-                          Expanded(
-                            child: InkWell(
-                              onTap: () {
-
-
-                                Navigator.pushNamed(context, '/batch-list');
-                              },
-                              child: _buildWikiCategory(
-                                  "assets/images/performance.png",
-                                  "Student Report Card",
-
-                                  Color(0xffFFB110),
-                                  Color(0xffFFFBEC)),
-                            ),
-                          ),
-                        ],
-                      ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(
+                      left: 15,
+                      right: 15,
+                      bottom: 5,
                     ),
-                    const SizedBox(height: 16.0),
-                    Container(
-                      padding: EdgeInsets.only(
-                        left: 20,
-                         right: 20,
-                        bottom: 5,
-                      ),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: InkWell(
-                              onTap: () {
-
-                                Navigator.pushNamed(
-                                  context,
-                                  '/institute-test-list',
-                                );
-                              },
-                              child: _buildWikiCategory(
-                                  "assets/images/mcq.png",
-                                  "Create a Test",
-
-                                  Color(0xffF45656),
-                                  Color(0xffFEEEEE)),
-                            ),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, '/sign-up');
+                            },
+                            child: _buildWikiCategory(
+                                "assets/images/tp.png",
+                                "Student Registration",
+                                Color(0xff567DF4),
+                                Color(0xffEEF7FE)),
                           ),
-                          const SizedBox(width: 16.0),
-                          Expanded(
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  '/leaderboard',
-                                );
-
-                              },
-                              child: _buildWikiCategory(
-                                  "assets/images/leaderboard.png",
-                                  "Leader Board",
-
-                                  Color(0xff34DEDE),
-                                  Color(0xffF0FFFF)),
-                            ),
+                        ),
+                        const SizedBox(width: 16.0),
+                        Expanded(
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, '/batch-list');
+                            },
+                            child: _buildWikiCategory(
+                                "assets/images/performance.png",
+                                "Student Report Card",
+                                Color(0xffFFB110),
+                                Color(0xffFFFBEC)),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
+                  ),
                   const SizedBox(height: 16.0),
                   Container(
                     padding: EdgeInsets.only(
@@ -1566,7 +1450,49 @@ class _ChangePageState extends State<HomePage> {
                         Expanded(
                           child: InkWell(
                             onTap: () {
-
+                              Navigator.pushNamed(
+                                context,
+                                '/institute-test-list',
+                              );
+                            },
+                            child: _buildWikiCategory(
+                                "assets/images/mcq.png",
+                                "Create a Test",
+                                Color(0xffF45656),
+                                Color(0xffFEEEEE)),
+                          ),
+                        ),
+                        const SizedBox(width: 16.0),
+                        Expanded(
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/leaderboard',
+                              );
+                            },
+                            child: _buildWikiCategory(
+                                "assets/images/leaderboard.png",
+                                "Leader Board",
+                                Color(0xff34DEDE),
+                                Color(0xffF0FFFF)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16.0),
+                  Container(
+                    padding: EdgeInsets.only(
+                      left: 20,
+                      right: 20,
+                      bottom: 5,
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: InkWell(
+                            onTap: () {
                               Navigator.pushNamed(
                                 context,
                                 '/question-chapter-select',
@@ -1581,14 +1507,25 @@ class _ChangePageState extends State<HomePage> {
                         ),
                         const SizedBox(width: 16.0),
                         Expanded(
-                          child: Container(),
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/notification-app',
+                              );
+                            },
+                            child: _buildWikiCategory(
+                                "assets/images/add_question.png",
+                                "Notification",
+                                Color(0xff65c6d5),
+                                Color(0xffb0e2e9)),
+                          ),
                         ),
                       ],
                     ),
                   ),
-                    const SizedBox(height: 80.0),
-                  ]),
-
+                  const SizedBox(height: 80.0),
+                ]),
               )
             : buildAlertDialog(),
       ),
@@ -1622,7 +1559,4 @@ class _ChangePageState extends State<HomePage> {
       child: Container(child: Text('Please Check Internet Connection!!!')),
     );
   }
-
-
-
 }

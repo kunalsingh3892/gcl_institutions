@@ -10,7 +10,6 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:http/http.dart' as http;
 import '../constants.dart';
 
-
 class BatchList extends StatefulWidget {
   final String modal;
 
@@ -34,9 +33,9 @@ class _SettingsState extends State<BatchList> {
   String profile_image = '';
   List<UserDetails> _userDetails = [];
   List<UserDetails> _searchResult = [];
-  String user_id="";
-  String class_id="";
-  String board_id="";
+  String user_id = "";
+  String class_id = "";
+  String board_id = "";
   String payment = '';
   String total_test_quetion = '';
   String _mobile = "";
@@ -46,10 +45,8 @@ class _SettingsState extends State<BatchList> {
   void initState() {
     super.initState();
     _getUser();
-
-
-
   }
+
   Widget _networkImage1(url) {
     return Container(
       margin: EdgeInsets.only(
@@ -65,10 +62,10 @@ class _SettingsState extends State<BatchList> {
           image: NetworkImage(profile_image),
           fit: BoxFit.cover,
         ),
-
       ),
     );
   }
+
   _getUser() async {
     Preference().getPreferences().then((prefs) {
       setState(() {
@@ -77,7 +74,7 @@ class _SettingsState extends State<BatchList> {
         user_id = prefs.getString('user_id').toString();
         profile_image = prefs.getString('profile_image').toString();
 
-        _chapterData= _getChapterData();
+        _chapterData = _getChapterData();
       });
     });
   }
@@ -87,6 +84,7 @@ class _SettingsState extends State<BatchList> {
       image: NetworkImage(url),
     );
   }
+
   List<bool> showExpand = new List();
   Future _getChapterData() async {
     Map<String, String> headers = {
@@ -96,15 +94,10 @@ class _SettingsState extends State<BatchList> {
     };
     var response = await http.post(
       new Uri.https(BASE_URL, API_PATH + "/batch-list"),
-      body: {
-        "institute_id":user_id
-      },
+      body: {"institute_id": user_id},
       headers: headers,
-
     );
-    print({
-      "institute_id":user_id
-    });
+    print({"institute_id": user_id});
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
       var result = data['Response'];
@@ -124,16 +117,16 @@ class _SettingsState extends State<BatchList> {
       decoration: BoxDecoration(
         color: circle_color,
         borderRadius: BorderRadius.circular(10.0),
-          border: Border.all(
-            color: color,
-            width: 0.5,
-          ),
+        border: Border.all(
+          color: color,
+          width: 0.5,
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-         /* CircleAvatar(
+          /* CircleAvatar(
             backgroundColor: color,
             radius: 20,
             child: Image(
@@ -142,7 +135,7 @@ class _SettingsState extends State<BatchList> {
               width: 18.0,
             ),
           ),*/
-         // const SizedBox(width: 10.0),
+          // const SizedBox(width: 10.0),
           Expanded(
             child: Center(
               child: Text(
@@ -168,48 +161,46 @@ class _SettingsState extends State<BatchList> {
       future: _chapterData,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          if(snapshot.data['Response'].length!=0) {
-            return
-            Container(
-              child: GridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: 2,
-                  childAspectRatio: (2 / 1),
-                  padding: const EdgeInsets.only(
-                      left: 10, right: 10),
-                  crossAxisSpacing: 5,
-                  mainAxisSpacing: 5,
-                  children:
-                  List.generate(snapshot.data['Response'].length, (index) {
-                    return InkWell(
-                      onTap: (){
-                        Navigator.pushNamed(
-                          context,
-                          '/student-list',
-                          arguments: <String, String>{
-                            'batch_id': snapshot.data['Response']
-                            [index]['id'].toString(),
-                          },
-                        );
-                      },
-                      child: Container(
-                      //  height: 50,
-                        padding: EdgeInsets.only(
-                            bottom: 10, top: 10,left: 10,right: 10),
-                        child: _buildWikiCategory(
-                                    "assets/images/ordered_list.png",
-                                    snapshot.data['Response'][index]['batch_name'],
-                                    index%2==0?Color(0xff415EB6): Color(0xffF45656),
-                                    index%2==0? Color(0xffEEF7FE):Color(0xffFEEEEE)),
+          if (snapshot.data['Response'].length != 0) {
+            return Container(
+                child: GridView.count(
+                    shrinkWrap: true,
+                    crossAxisCount: 2,
+                    childAspectRatio: (2 / 1),
+                    padding: const EdgeInsets.only(left: 10, right: 10),
+                    crossAxisSpacing: 5,
+                    mainAxisSpacing: 5,
+                    children: List.generate(snapshot.data['Response'].length,
+                        (index) {
+                      return InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/student-list',
+                            arguments: <String, String>{
+                              'batch_id': snapshot.data['Response'][index]['id']
+                                  .toString(),
+                            },
+                          );
+                        },
+                        child: Container(
+                          //  height: 50,
+                          padding: EdgeInsets.only(
+                              bottom: 10, top: 10, left: 10, right: 10),
+                          child: _buildWikiCategory(
+                              "assets/images/ordered_list.png",
+                              snapshot.data['Response'][index]['batch_name'],
+                              index % 2 == 0
+                                  ? Color(0xff415EB6)
+                                  : Color(0xffF45656),
+                              index % 2 == 0
+                                  ? Color(0xffEEF7FE)
+                                  : Color(0xffFEEEEE)),
+                        ),
+                      );
+                    }))
 
-
-
-
-                      ),
-                    );
-                  }))
-
-              /*  ListView.builder(
+                /*  ListView.builder(
                   shrinkWrap: true,
                   primary: false,
                   itemCount: snapshot.data['Response'].length,
@@ -252,29 +243,28 @@ class _SettingsState extends State<BatchList> {
                   }
 
               ),*/
-            );
-          }
-          else{
+                );
+          } else {
             return _emptyOrders();
           }
-
-        }  else {
+        } else {
           return Center(
               child: Align(
-                alignment: Alignment.center,
-                child: Container(
-                  child: SpinKitFadingCube(
-                    itemBuilder: (_, int index) {
-                      return DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: index.isEven ? Color(0xff017EFF) :Color(0xffFFC700),
-                        ),
-                      );
-                    },
-                    size: 30.0,
-                  ),
-                ),
-              ));
+            alignment: Alignment.center,
+            child: Container(
+              child: SpinKitFadingCube(
+                itemBuilder: (_, int index) {
+                  return DecoratedBox(
+                    decoration: BoxDecoration(
+                      color:
+                          index.isEven ? Color(0xff017EFF) : Color(0xffFFC700),
+                    ),
+                  );
+                },
+                size: 30.0,
+              ),
+            ),
+          ));
         }
       },
     );
@@ -284,84 +274,84 @@ class _SettingsState extends State<BatchList> {
     return Center(
       child: Container(
           child: Text(
-            'NO RECORDS FOUND!',
-            style: TextStyle(fontSize: 20, letterSpacing: 1, color: Color(0xff2E2A4A)),
-          )),
+        'NO RECORDS FOUND!',
+        style:
+            TextStyle(fontSize: 20, letterSpacing: 1, color: Color(0xff2E2A4A)),
+      )),
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
     Size deviceSize = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: widget.modal != ""?AppBar(
-          elevation: 0.0,
-          leading: widget.modal != ""? Row(children: <Widget>[
-            IconButton(
-              icon: Image(
-                image: AssetImage("assets/images/Icon.png"),
-                height: 20.0,
-                width: 10.0,
-                color: Color(0xff2E2A4A),
-              ),
-              onPressed: (){
-                Navigator.of(context).pop(false);
-                Navigator.pushNamed(context, '/dashboard');
-              },
-            ),
-
-          ]):Row(children: <Widget>[
-            IconButton(
-              icon: Image(
-                image: AssetImage("assets/images/list_icon.png"),
-                height: 20.0,
-                width: 10.0,
-                color: Color(0xff2E2A4A),
-              ),
-              onPressed: (){
-                Navigator.of(context).pop(false);
-                Navigator.pushNamed(context, '/dashboard');
-              },
-            ),
-
-          ]),
-          centerTitle: true,
-          title: Container(
-            child: Text("Batch List", style: normalText6),
-          ),
-          flexibleSpace: Container(
-            height: 100,
-            color: Color(0xffffffff),
-          ),
-          actions: <Widget>[
-            Align(
-              alignment: Alignment.center,
-              child: CircleAvatar(
-                backgroundColor: Colors.white,
-                radius: 30,
-                child: _networkImage1(
-                  profile_image,
+        appBar: widget.modal != ""
+            ? AppBar(
+                elevation: 0.0,
+                leading: widget.modal != ""
+                    ? Row(children: <Widget>[
+                        IconButton(
+                          icon: Image(
+                            image: AssetImage("assets/images/Icon.png"),
+                            height: 20.0,
+                            width: 10.0,
+                            color: Color(0xff2E2A4A),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                            Navigator.pushNamed(context, '/dashboard');
+                          },
+                        ),
+                      ])
+                    : Row(children: <Widget>[
+                        IconButton(
+                          icon: Image(
+                            image: AssetImage("assets/images/list_icon.png"),
+                            height: 20.0,
+                            width: 10.0,
+                            color: Color(0xff2E2A4A),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                            Navigator.pushNamed(context, '/dashboard');
+                          },
+                        ),
+                      ]),
+                centerTitle: true,
+                title: Container(
+                  child: Text("Batch List", style: normalText6),
                 ),
-              ),
-            ),
-          ],
-          iconTheme: IconThemeData(
-            color: Colors.white, //change your color here
-          ),
-          backgroundColor: Colors.transparent,
-        ):null,
-        floatingActionButton:  FloatingActionButton.extended(
+                flexibleSpace: Container(
+                  height: 100,
+                  color: Color(0xffffffff),
+                ),
+                actions: <Widget>[
+                  Align(
+                    alignment: Alignment.center,
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: 30,
+                      child: _networkImage1(
+                        profile_image,
+                      ),
+                    ),
+                  ),
+                ],
+                iconTheme: IconThemeData(
+                  color: Colors.white, //change your color here
+                ),
+                backgroundColor: Colors.transparent,
+              )
+            : null,
+        floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
             Navigator.pushNamed(
               context,
               '/create-batch',
-
             );
           },
-          backgroundColor:Color(0xff017EFF),
+          backgroundColor: Color(0xff017EFF),
           label: Text("Create"),
           icon: Icon(
             Icons.add,
@@ -370,7 +360,7 @@ class _SettingsState extends State<BatchList> {
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
-        body:ModalProgressHUD(
+        body: ModalProgressHUD(
           inAsyncCall: isLoading,
           child: Container(
               decoration: BoxDecoration(
@@ -384,23 +374,21 @@ class _SettingsState extends State<BatchList> {
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
                     const SizedBox(height: 20.0),
-                    Expanded(child:
-                    Container(
-                      padding: EdgeInsets.only(bottom: 5),
-                      child: chapterList(deviceSize),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.only(bottom: 5),
+                        child: chapterList(deviceSize),
+                      ),
                     ),
-
-                    ),
-
                     SizedBox(
                       height: 10.0,
                     ),
                   ],
                 ),
               )),
-        )
-    );
+        ));
   }
+
   onSearchTextChanged(String text) async {
     print(text);
     _searchResult.clear();
@@ -422,15 +410,13 @@ class _SettingsState extends State<BatchList> {
 }
 
 class UserDetails {
-  final String id,
-      chapter_name,
-      short_description;
+  final String id, chapter_name, short_description;
 
-  UserDetails(
-      {this.id,
-        this.chapter_name,
-        this.short_description,
-      });
+  UserDetails({
+    this.id,
+    this.chapter_name,
+    this.short_description,
+  });
 
   factory UserDetails.fromJson(Map<String, dynamic> json) {
     return new UserDetails(

@@ -46,7 +46,7 @@ dependencies:
   flutter_slidable: ^0.6.0
   syncfusion_flutter_charts: ^19.2.49
   custom_searchable_dropdown: ^2.0.5
-  image_picker: ^0.6.4
+  image_picker: ^0.8.4+4
   flutter_windowmanager: ^0.2.0
   syncfusion_flutter_pdfviewer: ^19.2.51-beta
   flutter_animation_progress_bar: ^2.0.1
@@ -77,8 +77,8 @@ dependencies:
   in_app_update: ^2.0.0
   flutter_custom_clippers: ^2.0.0
   provider: ^6.0.0
-
-
+  dropdown_search: ^2.0.1
+  file_picker: ^4.2.7
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

@@ -801,8 +801,9 @@ class _UpdateProfileState extends State<UpdateProfile> {
 
   File _image;
   _imgFromCamera() async {
-    File image = await ImagePicker.pickImage(
-        source: ImageSource.camera, imageQuality: 50);
+    // ignore: invalid_use_of_visible_for_testing_member
+    File image = (await ImagePicker.platform
+        .pickImage(source: ImageSource.camera, imageQuality: 50)) as File;
 
     setState(() {
       _image = image;
@@ -810,8 +811,9 @@ class _UpdateProfileState extends State<UpdateProfile> {
   }
 
   _imgFromGallery() async {
-    File image = await ImagePicker.pickImage(
-        source: ImageSource.gallery, imageQuality: 50);
+    // ignore: invalid_use_of_visible_for_testing_member
+    File image = (await ImagePicker.platform
+        .pickImage(source: ImageSource.gallery, imageQuality: 50)) as File;
     setState(() {
       _image = image;
     });

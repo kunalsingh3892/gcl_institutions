@@ -24,6 +24,7 @@ import 'package:grewal/screens/institute_test_list_performance.dart';
 import 'package:grewal/screens/intro_screens.dart';
 import 'package:grewal/screens/leaderboard.dart';
 import 'package:grewal/screens/mts.dart';
+import 'package:grewal/screens/notification/send_notification_to_all.dart';
 import 'package:grewal/screens/notifications.dart';
 import 'package:grewal/screens/open_pdf.dart';
 import 'package:grewal/screens/overall_performance.dart';
@@ -75,14 +76,15 @@ Future<void> main() async {
   }, (error, stackTrace) {
     FirebaseCrashlytics.instance.recordError(error, stackTrace);
   });
-
 }
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
   await Firebase.initializeApp();
   print('Handling a background message ${message.messageId}');
 }
+
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
@@ -92,7 +94,8 @@ class _MyAppState extends State<MyApp> {
   bool _loggedIn = false;
   int id = 0;
   static FirebaseAnalytics analytics = FirebaseAnalytics();
-  static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
+  static FirebaseAnalyticsObserver observer =
+      FirebaseAnalyticsObserver(analytics: analytics);
   static final facebookAppEvents = FacebookAppEvents();
   void initState() {
     super.initState();
@@ -100,20 +103,18 @@ class _MyAppState extends State<MyApp> {
     //  _checkLoggedIn();
   }
 
-  Map<int, Color> color =
-  {
-    50:Color.fromRGBO(136,14,79, .1),
-    100:Color.fromRGBO(136,14,79, .2),
-    200:Color.fromRGBO(136,14,79, .3),
-    300:Color.fromRGBO(136,14,79, .4),
-    400:Color.fromRGBO(136,14,79, .5),
-    500:Color.fromRGBO(136,14,79, .6),
-    600:Color.fromRGBO(136,14,79, .7),
-    700:Color.fromRGBO(136,14,79, .8),
-    800:Color.fromRGBO(136,14,79, .9),
-    900:Color.fromRGBO(136,14,79, 1),
+  Map<int, Color> color = {
+    50: Color.fromRGBO(136, 14, 79, .1),
+    100: Color.fromRGBO(136, 14, 79, .2),
+    200: Color.fromRGBO(136, 14, 79, .3),
+    300: Color.fromRGBO(136, 14, 79, .4),
+    400: Color.fromRGBO(136, 14, 79, .5),
+    500: Color.fromRGBO(136, 14, 79, .6),
+    600: Color.fromRGBO(136, 14, 79, .7),
+    700: Color.fromRGBO(136, 14, 79, .8),
+    800: Color.fromRGBO(136, 14, 79, .9),
+    900: Color.fromRGBO(136, 14, 79, 1),
   };
-
 
 /*  _checkLoggedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -138,9 +139,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: colorCustom,
         visualDensity: VisualDensity.adaptivePlatformDensity,
-
       ),
-
       debugShowCheckedModeBanner: false,
       onGenerateRoute: (settings) {
         switch (settings.name) {
@@ -223,8 +222,6 @@ class _MyAppState extends State<MyApp> {
             );
             break;
 
-
-
           case '/dashboard':
             return PageTransition(
               child: Dashboard(),
@@ -269,7 +266,7 @@ class _MyAppState extends State<MyApp> {
               settings: settings,
             );
             break;
-            case '/create-mcq':
+          case '/create-mcq':
             var obj = settings.arguments;
             return PageTransition(
               child: CreateMCQ(argument: obj),
@@ -358,9 +355,8 @@ class _MyAppState extends State<MyApp> {
             );
             break;
 
-
           case '/chapter-select':
-           // var obj = settings.arguments;
+            // var obj = settings.arguments;
             return PageTransition(
               child: ChapterListScreen(),
               type: PageTransitionType.leftToRight,
@@ -368,7 +364,7 @@ class _MyAppState extends State<MyApp> {
             );
             break;
           case '/support-list':
-          //  var obj = settings.arguments;
+            //  var obj = settings.arguments;
             return PageTransition(
               child: SupportList("yes"),
               type: PageTransitionType.leftToRight,
@@ -482,7 +478,7 @@ class _MyAppState extends State<MyApp> {
               settings: settings,
             );
             break;
-            case '/create-batch':
+          case '/create-batch':
             var obj = settings.arguments;
             return PageTransition(
               child: AddBatch(),
@@ -579,7 +575,6 @@ class _MyAppState extends State<MyApp> {
             );
             break;
           case '/question-chapter-select':
-
             return PageTransition(
               child: AddQuestionFirst(),
               type: PageTransitionType.leftToRight,
@@ -603,7 +598,13 @@ class _MyAppState extends State<MyApp> {
               settings: settings,
             );
             break;
-
+          case '/notification-app':
+            return PageTransition(
+              child: SendNotificationsToAllTypes(),
+              type: PageTransitionType.leftToRight,
+              settings: settings,
+            );
+            break;
           default:
             return null;
         }
@@ -612,11 +613,10 @@ class _MyAppState extends State<MyApp> {
         body: homeOrLog(),
       ),
     );
-
   }
 
   Widget homeOrLog() {
-   return FutureBuilder(
+    return FutureBuilder(
       future: facebookAppEvents.getAnonymousId(),
       builder: (context, snapshot) {
         final id = snapshot.data ?? '???';
@@ -624,6 +624,5 @@ class _MyAppState extends State<MyApp> {
         return SplashScreen();
       },
     );
-
   }
 }
