@@ -30,6 +30,7 @@ class _LoginWithLogoState extends State<SignIn> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final mobileController = TextEditingController();
+  final parentmobileController = TextEditingController();
   final passController = TextEditingController();
   final codeController = TextEditingController();
   bool _loading = false;
@@ -651,6 +652,118 @@ class _LoginWithLogoState extends State<SignIn> {
             ),
           ]),
           const SizedBox(height: 15.0),
+          Row(children: [
+            Container(
+              width: MediaQuery.of(context).size.width * 0.30,
+              margin: const EdgeInsets.only(right: 5.0, left: 8),
+              padding: EdgeInsets.all(10),
+              decoration: ShapeDecoration(
+                color: Color(0xfff9f9fb),
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(
+                    width: 0.0,
+                    color: Color(0xfff9f9fb),
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                ),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: Padding(
+                  padding: EdgeInsets.only(right: 0, left: 3),
+                  child: new DropdownButton<String>(
+                    isExpanded: true,
+                    hint: new Text(
+                      "Select",
+                      style: TextStyle(color: Color(0xffBBBFC3)),
+                    ),
+                    icon: Padding(
+                      padding: const EdgeInsets.only(left: 0),
+                      child: Icon(
+                        Icons.arrow_drop_down,
+                        color: Colors.black,
+                      ),
+                    ),
+                    value: selectedRegion4,
+                    isDense: true,
+                    onChanged: (newValue) {
+                      setState(() {
+                        selectedRegion4 = newValue;
+                        List<String> item = _region4.map((Region4 map) {
+                          for (int i = 0; i < _region4.length; i++) {
+                            if (selectedRegion4 == map.THIRD_LEVEL_CODE) {
+                              _type4 = map.THIRD_LEVEL_ID;
+                              return map.THIRD_LEVEL_ID;
+                            }
+                          }
+                        }).toList();
+                      });
+                    },
+                    items: _region4.map((Region4 map) {
+                      return new DropdownMenuItem<String>(
+                        value: map.THIRD_LEVEL_CODE,
+                        child: new Text(map.THIRD_LEVEL_CODE,
+                            style: new TextStyle(color: Colors.black87)),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.only(right: 8.0, left: 5),
+                child: TextFormField(
+                    controller: parentmobileController,
+                    maxLength: 10,
+                    keyboardType: TextInputType.number,
+                    cursorColor: Color(0xff000000),
+                    textCapitalization: TextCapitalization.sentences,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter mobile no.';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      parentmobileController.text = value;
+                    },
+                    decoration: InputDecoration(
+                        isDense: true,
+                        contentPadding: EdgeInsets.fromLTRB(10, 30, 30, 0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                          borderSide: BorderSide(
+                            color: Color(0xfff9f9fb),
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                          borderSide: BorderSide(
+                            color: Color(0xfff9f9fb),
+                          ),
+                        ),
+                        disabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                          borderSide: BorderSide(
+                            color: Color(0xfff9f9fb),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                          borderSide: BorderSide(
+                            color: Color(0xfff9f9fb),
+                          ),
+                        ),
+                        counterText: "",
+                        hintText: 'Enter Your Parent\'s Mobile No.',
+                        hintStyle:
+                        TextStyle(color: Color(0xffBBBFC3), fontSize: 16),
+                        fillColor: Color(0xfff9f9fb),
+                        filled: true)),
+              ),
+            ),
+          ]),
+          const SizedBox(height: 15.0),
           Container(
             width: MediaQuery.of(context).size.width,
             margin: const EdgeInsets.only(right: 8.0, left: 8),
@@ -881,6 +994,7 @@ class _LoginWithLogoState extends State<SignIn> {
                           "class_id": _type3,
                           "board_id": _type,
                           "mobile": mobileController.text,
+                          "parentmobile":parentmobileController.text,
                           "password": passController.text,
                           "referral_code": codeController.text,
                           "institute_id": user_id,
@@ -901,6 +1015,7 @@ class _LoginWithLogoState extends State<SignIn> {
                             "class_id": _type3,
                             "board_id": _type,
                             "mobile": mobileController.text,
+                            "parentmobile":parentmobileController.text,
                             "password": passController.text,
                             "referral_code": codeController.text,
                             "institute_id": user_id,
