@@ -31,6 +31,7 @@ class _SettingsState extends State<StudentList> {
       fontSize: 20, fontWeight: FontWeight.w600, color: Color(0xff2E2A4A));
   final completeController = TextEditingController();
   String _dropdownValue = 'Select Student Type';
+  String _dropdownValueBatch = 'Select Batch';
   String name = "";
   String profile_image = '';
   List<UserDetails> _userDetails = [];
@@ -44,14 +45,16 @@ class _SettingsState extends State<StudentList> {
   String email_id = '';
   String order_id = "";
   String batch_id = "";
+  // List batch_list=[];
   @override
   void initState() {
     super.initState();
     var encodedJson = json.encode(widget.argument);
     var data = json.decode(encodedJson);
     batch_id = data['batch_id'];
-    _getUser();
+    // var temp=jsonDecode(data['batch_list'].toString());
 
+    _getUser();
 
 
   }
@@ -567,6 +570,44 @@ class _SettingsState extends State<StudentList> {
                                   ],
                                 ),
                               ),
+                              const SizedBox(height: 10.0),
+                              Container(
+                                padding: EdgeInsets.only(
+                                    left: 15, right: 15, bottom: 5, top: 5),
+                                child: Row(
+                                  children: <Widget>[
+
+
+                                    Expanded(
+                                      child: InkWell(
+                                        onTap: (){
+                                         /* Navigator.pushNamed(
+                                            context,
+                                            '/institute-test-list-performance',
+                                            arguments: <String, String>{
+                                              'user_id': snapshot.data['Response'][index]['id'].toString(),
+                                              'chapter_name': "",
+                                              'type': "institute"
+                                            },
+                                          );*/
+                                          _moveBatchDialog(snapshot.data['Response'][index]['id'].toString(),batch_id);
+                                        },
+                                        child: _buildWikiCategory(
+                                            "assets/images/student_test.png",
+                                            "Move - Batch",
+                                            Color(0xff34DEDE),
+                                            Color(0xffF0FFFF)
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16.0),
+                                   Container(
+                                     width: 174.0,
+                                   ),
+
+                                  ],
+                                ),
+                              ),
                               const SizedBox(height: 5.0),
                             ],):Container(),
                             new Container(
@@ -856,6 +897,116 @@ class _SettingsState extends State<StudentList> {
         )
     );
   }
+
+
+
+  _moveBatchDialog(id,batch_id) async {
+    // final editController = TextEditingController();
+    var alert = new AlertDialog(
+      contentPadding: const EdgeInsets.all(16.0),
+      title: Text ("Move Batch"),
+      content: StatefulBuilder(
+        builder: ( BuildContext context, StateSetter setState) {
+          return new Row(
+            children: <Widget>[
+              new Expanded(
+                child: DropdownButtonHideUnderline(
+                  child: new DropdownButton<String>(
+                    isExpanded: true,
+                    value: _dropdownValueBatch,
+                    isDense: true,
+
+                    icon: Padding(
+                      padding: const EdgeInsets.only(left: 0),
+                      child: Icon(
+                        Icons.arrow_drop_down,
+                        color: Colors.black,
+                      ),
+                    ),
+                    onChanged: (String newValue) {
+                      _dropdownValueBatch = newValue;
+                      setState(() {
+                      }
+                      );
+                    },
+                    items: <String>[
+                      'Select Batch',
+                      'gaurav',
+                      'batch 1'
+                    ].map<DropdownMenuItem<String>>(
+                            (String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: new Text(value,
+                                style: new TextStyle(
+                                  color: Colors.black87,
+                                )),
+                          );
+                        }).toList(),
+                  ),
+                ),
+              )
+            ],
+          );
+        } ,
+
+      ),
+
+
+      actions: <Widget>[
+        new FlatButton(
+            child: const Text('CANCEL'),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
+        new FlatButton(
+            child: const Text('CONFIRM'),
+            onPressed: () {
+              _moveBatch(id,batch_id);
+
+            })
+      ],
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  Future _moveBatch(student_id,batch_id) async {
+    print(jsonEncode({
+      "institute_id":user_id,
+      "batch_id":batch_id.toString(),
+      "student_id":student_id.toString()
+    }));
+    Map<String, String> headers = {
+      // 'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      // "authorization": basicAuth
+    };
+    var response = await http.post(
+      new Uri.https(BASE_URL, API_PATH + "/batch-move-student"),
+      body: {
+        "institute_id":user_id,
+        "batch_id":batch_id.toString(),
+        "student_id":student_id.toString()
+      },
+      headers: headers,
+
+    );
+
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      var result = data['Response'];
+      print(data);
+      return data;
+    } else {
+      throw Exception('Something went wrong');
+    }
+  }
+
   onSearchTextChanged(String text) async {
     print(text);
     _searchResult.clear();
