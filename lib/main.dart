@@ -44,6 +44,7 @@ import 'package:grewal/screens/test_list.dart';
 import 'package:grewal/screens/ticket_details.dart';
 import 'package:grewal/screens/ticket_list.dart';
 import 'package:grewal/screens/update_profile.dart';
+import 'package:grewal/screens/upload_study_material/upload_study_material.dart';
 import 'package:grewal/screens/videos_screen/answer_key.dart';
 import 'package:grewal/screens/videos_screen/create_test.dart';
 import 'package:grewal/screens/videos_screen/create_test_new.dart';
@@ -601,6 +602,13 @@ class _MyAppState extends State<MyApp> {
           case '/notification-app':
             return PageTransition(
               child: SendNotificationsToAllTypes(),
+              type: PageTransitionType.leftToRight,
+              settings: settings,
+            );
+            break;
+          case '/upload-study-material':
+            return PageTransition(
+              child: UploadStudyMaterial(),
               type: PageTransitionType.leftToRight,
               settings: settings,
             );

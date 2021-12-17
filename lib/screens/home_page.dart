@@ -1524,6 +1524,35 @@ class _ChangePageState extends State<HomePage> {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 16.0),
+                  Container(
+                    padding: EdgeInsets.only(
+                      left: 20,
+                      right: 20,
+                      bottom: 5,
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/upload-study-material',
+                              );
+                            },
+                            child: _buildWikiCategory(
+                                "assets/images/add_question.png",
+                                "Upload Study\nMaterial",
+                                Color(0xff38CD8B),
+                                Color(0xffE9FFF5)),
+                          ),
+                        ),
+                        const SizedBox(width: 16.0),
+                        Expanded(child: SizedBox())
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 80.0),
                 ]),
               )
