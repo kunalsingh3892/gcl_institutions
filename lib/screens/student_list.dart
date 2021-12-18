@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grewal/components/color_constants.dart';
 import 'package:grewal/services/shared_preferences.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:http/http.dart' as http;
 import '../constants.dart';
+import 'notification/notification_api.dart';
 
 
 class StudentList extends StatefulWidget {
@@ -45,7 +47,8 @@ class _SettingsState extends State<StudentList> {
   String email_id = '';
   String order_id = "";
   String batch_id = "";
-  // List batch_list=[];
+  List batchList = [];
+  TextEditingController selectedBatch=new TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -87,6 +90,21 @@ class _SettingsState extends State<StudentList> {
         profile_image = prefs.getString('profile_image').toString();
 
         _chapterData= _getChapterData("");
+
+        SendNotificationAPI()
+            .getAllBatchList (user_id.toString())
+            .then((value) {
+          if (value.length > 0) {
+            setState(() {
+              batchList=value;
+
+              batchList = batchList.where((e) {
+                return e['id'].toString() != batch_id.toString();
+              }).toList();
+              print(batchList);
+             });
+          }
+        });
       });
     });
   }
@@ -590,7 +608,19 @@ class _SettingsState extends State<StudentList> {
                                               'type': "institute"
                                             },
                                           );*/
-                                          _moveBatchDialog(snapshot.data['Response'][index]['id'].toString(),batch_id);
+                                          if(batchList.length==0){
+                                            Fluttertoast.showToast(
+                                                msg: "No batch to transfer",
+                                                toastLength:
+                                                Toast.LENGTH_LONG,
+                                                gravity:
+                                                ToastGravity.CENTER);
+
+
+                                          }else{
+                                            _moveBatchDialog(snapshot.data['Response'][index]['id'].toString());
+                                          }
+
                                         },
                                         child: _buildWikiCategory(
                                             "assets/images/student_test.png",
@@ -900,53 +930,38 @@ class _SettingsState extends State<StudentList> {
 
 
 
-  _moveBatchDialog(id,batch_id) async {
+  _moveBatchDialog(studentId) async {
     // final editController = TextEditingController();
     var alert = new AlertDialog(
       contentPadding: const EdgeInsets.all(16.0),
       title: Text ("Move Batch"),
       content: StatefulBuilder(
         builder: ( BuildContext context, StateSetter setState) {
-          return new Row(
-            children: <Widget>[
-              new Expanded(
-                child: DropdownButtonHideUnderline(
-                  child: new DropdownButton<String>(
-                    isExpanded: true,
-                    value: _dropdownValueBatch,
-                    isDense: true,
-
-                    icon: Padding(
-                      padding: const EdgeInsets.only(left: 0),
-                      child: Icon(
-                        Icons.arrow_drop_down,
-                        color: Colors.black,
-                      ),
-                    ),
-                    onChanged: (String newValue) {
-                      _dropdownValueBatch = newValue;
-                      setState(() {
-                      }
-                      );
-                    },
-                    items: <String>[
-                      'Select Batch',
-                      'gaurav',
-                      'batch 1'
-                    ].map<DropdownMenuItem<String>>(
-                            (String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: new Text(value,
-                                style: new TextStyle(
-                                  color: Colors.black87,
-                                )),
-                          );
-                        }).toList(),
-                  ),
-                ),
-              )
-            ],
+          return DropdownButtonFormField(
+              autofocus: true,
+              validator: (value) => value == null ? "Required" : null,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(14),
+                border: OutlineInputBorder(),
+                labelText: 'Select Batch',
+                isDense: true,
+              ),
+            onChanged: (val){
+setState((){
+  selectedBatch.text=val.toString();
+})
+;            },
+            items: batchList
+                .map(
+                    (e) {
+                  return DropdownMenuItem(
+                    value: e['id'],
+                    child: new Text(e['batch_name'].toString(),
+                        style: new TextStyle(
+                          color: Colors.black87,
+                        )),
+                  );
+                }).toList()
           );
         } ,
 
@@ -962,7 +977,16 @@ class _SettingsState extends State<StudentList> {
         new FlatButton(
             child: const Text('CONFIRM'),
             onPressed: () {
-              _moveBatch(id,batch_id);
+              _moveBatch(studentId,selectedBatch.text).then((value){
+                Fluttertoast.showToast(
+                    msg: value?"Batch Changed":"Batch Change Failed",
+                    toastLength:
+                    Toast.LENGTH_LONG,
+                    gravity:ToastGravity.CENTER);
+              });
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+
 
             })
       ],
@@ -975,7 +999,7 @@ class _SettingsState extends State<StudentList> {
     );
   }
 
-  Future _moveBatch(student_id,batch_id) async {
+  Future<bool> _moveBatch(student_id,batch_id) async {
     print(jsonEncode({
       "institute_id":user_id,
       "batch_id":batch_id.toString(),
@@ -997,14 +1021,10 @@ class _SettingsState extends State<StudentList> {
 
     );
 
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body);
-      var result = data['Response'];
-      print(data);
-      return data;
-    } else {
-      throw Exception('Something went wrong');
-    }
+    if (json.decode(response.body)['ErrorCode']==0) {
+
+      return true;
+    }return false;
   }
 
   onSearchTextChanged(String text) async {

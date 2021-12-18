@@ -45,7 +45,7 @@ class _ShowUploadedFilesState extends State<ShowUploadedFiles> {
     // TODO: implement initState
     super.initState();
     SendNotificationAPI()
-        .getAllBatchList(widget.user_id.toString())
+        .getAllBatchList (widget.user_id.toString())
         .then((value) {
       if (value.length > 0) {
         setState(() {
