@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/cupertino.dart';
 import 'package:grewal/screens/upload_study_material/show_uploaded_files.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -36,22 +37,24 @@ class _UploadStudyMaterialState extends State<UploadStudyMaterial> {
   TextStyle normalText6 = GoogleFonts.montserrat(
       fontSize: 20, fontWeight: FontWeight.w600, color: Color(0xff2E2A4A));
   TextEditingController _folder_name = new TextEditingController();
+
+  TextEditingController _fileName = new TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   bool isLoading = true;
   String institute_id;
-  List folderList = [];
+  List data = [];
+  List dataCopy = [];
+  bool isSearching = false;
   _getUser() async {
     Preference().getPreferences().then((prefs) async {
       setState(() {
         institute_id = prefs.getString('user_id').toString();
       });
-      await UploadStudyMaterialAPI()
-          .getFolderList(prefs.getString('user_id').toString())
-          .then((value) {
+      await UploadStudyMaterialAPI().getFolderList(institute_id).then((value) {
         setState(() {
-          folderList = value;
-
+          data.addAll(value);
+          dataCopy.addAll(value);
           isLoading = false;
         });
       });
@@ -60,6 +63,29 @@ class _UploadStudyMaterialState extends State<UploadStudyMaterial> {
 
   Future<List> _getFilesList(id) async {
     UploadStudyMaterialAPI().getUploadedFileList(institute_id, id.toString());
+  }
+
+  void seraching(String search) {
+    List dummyListData = [];
+    print(search);
+    if (search.isNotEmpty) {
+      dataCopy.forEach((item) {
+        item.forEach((key, value) {
+          if (value.toString().toUpperCase().contains(search.toUpperCase())) {
+            dummyListData.add(item);
+          }
+        });
+      });
+      setState(() {
+        data.clear();
+        data.addAll(dummyListData);
+      });
+    } else {
+      setState(() {
+        data.clear();
+        data.addAll(dataCopy);
+      });
+    }
   }
 
   @override
@@ -94,9 +120,75 @@ class _UploadStudyMaterialState extends State<UploadStudyMaterial> {
             ),
           ]),
         ),
+        actions: [
+          isSearching
+              ? IconButton(
+                  onPressed: () {
+                    setState(() {
+                      isSearching = !isSearching;
+                      data.clear();
+                      data.addAll(dataCopy);
+                    });
+                  },
+                  icon: Icon(Icons.clear),
+                  color: Colors.black,
+                )
+              : IconButton(
+                  onPressed: () {
+                    setState(() {
+                      isSearching = !isSearching;
+                    });
+                  },
+                  icon: Icon(Icons.search),
+                  color: Colors.black,
+                )
+        ],
         centerTitle: true,
         title: Container(
-          child: Text("Upload Study Material", style: normalText6),
+          child: isSearching
+              ? TextFormField(
+                  autofocus: true,
+                  onChanged: (val) {
+                    seraching(val.toString());
+                  },
+                  keyboardType: TextInputType.text,
+                  cursorColor: Color(0xff000000),
+                  textCapitalization: TextCapitalization.sentences,
+                  decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: EdgeInsets.fromLTRB(10, 30, 30, 0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(
+                          color: Color(0xfff9f9fb),
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(
+                          color: Color(0xfff9f9fb),
+                        ),
+                      ),
+                      disabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(
+                          color: Color(0xfff9f9fb),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(
+                          color: Color(0xfff9f9fb),
+                        ),
+                      ),
+                      counterText: "",
+                      hintText: 'Search',
+                      hintStyle:
+                          TextStyle(color: Color(0xffBBBFC3), fontSize: 16),
+                      fillColor: Color(0xfff9f9fb),
+                      filled: true))
+              : Text("Upload Study\nMaterial",
+                  textAlign: TextAlign.center, style: normalText6),
         ),
         flexibleSpace: Container(
           height: 100,
@@ -114,7 +206,7 @@ class _UploadStudyMaterialState extends State<UploadStudyMaterial> {
           : SafeArea(
               child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: folderList.length == 0
+                  child: data.length == 0
                       ? Align(
                           alignment: Alignment.topCenter,
                           child: Text(
@@ -124,7 +216,7 @@ class _UploadStudyMaterialState extends State<UploadStudyMaterial> {
                           ),
                         )
                       : ListView(
-                          children: folderList
+                          children: data
                               .map((e) => Card(
                                     elevation: 8,
                                     child: ListTile(
@@ -142,19 +234,99 @@ class _UploadStudyMaterialState extends State<UploadStudyMaterial> {
                                             );
 
                                             if (result != null) {
+                                              _fileName.text = "";
                                               showDialog(
-                                                  context: context,
+                                                  context: _scaffoldKey
+                                                      .currentContext,
                                                   builder:
                                                       (context) => AlertDialog(
                                                             title: Text(
                                                                 "Confirmation"),
-                                                            content: Text(
-                                                                "Selected File : \n" +
-                                                                    result
-                                                                        .files
-                                                                        .single
-                                                                        .name
-                                                                        .toString()),
+                                                            content: Container(
+                                                              height: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .height /
+                                                                  2.5,
+                                                              child: Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Text("Selected File : \n" +
+                                                                      result
+                                                                          .files
+                                                                          .single
+                                                                          .name
+                                                                          .toString()),
+                                                                  SizedBox(
+                                                                    height: 15,
+                                                                  ),
+                                                                  TextFormField(
+                                                                      maxLines:
+                                                                          2,
+                                                                      controller:
+                                                                          _fileName,
+                                                                      keyboardType:
+                                                                          TextInputType
+                                                                              .text,
+                                                                      cursorColor:
+                                                                          Color(
+                                                                              0xff000000),
+                                                                      textCapitalization:
+                                                                          TextCapitalization
+                                                                              .sentences,
+                                                                      validator:
+                                                                          (value) {
+                                                                        if (value
+                                                                            .isEmpty) {
+                                                                          return 'Required';
+                                                                        }
+                                                                        return null;
+                                                                      },
+                                                                      decoration: InputDecoration(
+                                                                          isDense: true,
+                                                                          contentPadding: EdgeInsets.fromLTRB(10, 30, 30, 0),
+                                                                          border: OutlineInputBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(5.0),
+                                                                            borderSide:
+                                                                                BorderSide(
+                                                                              color: Color(0xfff9f9fb),
+                                                                            ),
+                                                                          ),
+                                                                          enabledBorder: OutlineInputBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(5.0),
+                                                                            borderSide:
+                                                                                BorderSide(
+                                                                              color: Color(0xfff9f9fb),
+                                                                            ),
+                                                                          ),
+                                                                          disabledBorder: OutlineInputBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(5.0),
+                                                                            borderSide:
+                                                                                BorderSide(
+                                                                              color: Color(0xfff9f9fb),
+                                                                            ),
+                                                                          ),
+                                                                          focusedBorder: OutlineInputBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(5.0),
+                                                                            borderSide:
+                                                                                BorderSide(
+                                                                              color: Color(0xfff9f9fb),
+                                                                            ),
+                                                                          ),
+                                                                          counterText: "",
+                                                                          hintText: 'File Name',
+                                                                          hintStyle: TextStyle(color: Color(0xffBBBFC3), fontSize: 16),
+                                                                          fillColor: Color(0xfff9f9fb),
+                                                                          filled: true)),
+                                                                ],
+                                                              ),
+                                                            ),
                                                             actions: [
                                                               TextButton(
                                                                   onPressed:
@@ -191,13 +363,11 @@ class _UploadStudyMaterialState extends State<UploadStudyMaterial> {
                                                                             "id"]
                                                                         .toString();
                                                                     request.fields[
-                                                                            "file_name"] =
-                                                                        result
-                                                                            .files
-                                                                            .single
-                                                                            .name;
+                                                                            "name"] =
+                                                                        _fileName
+                                                                            .text;
                                                                     request.files.add(http.MultipartFile(
-                                                                        'file',
+                                                                        'file_name',
                                                                         File(result.files.single.path)
                                                                             .readAsBytes()
                                                                             .asStream(),
@@ -207,25 +377,21 @@ class _UploadStudyMaterialState extends State<UploadStudyMaterial> {
                                                                             .files
                                                                             .single
                                                                             .name));
-                                                                    ProgressBar()
-                                                                        .showLoaderDialog(
-                                                                            context);
-                                                                    await request
-                                                                        .send()
-                                                                        .then(
-                                                                            (value) {
-                                                                      Navigator.of(
-                                                                              context)
-                                                                          .pop();
-                                                                      Fluttertoast.showToast(
-                                                                          msg: value.statusCode == 200
-                                                                              ? "File Uploaded"
-                                                                              : "File Upload Failed",
-                                                                          toastLength: Toast
-                                                                              .LENGTH_LONG,
-                                                                          gravity:
-                                                                              ToastGravity.CENTER);
-                                                                    });
+
+                                                                    var res =
+                                                                        await request
+                                                                            .send();
+
+                                                                    Fluttertoast.showToast(
+                                                                        msg: res.statusCode ==
+                                                                                200
+                                                                            ? "File Uploaded"
+                                                                            : "File Upload Failed",
+                                                                        toastLength:
+                                                                            Toast
+                                                                                .LENGTH_LONG,
+                                                                        gravity:
+                                                                            ToastGravity.CENTER);
                                                                   },
                                                                   child: Text(
                                                                     "Upload",
@@ -238,6 +404,7 @@ class _UploadStudyMaterialState extends State<UploadStudyMaterial> {
                                           },
                                           icon: Icon(Icons.upload_file)),
                                       onTap: () async {
+                                        print(e['id']);
                                         ProgressBar().showLoaderDialog(context);
                                         UploadStudyMaterialAPI()
                                             .getUploadedFileList(
