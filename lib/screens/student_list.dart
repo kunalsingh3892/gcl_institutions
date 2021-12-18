@@ -10,7 +10,6 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:http/http.dart' as http;
 import '../constants.dart';
 
-
 class StudentList extends StatefulWidget {
   final Object argument;
 
@@ -36,9 +35,9 @@ class _SettingsState extends State<StudentList> {
   String profile_image = '';
   List<UserDetails> _userDetails = [];
   List<UserDetails> _searchResult = [];
-  String user_id="";
-  String class_id="";
-  String board_id="";
+  String user_id = "";
+  String class_id = "";
+  String board_id = "";
   String payment = '';
   String total_test_quetion = '';
   String _mobile = "";
@@ -55,9 +54,8 @@ class _SettingsState extends State<StudentList> {
     // var temp=jsonDecode(data['batch_list'].toString());
 
     _getUser();
-
-
   }
+
   Widget _networkImage1(url) {
     return Container(
       margin: EdgeInsets.only(
@@ -73,10 +71,10 @@ class _SettingsState extends State<StudentList> {
           image: NetworkImage(profile_image),
           fit: BoxFit.cover,
         ),
-
       ),
     );
   }
+
   _getUser() async {
     Preference().getPreferences().then((prefs) {
       setState(() {
@@ -86,7 +84,7 @@ class _SettingsState extends State<StudentList> {
 
         profile_image = prefs.getString('profile_image').toString();
 
-        _chapterData= _getChapterData("");
+        _chapterData = _getChapterData("");
       });
     });
   }
@@ -96,6 +94,7 @@ class _SettingsState extends State<StudentList> {
       image: NetworkImage(url),
     );
   }
+
   List<bool> showExpand = new List();
   Future _getChapterData(String name) async {
     _searchResult.clear();
@@ -109,22 +108,20 @@ class _SettingsState extends State<StudentList> {
     var response = await http.post(
       new Uri.https(BASE_URL, API_PATH + "/institute-student-list"),
       body: {
-        "institute_id":user_id,
-        "batch_id":batch_id,
-        "payment_type":name,
-
+        "institute_id": user_id,
+        "batch_id": batch_id,
+        "payment_type": name,
       },
       headers: headers,
-
     );
     print({
-      "institute_id":user_id,
-      "batch_id":batch_id,
-      "payment_type":name,
+      "institute_id": user_id,
+      "batch_id": batch_id,
+      "payment_type": name,
     });
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
-      if(data['ErrorCode']==0) {
+      if (data['ErrorCode'] == 0) {
         var result = data['Response'];
         setState(() {
           for (Map user in result) {
@@ -190,398 +187,426 @@ class _SettingsState extends State<StudentList> {
       future: _chapterData,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          if(snapshot.data['ErrorCode']==0) {
-            return  _searchResult.length != 0 ||
-                completeController.text.isNotEmpty
-                ?Container(
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  primary: false,
-                  itemCount: _searchResult.length,
-                  itemBuilder: (context, index) {
-                    return  InkWell(
-                      onTap: (){
-                        setState(() {
-                          showExpand[index]=!showExpand[index];
-                        });
-
-                      },
-                      child: Column(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 15.0,vertical: 10),
-                              margin: EdgeInsets.symmetric(horizontal: 5.0),
-                              child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-
-                                    Expanded(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment: CrossAxisAlignment
-                                            .start,
-                                        children: <Widget>[
-
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment
-                                                .spaceBetween,
-                                            children: <Widget>[
-                                              Expanded(
-                                                child: Text(
-                                                    _searchResult[index].name,
-                                                    maxLines: 3,
-                                                    softWrap: true,
-                                                    overflow:
-                                                    TextOverflow.ellipsis,
-                                                    style: normalText5
+          if (snapshot.data['ErrorCode'] == 0) {
+            return _searchResult.length != 0 ||
+                    completeController.text.isNotEmpty
+                ? Container(
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        primary: false,
+                        itemCount: _searchResult.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
+                                showExpand[index] = !showExpand[index];
+                              });
+                            },
+                            child: Column(children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 15.0, vertical: 10),
+                                margin: EdgeInsets.symmetric(horizontal: 5.0),
+                                child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                Expanded(
+                                                  child: Text(
+                                                      _searchResult[index].name,
+                                                      maxLines: 3,
+                                                      softWrap: true,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: normalText5),
                                                 ),
-                                              ),
-
-                                              showExpand[index]?Icon(
-                                                Icons.arrow_drop_up_outlined,
-                                                color: Color(0xff017EFF),
-                                                size: 24,
-                                              ): Icon(
-                                                Icons.arrow_drop_down,
-                                                color: Color(0xff017EFF),
-                                                size: 24,
-                                              ),
-                                            ],
-                                          ),
-
-                                          Container(
-                                            child: Text(
-                                                _searchResult[index].mobile,
-                                                maxLines: 2,
-                                                softWrap: true,
-                                                overflow:
-                                                TextOverflow.ellipsis,
-                                                style: normalText7
+                                                showExpand[index]
+                                                    ? Icon(
+                                                        Icons
+                                                            .arrow_drop_up_outlined,
+                                                        color:
+                                                            Color(0xff017EFF),
+                                                        size: 24,
+                                                      )
+                                                    : Icon(
+                                                        Icons.arrow_drop_down,
+                                                        color:
+                                                            Color(0xff017EFF),
+                                                        size: 24,
+                                                      ),
+                                              ],
                                             ),
-                                          ),
-                                        ],
+                                            Container(
+                                              child: Text(
+                                                  _searchResult[index].mobile,
+                                                  maxLines: 2,
+                                                  softWrap: true,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: normalText7),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ]
+                                    ]),
                               ),
-                            ),
-
-                            showExpand[index]? Column(children: [
-                              const SizedBox(height: 5),
-                              Container(
-                                padding: EdgeInsets.only(
-                                    left: 15, right: 15, bottom: 5, top: 5),
-                                child: Row(
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.pushNamed(
-                                            context,
-                                            '/test-list',
-                                            arguments: <String, String>{
-                                              'user_id': _searchResult[index].id.toString(),
-                                              'chapter_name': "",
-                                              'type': "outside"
-                                            },
-                                          );
-                                        },
-                                        child: _buildWikiCategory(
-                                            "assets/images/performance.png",
-                                            "Tests - Self",
-                                            Color(0xff415EB6),
-                                            Color(0xffEEF7FE)),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 16.0),
-
-
-                                    Expanded(
-                                      child: InkWell(
-                                        onTap: () {
-
-                                          Navigator.pop(context);
-                                          Navigator.pushNamed(
-                                            context,
-                                            '/overall-performance',
-                                            arguments: <String, String>{
-                                              'user_id': _searchResult[index].id.toString(),
-                                            },
-                                          );
-
-
-                                        },
-                                        child: _buildWikiCategory(
-                                            "assets/images/performance.png",
-                                            "Overall Performance (Total)",
-                                            Color(0xffAC4141),
-                                            Color(0xffFEEEEE)),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              const SizedBox(height: 10.0),
-                              Container(
-                                padding: EdgeInsets.only(
-                                    left: 15, right: 15, bottom: 5, top: 5),
-                                child: Row(
-                                  children: <Widget>[
-
-
-                                    Expanded(
-                                      child: InkWell(
-                                        onTap: (){
-                                          Navigator.pushNamed(
-                                            context,
-                                            '/institute-test-list-performance',
-                                            arguments: <String, String>{
-                                              'user_id': _searchResult[index].id.toString(),
-                                              'chapter_name': "",
-                                              'type': "outside"
-                                            },
-                                          );
-                                        },
-                                        child: _buildWikiCategory(
-                                            "assets/images/performance.png",
-                                            "Tests - Institution",
-                                            Color(0xff38CD8B),
-                                            Color(0xffE9FFF5)),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 16.0),
-                                    Expanded(
-                                      child: Container(),
-                                    ),
-
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 5.0),
-                            ],):Container(),
-                            new Container(
-                                padding: EdgeInsets.only(left: 15,right: 10),
-                                child: Divider(
-                                  color: Color(0xffE8E8E8),
-                                  thickness: 1,
-                                )),
-                          ]
-                      ),
-                    );
-                  }
-
-              ),
-            ):
-            Container(
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  primary: false,
-                  itemCount: snapshot.data['Response'].length,
-                  itemBuilder: (context, index) {
-                    return  InkWell(
-                      onTap: (){
-                        setState(() {
-                          showExpand[index]=!showExpand[index];
-                        });
-
-                      },
-                      child: Column(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 15.0,vertical: 10),
-                              margin: EdgeInsets.symmetric(horizontal: 5.0),
-                              child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-
-                                    Expanded(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment: CrossAxisAlignment
-                                            .start,
-                                        children: <Widget>[
-
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment
-                                                .spaceBetween,
+                              showExpand[index]
+                                  ? Column(
+                                      children: [
+                                        const SizedBox(height: 5),
+                                        Container(
+                                          padding: EdgeInsets.only(
+                                              left: 15,
+                                              right: 15,
+                                              bottom: 5,
+                                              top: 5),
+                                          child: Row(
                                             children: <Widget>[
                                               Expanded(
-                                                child: Text(
-                                                    snapshot
-                                                        .data['Response'][index]['name'],
-                                                    maxLines: 3,
-                                                    softWrap: true,
-                                                    overflow:
-                                                    TextOverflow.ellipsis,
-                                                    style: normalText5
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    Navigator.pushNamed(
+                                                      context,
+                                                      '/test-list',
+                                                      arguments: <String,
+                                                          String>{
+                                                        'user_id':
+                                                            _searchResult[index]
+                                                                .id
+                                                                .toString(),
+                                                        'chapter_name': "",
+                                                        'type': "outside"
+                                                      },
+                                                    );
+                                                  },
+                                                  child: _buildWikiCategory(
+                                                      "assets/images/performance.png",
+                                                      "Tests - Self",
+                                                      Color(0xff415EB6),
+                                                      Color(0xffEEF7FE)),
                                                 ),
                                               ),
-
-                                              showExpand[index]?Icon(
-                                                Icons.arrow_drop_up_outlined,
-                                                color: Color(0xff017EFF),
-                                                size: 24,
-                                              ): Icon(
-                                                Icons.arrow_drop_down,
-                                                color: Color(0xff017EFF),
-                                                size: 24,
+                                              const SizedBox(width: 16.0),
+                                              Expanded(
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    Navigator.pop(context);
+                                                    Navigator.pushNamed(
+                                                      context,
+                                                      '/overall-performance',
+                                                      arguments: <String,
+                                                          String>{
+                                                        'user_id':
+                                                            _searchResult[index]
+                                                                .id
+                                                                .toString(),
+                                                      },
+                                                    );
+                                                  },
+                                                  child: _buildWikiCategory(
+                                                      "assets/images/performance.png",
+                                                      "Overall Performance (Total)",
+                                                      Color(0xffAC4141),
+                                                      Color(0xffFEEEEE)),
+                                                ),
                                               ),
                                             ],
                                           ),
-
-                                           snapshot
-                                                  .data['Response'][index]['mobile']!=null? Container(
-                                                child: Text(
-                                                    snapshot
-                                                        .data['Response'][index]['mobile'].toString(),
-                                                    maxLines: 2,
-                                                    softWrap: true,
-                                                    overflow:
-                                                    TextOverflow.ellipsis,
-                                                    style: normalText7
-                                                ),
-                                              ):Container(
-                                                child: Text(
-                                                   "",
-                                                    maxLines: 2,
-                                                    softWrap: true,
-                                                    overflow:
-                                                    TextOverflow.ellipsis,
-                                                    style: normalText7
+                                        ),
+                                        const SizedBox(height: 10.0),
+                                        Container(
+                                          padding: EdgeInsets.only(
+                                              left: 15,
+                                              right: 15,
+                                              bottom: 5,
+                                              top: 5),
+                                          child: Row(
+                                            children: <Widget>[
+                                              Expanded(
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    Navigator.pushNamed(
+                                                      context,
+                                                      '/institute-test-list-performance',
+                                                      arguments: <String,
+                                                          String>{
+                                                        'user_id':
+                                                            _searchResult[index]
+                                                                .id
+                                                                .toString(),
+                                                        'chapter_name': "",
+                                                        'type': "outside"
+                                                      },
+                                                    );
+                                                  },
+                                                  child: _buildWikiCategory(
+                                                      "assets/images/performance.png",
+                                                      "Tests - Institution",
+                                                      Color(0xff38CD8B),
+                                                      Color(0xffE9FFF5)),
                                                 ),
                                               ),
-                                        ],
-                                      ),
-                                    ),
-                                  ]
-                              ),
-                            ),
-
-                            showExpand[index]? Column(children: [
-                              const SizedBox(height: 5),
+                                              const SizedBox(width: 16.0),
+                                              Expanded(
+                                                child: Container(),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 5.0),
+                                      ],
+                                    )
+                                  : Container(),
+                              new Container(
+                                  padding: EdgeInsets.only(left: 15, right: 10),
+                                  child: Divider(
+                                    color: Color(0xffE8E8E8),
+                                    thickness: 1,
+                                  )),
+                            ]),
+                          );
+                        }),
+                  )
+                : Container(
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        primary: false,
+                        itemCount: snapshot.data['Response'].length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
+                                showExpand[index] = !showExpand[index];
+                              });
+                            },
+                            child: Column(children: <Widget>[
                               Container(
-                                padding: EdgeInsets.only(
-                                    left: 15, right: 15, bottom: 5, top: 5),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 15.0, vertical: 10),
+                                margin: EdgeInsets.symmetric(horizontal: 5.0),
                                 child: Row(
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.pushNamed(
-                                            context,
-                                            '/test-list',
-                                            arguments: <String, String>{
-                                              'user_id': snapshot.data['Response'][index]['id'].toString(),
-                                              'chapter_name': "",
-                                              'type': ""
-                                            },
-                                          );
-                                        },
-                                        child: _buildWikiCategory(
-                                            "assets/images/student_test.png",
-                                            "Test - Self",
-                                            Color(0xff415EB6),
-                                            Color(0xffEEF7FE)),
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                Expanded(
+                                                  child: Text(
+                                                      snapshot.data['Response']
+                                                          [index]['name'],
+                                                      maxLines: 3,
+                                                      softWrap: true,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: normalText5),
+                                                ),
+                                                showExpand[index]
+                                                    ? Icon(
+                                                        Icons
+                                                            .arrow_drop_up_outlined,
+                                                        color:
+                                                            Color(0xff017EFF),
+                                                        size: 24,
+                                                      )
+                                                    : Icon(
+                                                        Icons.arrow_drop_down,
+                                                        color:
+                                                            Color(0xff017EFF),
+                                                        size: 24,
+                                                      ),
+                                              ],
+                                            ),
+                                            snapshot.data['Response'][index]
+                                                        ['mobile'] !=
+                                                    null
+                                                ? Container(
+                                                    child: Text(
+                                                        snapshot
+                                                            .data['Response']
+                                                                [index]
+                                                                ['mobile']
+                                                            .toString(),
+                                                        maxLines: 2,
+                                                        softWrap: true,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: normalText7),
+                                                  )
+                                                : Container(
+                                                    child: Text("",
+                                                        maxLines: 2,
+                                                        softWrap: true,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: normalText7),
+                                                  ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(width: 16.0),
-
-                                    Expanded(
-                                      child: InkWell(
-                                        onTap: () {
-
-                                          Navigator.pop(context);
-                                          Navigator.pushNamed(
-                                            context,
-                                            '/overall-performance',
-                                            arguments: <String, String>{
-                                              'user_id': snapshot.data['Response'][index]['id'].toString(),
-                                            },
-                                          );
-
-                                        },
-                                        child: _buildWikiCategory(
-                                            "assets/images/performance.png",
-                                            "Overall Performance (Total)",
-                                            Color(0xffAC4141),
-                                            Color(0xffFEEEEE)),
-                                      ),
-                                    ),
-
-                                  ],
-                                ),
+                                    ]),
                               ),
-                              const SizedBox(height: 10.0),
-                              Container(
-                                padding: EdgeInsets.only(
-                                    left: 15, right: 15, bottom: 5, top: 5),
-                                child: Row(
-                                  children: <Widget>[
-
-
-                                    Expanded(
-                                      child: InkWell(
-                                        onTap: (){
-                                          Navigator.pushNamed(
-                                            context,
-                                            '/institute-test-list-performance',
-                                            arguments: <String, String>{
-                                              'user_id': snapshot.data['Response'][index]['id'].toString(),
-                                              'chapter_name': "",
-                                              'type': "institute"
-                                            },
-                                          );
-                                        },
-                                        child: _buildWikiCategory(
-                                            "assets/images/student_test.png",
-                                            "Test - Institution",
-                                            Color(0xff38CD8B),
-                                            Color(0xffE9FFF5)),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 16.0),
-                                    Expanded(
-                                      child: InkWell(
-                                        onTap: (){
-                                          Navigator.pushNamed(
-                                            context,
-                                            '/student-summary',
-                                            arguments: <String, String>{
-                                              'student_id': snapshot.data['Response'][index]['id'].toString(),
-                                              'batch_id':batch_id
-                                            },
-                                          );
-                                        },
-                                        child: _buildWikiCategory(
-                                            "assets/images/stu_summary.png",
-                                            "Summary",
-                                            Color(0xffFFB110),
-                                            Color(0xffFFFBEC)),
-                                      ),
-                                    ),
-
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 10.0),
-                              Container(
-                                padding: EdgeInsets.only(
-                                    left: 15, right: 15, bottom: 5, top: 5),
-                                child: Row(
-                                  children: <Widget>[
-
-
-                                    Expanded(
-                                      child: InkWell(
-                                        onTap: (){
-                                         /* Navigator.pushNamed(
+                              showExpand[index]
+                                  ? Column(
+                                      children: [
+                                        const SizedBox(height: 5),
+                                        Container(
+                                          padding: EdgeInsets.only(
+                                              left: 15,
+                                              right: 15,
+                                              bottom: 5,
+                                              top: 5),
+                                          child: Row(
+                                            children: <Widget>[
+                                              Expanded(
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    Navigator.pushNamed(
+                                                      context,
+                                                      '/test-list',
+                                                      arguments: <String,
+                                                          String>{
+                                                        'user_id': snapshot
+                                                            .data['Response']
+                                                                [index]['id']
+                                                            .toString(),
+                                                        'chapter_name': "",
+                                                        'type': ""
+                                                      },
+                                                    );
+                                                  },
+                                                  child: _buildWikiCategory(
+                                                      "assets/images/student_test.png",
+                                                      "Test - Self",
+                                                      Color(0xff415EB6),
+                                                      Color(0xffEEF7FE)),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 16.0),
+                                              Expanded(
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    Navigator.pop(context);
+                                                    Navigator.pushNamed(
+                                                      context,
+                                                      '/overall-performance',
+                                                      arguments: <String,
+                                                          String>{
+                                                        'user_id': snapshot
+                                                            .data['Response']
+                                                                [index]['id']
+                                                            .toString(),
+                                                      },
+                                                    );
+                                                  },
+                                                  child: _buildWikiCategory(
+                                                      "assets/images/performance.png",
+                                                      "Overall Performance (Total)",
+                                                      Color(0xffAC4141),
+                                                      Color(0xffFEEEEE)),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10.0),
+                                        Container(
+                                          padding: EdgeInsets.only(
+                                              left: 15,
+                                              right: 15,
+                                              bottom: 5,
+                                              top: 5),
+                                          child: Row(
+                                            children: <Widget>[
+                                              Expanded(
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    Navigator.pushNamed(
+                                                      context,
+                                                      '/institute-test-list-performance',
+                                                      arguments: <String,
+                                                          String>{
+                                                        'user_id': snapshot
+                                                            .data['Response']
+                                                                [index]['id']
+                                                            .toString(),
+                                                        'chapter_name': "",
+                                                        'type': "institute"
+                                                      },
+                                                    );
+                                                  },
+                                                  child: _buildWikiCategory(
+                                                      "assets/images/student_test.png",
+                                                      "Test - Institution",
+                                                      Color(0xff38CD8B),
+                                                      Color(0xffE9FFF5)),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 16.0),
+                                              Expanded(
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    Navigator.pushNamed(
+                                                      context,
+                                                      '/student-summary',
+                                                      arguments: <String,
+                                                          String>{
+                                                        'student_id': snapshot
+                                                            .data['Response']
+                                                                [index]['id']
+                                                            .toString(),
+                                                        'batch_id': batch_id
+                                                      },
+                                                    );
+                                                  },
+                                                  child: _buildWikiCategory(
+                                                      "assets/images/stu_summary.png",
+                                                      "Summary",
+                                                      Color(0xffFFB110),
+                                                      Color(0xffFFFBEC)),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10.0),
+                                        Container(
+                                          padding: EdgeInsets.only(
+                                              left: 15,
+                                              right: 15,
+                                              bottom: 5,
+                                              top: 5),
+                                          child: Row(
+                                            children: <Widget>[
+                                              Expanded(
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    /* Navigator.pushNamed(
                                             context,
                                             '/institute-test-list-performance',
                                             arguments: <String, String>{
@@ -590,61 +615,62 @@ class _SettingsState extends State<StudentList> {
                                               'type': "institute"
                                             },
                                           );*/
-                                          _moveBatchDialog(snapshot.data['Response'][index]['id'].toString(),batch_id);
-                                        },
-                                        child: _buildWikiCategory(
-                                            "assets/images/student_test.png",
-                                            "Move - Batch",
-                                            Color(0xff34DEDE),
-                                            Color(0xffF0FFFF)
+                                                    _moveBatchDialog(
+                                                        snapshot
+                                                            .data['Response']
+                                                                [index]['id']
+                                                            .toString(),
+                                                        batch_id);
+                                                  },
+                                                  child: _buildWikiCategory(
+                                                      "assets/images/student_test.png",
+                                                      "Move - Batch",
+                                                      Color(0xff34DEDE),
+                                                      Color(0xffF0FFFF)),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 16.0),
+                                              Container(
+                                                width: 174.0,
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 16.0),
-                                   Container(
-                                     width: 174.0,
-                                   ),
-
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 5.0),
-                            ],):Container(),
-                            new Container(
-                                padding: EdgeInsets.only(left: 15,right: 10),
-                                child: Divider(
-                                  color: Color(0xffE8E8E8),
-                                  thickness: 1,
-                                )),
-                          ]
-                      ),
-                    );
-                  }
-
-              ),
-            );
-          }
-          else{
+                                        const SizedBox(height: 5.0),
+                                      ],
+                                    )
+                                  : Container(),
+                              new Container(
+                                  padding: EdgeInsets.only(left: 15, right: 10),
+                                  child: Divider(
+                                    color: Color(0xffE8E8E8),
+                                    thickness: 1,
+                                  )),
+                            ]),
+                          );
+                        }),
+                  );
+          } else {
             return _emptyOrders();
           }
-
-        }  else {
+        } else {
           return Center(
               child: Align(
-                alignment: Alignment.center,
-                child: Container(
-                  child: SpinKitFadingCube(
-                    itemBuilder: (_, int index) {
-                      return DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: index.isEven ? Color(0xff017EFF) :Color(0xffFFC700),
-                        ),
-                      );
-                    },
-                    size: 30.0,
-                  ),
-                ),
-              ));
+            alignment: Alignment.center,
+            child: Container(
+              child: SpinKitFadingCube(
+                itemBuilder: (_, int index) {
+                  return DecoratedBox(
+                    decoration: BoxDecoration(
+                      color:
+                          index.isEven ? Color(0xff017EFF) : Color(0xffFFC700),
+                    ),
+                  );
+                },
+                size: 30.0,
+              ),
+            ),
+          ));
         }
       },
     );
@@ -654,13 +680,12 @@ class _SettingsState extends State<StudentList> {
     return Center(
       child: Container(
           child: Text(
-            'NO RECORDS FOUND!',
-            style: TextStyle(fontSize: 20, letterSpacing: 1, color: Color(0xff2E2A4A)),
-          )),
+        'NO RECORDS FOUND!',
+        style:
+            TextStyle(fontSize: 20, letterSpacing: 1, color: Color(0xff2E2A4A)),
+      )),
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -677,11 +702,10 @@ class _SettingsState extends State<StudentList> {
                 width: 10.0,
                 color: Color(0xff2E2A4A),
               ),
-              onPressed: (){
+              onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
-
           ]),
           centerTitle: true,
           title: Container(
@@ -708,7 +732,7 @@ class _SettingsState extends State<StudentList> {
           ),
           backgroundColor: Colors.transparent,
         ),
-        body:ModalProgressHUD(
+        body: ModalProgressHUD(
           inAsyncCall: isLoading,
           child: Container(
               decoration: BoxDecoration(
@@ -740,7 +764,6 @@ class _SettingsState extends State<StudentList> {
                           isExpanded: true,
                           value: _dropdownValue,
                           isDense: true,
-
                           icon: Padding(
                             padding: const EdgeInsets.only(left: 0),
                             child: Icon(
@@ -753,18 +776,14 @@ class _SettingsState extends State<StudentList> {
                               _dropdownValue = newValue;
                               if (_dropdownValue == "Paid") {
                                 name = "1";
-                                _chapterData= _getChapterData(name);
-
-                              }
-                              else if(_dropdownValue == "Select Student Type"){
-
-                                name="";
-                                _chapterData= _getChapterData(name);
-                              }
-
-                              else {
+                                _chapterData = _getChapterData(name);
+                              } else if (_dropdownValue ==
+                                  "Select Student Type") {
+                                name = "";
+                                _chapterData = _getChapterData(name);
+                              } else {
                                 name = "0";
-                                _chapterData= _getChapterData(name);
+                                _chapterData = _getChapterData(name);
                               }
 
                               print(_dropdownValue);
@@ -775,26 +794,23 @@ class _SettingsState extends State<StudentList> {
                             'Select Student Type',
                             'Paid',
                             'UnPaid'
-                          ].map<DropdownMenuItem<String>>(
-                                  (String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: new Text(value,
-                                      style: new TextStyle(
-                                        color: Colors.black87,
-                                      )),
-                                );
-                              }).toList(),
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: new Text(value,
+                                  style: new TextStyle(
+                                    color: Colors.black87,
+                                  )),
+                            );
+                          }).toList(),
                         ),
                       ),
                     ),
-
                     SizedBox(
                       height: 10.0,
                     ),
                     Container(
                       padding: EdgeInsets.only(left: 15, right: 15),
-
                       child: Row(children: <Widget>[
                         Expanded(
                           child: Container(
@@ -808,7 +824,7 @@ class _SettingsState extends State<StudentList> {
                                   fillColor: Color(0xfff9f9fb),
                                   filled: true,
                                   contentPadding:
-                                  EdgeInsets.fromLTRB(10, 30, 30, 0),
+                                      EdgeInsets.fromLTRB(10, 30, 30, 0),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(15.0),
                                     borderSide: BorderSide(
@@ -875,38 +891,31 @@ class _SettingsState extends State<StudentList> {
                       ),*/
                       ]),
                     ),
-
-
                     SizedBox(
                       height: 10.0,
                     ),
-                    Expanded(child:
-                    Container(
-                      padding: EdgeInsets.only(bottom: 5),
-                      child: chapterList(deviceSize),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.only(bottom: 5),
+                        child: chapterList(deviceSize),
+                      ),
                     ),
-
-                    ),
-
                     SizedBox(
                       height: 10.0,
                     ),
                   ],
                 ),
               )),
-        )
-    );
+        ));
   }
 
-
-
-  _moveBatchDialog(id,batch_id) async {
+  _moveBatchDialog(id, batch_id) async {
     // final editController = TextEditingController();
     var alert = new AlertDialog(
       contentPadding: const EdgeInsets.all(16.0),
-      title: Text ("Move Batch"),
+      title: Text("Move Batch"),
       content: StatefulBuilder(
-        builder: ( BuildContext context, StateSetter setState) {
+        builder: (BuildContext context, StateSetter setState) {
           return new Row(
             children: <Widget>[
               new Expanded(
@@ -915,7 +924,6 @@ class _SettingsState extends State<StudentList> {
                     isExpanded: true,
                     value: _dropdownValueBatch,
                     isDense: true,
-
                     icon: Padding(
                       padding: const EdgeInsets.only(left: 0),
                       child: Icon(
@@ -925,34 +933,25 @@ class _SettingsState extends State<StudentList> {
                     ),
                     onChanged: (String newValue) {
                       _dropdownValueBatch = newValue;
-                      setState(() {
-                      }
-                      );
+                      setState(() {});
                     },
-                    items: <String>[
-                      'Select Batch',
-                      'gaurav',
-                      'batch 1'
-                    ].map<DropdownMenuItem<String>>(
-                            (String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: new Text(value,
-                                style: new TextStyle(
-                                  color: Colors.black87,
-                                )),
-                          );
-                        }).toList(),
+                    items: <String>['gaurav', 'batch 1']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: new Text(value,
+                            style: new TextStyle(
+                              color: Colors.black87,
+                            )),
+                      );
+                    }).toList(),
                   ),
                 ),
               )
             ],
           );
-        } ,
-
+        },
       ),
-
-
       actions: <Widget>[
         new FlatButton(
             child: const Text('CANCEL'),
@@ -962,8 +961,7 @@ class _SettingsState extends State<StudentList> {
         new FlatButton(
             child: const Text('CONFIRM'),
             onPressed: () {
-              _moveBatch(id,batch_id);
-
+              _moveBatch(id, batch_id);
             })
       ],
     );
@@ -975,11 +973,11 @@ class _SettingsState extends State<StudentList> {
     );
   }
 
-  Future _moveBatch(student_id,batch_id) async {
+  Future _moveBatch(student_id, batch_id) async {
     print(jsonEncode({
-      "institute_id":user_id,
-      "batch_id":batch_id.toString(),
-      "student_id":student_id.toString()
+      "institute_id": user_id,
+      "batch_id": batch_id.toString(),
+      "student_id": student_id.toString()
     }));
     Map<String, String> headers = {
       // 'Content-Type': 'application/json',
@@ -989,12 +987,11 @@ class _SettingsState extends State<StudentList> {
     var response = await http.post(
       new Uri.https(BASE_URL, API_PATH + "/batch-move-student"),
       body: {
-        "institute_id":user_id,
-        "batch_id":batch_id.toString(),
-        "student_id":student_id.toString()
+        "institute_id": user_id,
+        "batch_id": batch_id.toString(),
+        "student_id": student_id.toString()
       },
       headers: headers,
-
     );
 
     if (response.statusCode == 200) {
@@ -1017,16 +1014,13 @@ class _SettingsState extends State<StudentList> {
 
     _userDetails.forEach((userDetail) {
       if (userDetail.name
-          .toString()
-          .toLowerCase()
-          .contains(text.toLowerCase())||
+              .toString()
+              .toLowerCase()
+              .contains(text.toLowerCase()) ||
           userDetail.mobile
               .toString()
               .toLowerCase()
-              .contains(text.toLowerCase())
-
-      )
-        _searchResult.add(userDetail);
+              .contains(text.toLowerCase())) _searchResult.add(userDetail);
     });
     print(_searchResult);
 
@@ -1035,15 +1029,13 @@ class _SettingsState extends State<StudentList> {
 }
 
 class UserDetails {
-  final String id,
-      name,
-      mobile;
+  final String id, name, mobile;
 
-  UserDetails(
-      {this.id,
-        this.name,
-        this.mobile,
-      });
+  UserDetails({
+    this.id,
+    this.name,
+    this.mobile,
+  });
 
   factory UserDetails.fromJson(Map<String, dynamic> json) {
     return new UserDetails(

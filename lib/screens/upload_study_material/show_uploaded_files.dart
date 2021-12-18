@@ -8,6 +8,7 @@ import 'package:grewal/components/progress_bar.dart';
 import 'package:grewal/screens/login_with_logo.dart';
 import 'package:grewal/screens/notification/notification_api.dart';
 import 'package:grewal/screens/upload_study_material/upload_study_material_api.dart';
+import 'package:grewal/screens/upload_study_material/view_file.dart';
 import 'package:grewal/services/shared_preferences.dart';
 import 'package:group_radio_button/group_radio_button.dart';
 
@@ -39,6 +40,31 @@ class _ShowUploadedFilesState extends State<ShowUploadedFiles> {
   String _verticalGroupValue = "Batch";
 
   List<String> _status = ["Batch", "Institute"];
+  List data = [];
+  List dataCopy = [];
+  bool isSearching = false;
+  void seraching(String search) {
+    List dummyListData = [];
+    print(search);
+    if (search.isNotEmpty) {
+      dataCopy.forEach((item) {
+        item.forEach((key, value) {
+          if (value.toString().toUpperCase().contains(search.toUpperCase())) {
+            dummyListData.add(item);
+          }
+        });
+      });
+      setState(() {
+        data.clear();
+        data.addAll(dummyListData);
+      });
+    } else {
+      setState(() {
+        data.clear();
+        data.addAll(dataCopy);
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -52,6 +78,10 @@ class _ShowUploadedFilesState extends State<ShowUploadedFiles> {
           batchList = value;
         });
       }
+    });
+    setState(() {
+      data.addAll(widget.filesList);
+      dataCopy.addAll(widget.filesList);
     });
   }
 
@@ -79,15 +109,81 @@ class _ShowUploadedFilesState extends State<ShowUploadedFiles> {
             ),
           ]),
         ),
+        actions: [
+          isSearching
+              ? IconButton(
+                  onPressed: () {
+                    setState(() {
+                      isSearching = !isSearching;
+                      data.clear();
+                      data.addAll(dataCopy);
+                    });
+                  },
+                  icon: Icon(Icons.clear),
+                  color: Colors.black,
+                )
+              : IconButton(
+                  onPressed: () {
+                    setState(() {
+                      isSearching = !isSearching;
+                    });
+                  },
+                  icon: Icon(Icons.search),
+                  color: Colors.black,
+                )
+        ],
         centerTitle: true,
         title: Container(
-          child: Column(
-            children: [
-              Text("Folder : " + widget.folderName.toString(),
-                  style: normalText6),
-              Text("Tap to assign", style: normalText3),
-            ],
-          ),
+          child: isSearching
+              ? TextFormField(
+                  autofocus: true,
+                  onChanged: (val) {
+                    seraching(val.toString());
+                  },
+                  keyboardType: TextInputType.text,
+                  cursorColor: Color(0xff000000),
+                  textCapitalization: TextCapitalization.sentences,
+                  decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: EdgeInsets.fromLTRB(10, 30, 30, 0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(
+                          color: Color(0xfff9f9fb),
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(
+                          color: Color(0xfff9f9fb),
+                        ),
+                      ),
+                      disabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(
+                          color: Color(0xfff9f9fb),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(
+                          color: Color(0xfff9f9fb),
+                        ),
+                      ),
+                      counterText: "",
+                      hintText: 'Search',
+                      hintStyle:
+                          TextStyle(color: Color(0xffBBBFC3), fontSize: 16),
+                      fillColor: Color(0xfff9f9fb),
+                      filled: true))
+              : Column(
+                  children: [
+                    Text("Folder : " + widget.folderName.toString(),
+                        style: normalText6),
+                    Text("Tap to assign / No : " + dataCopy.length.toString(),
+                        style: normalText3),
+                  ],
+                ),
         ),
         flexibleSpace: Container(
           height: 100,
@@ -102,7 +198,7 @@ class _ShowUploadedFilesState extends State<ShowUploadedFiles> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: ListView(
-            children: widget.filesList
+            children: data
                 .map((e) => Card(
                       elevation: 8,
                       child: ListTile(
@@ -139,14 +235,14 @@ class _ShowUploadedFilesState extends State<ShowUploadedFiles> {
                                                 Navigator.of(context).pop();
                                                 value
                                                     ? Fluttertoast.showToast(
-                                                        msg: "Folder Assigned",
+                                                        msg: "File Assigned",
                                                         toastLength:
                                                             Toast.LENGTH_LONG,
                                                         gravity:
                                                             ToastGravity.CENTER)
                                                     : Fluttertoast.showToast(
                                                         msg:
-                                                            "Folder Assign Failed",
+                                                            "File Assign Failed",
                                                         toastLength:
                                                             Toast.LENGTH_LONG,
                                                         gravity: ToastGravity
@@ -165,11 +261,12 @@ class _ShowUploadedFilesState extends State<ShowUploadedFiles> {
                                           StateSetter setState) {
                                         return Container(
                                           height: 200,
+                                          width: 300,
                                           child: Form(
                                             key: formKey,
                                             child: Padding(
                                               padding:
-                                                  const EdgeInsets.all(10.0),
+                                                  const EdgeInsets.all(8.0),
                                               child: Column(
                                                 children: [
                                                   RadioGroup<String>.builder(
@@ -243,8 +340,23 @@ class _ShowUploadedFilesState extends State<ShowUploadedFiles> {
                                     ),
                                   ));
                         },
+                        trailing: IconButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ViewPdfFile(
+                                          url: e['fullFilePath'].toString(),
+                                          file_name:
+                                              e['name'].toString().isEmpty
+                                                  ? "Unnamed File"
+                                                  : e['name'].toString())));
+                            },
+                            icon: Icon(Icons.remove_red_eye)),
                         title: Text(
-                          e['file_name'].toString(),
+                          e['name'].toString().isEmpty
+                              ? "Unnamed File"
+                              : e['name'].toString(),
                           style: normalText5,
                         ),
                       ),
