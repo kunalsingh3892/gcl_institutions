@@ -1549,7 +1549,21 @@ class _ChangePageState extends State<HomePage> {
                           ),
                         ),
                         const SizedBox(width: 16.0),
-                        Expanded(child: SizedBox())
+                        Expanded(
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/upload-offline-test-paper',
+                              );
+                            },
+                            child: _buildWikiCategory(
+                                "assets/images/add_question.png",
+                                "Upload Offline\Test",
+                                Color(0xff38CD8B),
+                                Color(0xffE9FFF5)),
+                          ),
+                        ),
                       ],
                     ),
                   ),

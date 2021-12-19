@@ -102,4 +102,36 @@ class UploadStudyMaterialAPI {
     }
     return false;
   }
+
+  Future<List> getOfflineFileList(user_id) async {
+    Map<String, String> headers = {
+      // 'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      // "authorization": basicAuth
+    };
+    var response = await http.post(
+      new Uri.https(BASE_URL, API_PATH + "/offline-test-paper-list"),
+      body: {"institute_id": user_id},
+      headers: headers,
+    );
+
+    if (jsonDecode(response.body)['ErrorCode'] == 0) {
+      return jsonDecode(response.body)['Response'];
+    }
+    return [];
+  }
+
+  Future<bool> uploadOfflineFile(institute_id, file, fileName) async {
+    var uri = Uri.https(BASE_URL, API_PATH + "/offline-test-paper");
+    var request = http.MultipartRequest('POST', uri);
+    request.fields["institute_id"] = institute_id.toString();
+    request.files.add(http.MultipartFile(
+        'file_name', file.readAsBytes().asStream(), file.lengthSync(),
+        filename: fileName));
+    var res = await request.send();
+    if (res.statusCode == 200) {
+      return true;
+    }
+    return false;
+  }
 }

@@ -44,6 +44,7 @@ import 'package:grewal/screens/test_list.dart';
 import 'package:grewal/screens/ticket_details.dart';
 import 'package:grewal/screens/ticket_list.dart';
 import 'package:grewal/screens/update_profile.dart';
+import 'package:grewal/screens/upload_study_material/upload_offline_test_paper.dart';
 import 'package:grewal/screens/upload_study_material/upload_study_material.dart';
 import 'package:grewal/screens/videos_screen/answer_key.dart';
 import 'package:grewal/screens/videos_screen/create_test.dart';
@@ -613,6 +614,14 @@ class _MyAppState extends State<MyApp> {
               settings: settings,
             );
             break;
+          case '/upload-offline-test-paper':
+            return PageTransition(
+              child: UploadOfflineTestPaper(),
+              type: PageTransitionType.leftToRight,
+              settings: settings,
+            );
+            break;
+
           default:
             return null;
         }
