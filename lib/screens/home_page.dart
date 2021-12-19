@@ -1515,10 +1515,10 @@ class _ChangePageState extends State<HomePage> {
                               );
                             },
                             child: _buildWikiCategory(
-                                "assets/images/add_question.png",
+                                "assets/images/notification.png",
                                 "Notification",
-                                Color(0xff65c6d5),
-                                Color(0xffb0e2e9)),
+                                Color(0xff567DF4),
+                                Color(0xffEEF7FE)),
                           ),
                         ),
                       ],
@@ -1544,8 +1544,8 @@ class _ChangePageState extends State<HomePage> {
                             child: _buildWikiCategory(
                                 "assets/images/add_question.png",
                                 "Upload Study\nMaterial",
-                                Color(0xff38CD8B),
-                                Color(0xffE9FFF5)),
+                                Color(0xffFFB110),
+                                Color(0xffFFFBEC)),
                           ),
                         ),
                         const SizedBox(width: 16.0),
@@ -1560,8 +1560,8 @@ class _ChangePageState extends State<HomePage> {
                             child: _buildWikiCategory(
                                 "assets/images/add_question.png",
                                 "Upload Offline\Test",
-                                Color(0xff38CD8B),
-                                Color(0xffE9FFF5)),
+                                Color(0xffF45656),
+                                Color(0xffFEEEEE)),
                           ),
                         ),
                       ],

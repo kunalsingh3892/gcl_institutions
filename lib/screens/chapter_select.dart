@@ -55,7 +55,7 @@ class _ChangePageState extends State<ChapterListScreen> {
   var _type = "";
   var _type3 = "";
   String selectedRegion6;
-
+  String testType = "O";
   String selectedRegion;
   String selectedRegion3 = "";
   String catData5 = "";
@@ -634,6 +634,56 @@ class _ChangePageState extends State<ChapterListScreen> {
                         child: Padding(
                           padding: EdgeInsets.only(right: 0, left: 3),
                           child: new DropdownButton<String>(
+                              isExpanded: true,
+                              hint: new Text(
+                                "Test Type",
+                                style: TextStyle(color: Color(0xffBBBFC3)),
+                              ),
+                              icon: Padding(
+                                padding: const EdgeInsets.only(left: 0),
+                                child: Icon(
+                                  Icons.arrow_drop_down,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              value: testType,
+                              isDense: true,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  testType = newValue;
+                                });
+                              },
+                              items: [
+                                {"title": "Objective", "value": "O"},
+                                {"title": "Subjective", "value": "S"}
+                              ]
+                                  .map((e) => DropdownMenuItem(
+                                        child: Text(e['title'].toString()),
+                                        value: e['value'].toString(),
+                                      ))
+                                  .toList()),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 15.0),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      margin: const EdgeInsets.only(right: 8.0, left: 8),
+                      padding: EdgeInsets.all(10),
+                      decoration: ShapeDecoration(
+                        color: Color(0xfff9f9fb),
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                            width: 0.0,
+                            color: Color(0xfff9f9fb),
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                        ),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: Padding(
+                          padding: EdgeInsets.only(right: 0, left: 3),
+                          child: new DropdownButton<String>(
                             isExpanded: true,
                             hint: new Text(
                               "Select Batch",
@@ -1073,6 +1123,7 @@ class _ChangePageState extends State<ChapterListScreen> {
                                           'board_id': _type,
                                           'class_id': _type3,
                                           'content_type': type,
+                                          'test_type': testType
                                         },
                                       );
                                     } else {
