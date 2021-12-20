@@ -1,11 +1,13 @@
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grewal/components/color_constants.dart';
 import 'package:grewal/services/shared_preferences.dart';
+import 'package:intl/intl.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:http/http.dart' as http;
 import '../constants.dart';
@@ -127,16 +129,16 @@ class _SettingsState extends State<BatchList> {
       decoration: BoxDecoration(
         color: circle_color,
         borderRadius: BorderRadius.circular(10.0),
-          border: Border.all(
-            color: color,
-            width: 0.5,
-          ),
+        border: Border.all(
+          color: color,
+          width: 0.5,
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-         /* CircleAvatar(
+          /* CircleAvatar(
             backgroundColor: color,
             radius: 20,
             child: Image(
@@ -145,26 +147,31 @@ class _SettingsState extends State<BatchList> {
               width: 18.0,
             ),
           ),*/
-         // const SizedBox(width: 10.0),
+          // const SizedBox(width: 10.0),
           Expanded(
-            child: Center(
-              child: Text(
-                batchName,
-                maxLines: 3,
-                softWrap: true,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: color,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
+            child: ListTile(
+               contentPadding: EdgeInsets.only(right: 20,left: 5),
+              title: Padding(
+                padding: const EdgeInsets.only(bottom: 17),
+                child: Text(
+                  batchName,
+                  textAlign: TextAlign.start,
+                  maxLines: 3,
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ),
           ),
 
-           IconButton(onPressed: (){
-             _showRenameDialog(batchId);
-           }, icon: Icon ( Icons.edit , size: 20,), )
+          IconButton(onPressed: (){
+            _showRenameDialog(batchId);
+          }, icon: Icon ( Icons.edit , size: 20,), )
         ],
       ),
     );
@@ -172,53 +179,53 @@ class _SettingsState extends State<BatchList> {
 
   _showRenameDialog(String batchId) async {
     final editController = TextEditingController();
-     var alert = new AlertDialog(
-        contentPadding: const EdgeInsets.all(16.0),
-        title: Text ("Rename"),
-        content: new Row(
-          children: <Widget>[
-            new Expanded(
-              child: new TextField(
-                controller: editController,
-                autofocus: true,
-                decoration: new InputDecoration(
-                    labelText: 'Enter New Batch Name', hintText: 'eg. Batch 1'),
-              ),
-            )
-          ],
-        ),
+    var alert = new AlertDialog(
+      contentPadding: const EdgeInsets.all(16.0),
+      title: Text ("Rename"),
+      content: new Row(
+        children: <Widget>[
+          new Expanded(
+            child: new TextField(
+              controller: editController,
+              autofocus: true,
+              decoration: new InputDecoration(
+                  labelText: 'Enter New Batch Name', hintText: 'eg. Batch 1'),
+            ),
+          )
+        ],
+      ),
 
 
-        actions: <Widget>[
-          new FlatButton(
-              child: const Text('CANCEL'),
-              onPressed: () {
-                Navigator.pop(context);
-              }),
-          new FlatButton(
-              child: const Text('SAVE'),
-              onPressed: () {
-                _renameBatch(editController.text, batchId).then((value) => {
-                  setState(() {
-                    _chapterData= _getChapterData();
-                  }
-                  ),
+      actions: <Widget>[
+        new FlatButton(
+            child: const Text('CANCEL'),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
+        new FlatButton(
+            child: const Text('SAVE'),
+            onPressed: () {
+              _renameBatch(editController.text, batchId).then((value) => {
+                setState(() {
+                  _chapterData= _getChapterData();
+                }
+                ),
                 Navigator.pop(context)
 
               }
-                );
-                //Navigator.pop(context);
+              );
+              //Navigator.pop(context);
 
-              })
-        ],
-      );
-     showDialog(
-       context: context,
-       builder: (BuildContext context) {
-         return alert;
-       },
-     );
-}
+            })
+      ],
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 
   Future _renameBatch(String newName, String batchId) async {
     Map<String, String> headers = {
@@ -256,44 +263,44 @@ class _SettingsState extends State<BatchList> {
         if (snapshot.hasData) {
           if(snapshot.data['Response'].length!=0) {
             return
-            Container(
-              child: GridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: 2,
-                  childAspectRatio: (2 / 1),
-                  padding: const EdgeInsets.only(
-                      left: 10, right: 10),
-                  crossAxisSpacing: 5,
-                  mainAxisSpacing: 5,
-                  children:
-                  List.generate(snapshot.data['Response'].length, (index) {
-                    return InkWell(
-                      onTap: (){
-                        Navigator.pushNamed(
-                          context,
-                          '/student-list',
-                          arguments: <String, String>{
-                            'batch_id': snapshot.data['Response']
-                            [index]['id'].toString(),
+              Container(
+                  child: GridView.count(
+                      shrinkWrap: true,
+                      crossAxisCount: 1,
+                      childAspectRatio: (5 / 1),
+                      padding: const EdgeInsets.only(
+                          left: 10, right: 10),
+                      crossAxisSpacing: 5,
+                      mainAxisSpacing: 5,
+                      children:
+                      List.generate(snapshot.data['Response'].length, (index) {
+                        return InkWell(
+                          onTap: (){
+                            Navigator.pushNamed(
+                              context,
+                              '/student-list',
+                              arguments: <String, String>{
+                                'batch_id': snapshot.data['Response']
+                                [index]['id'].toString(),
+                              },
+                            );
                           },
+                          child: Container(
+                            //  height: 50,
+                            padding: EdgeInsets.only(
+                                bottom: 10, top: 10,left: 10,right: 10),
+                            child: _buildWikiCategory(
+                                "assets/images/ordered_list.png",
+                                snapshot.data['Response'][index]['batch_name'],
+                                index%2==0?Color(0xff415EB6): Color(0xffF45656),
+                                index%2==0? Color(0xffEEF7FE):Color(0xffFEEEEE),
+                                snapshot.data['Response'][index]['id'].toString()
+                            ),
+                          ),
                         );
-                      },
-                      child: Container(
-                      //  height: 50,
-                        padding: EdgeInsets.only(
-                            bottom: 10, top: 10,left: 10,right: 10),
-                        child: _buildWikiCategory(
-                                    "assets/images/ordered_list.png",
-                                    snapshot.data['Response'][index]['batch_name'],
-                                    index%2==0?Color(0xff415EB6): Color(0xffF45656),
-                                    index%2==0? Color(0xffEEF7FE):Color(0xffFEEEEE),
-                                    snapshot.data['Response'][index]['id'].toString()
-                        ),
-                      ),
-                    );
-                  }))
+                      }))
 
-              /*  ListView.builder(
+                /*  ListView.builder(
                   shrinkWrap: true,
                   primary: false,
                   itemCount: snapshot.data['Response'].length,
@@ -336,7 +343,7 @@ class _SettingsState extends State<BatchList> {
                   }
 
               ),*/
-            );
+              );
           }
           else{
             return _emptyOrders();
