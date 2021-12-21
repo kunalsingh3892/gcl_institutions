@@ -223,10 +223,13 @@ class _ChangePageState extends State<CreateQuestionNew> {
                         mcq_total = 0;
                         detail_total = 0;
                         for (int i = 0; i < topicData.length; i++) {
-                          mcq_total =
-                              mcq_total + int.parse(topicData[i].mcqattempt);
-                          detail_total = detail_total +
-                              int.parse(topicData[i].detailsattempt);
+                          if (test_type == "O") {
+                            mcq_total =
+                                mcq_total + int.parse(topicData[i].mcqattempt);
+                          } else {
+                            detail_total = detail_total +
+                                int.parse(topicData[i].detailsattempt);
+                          }
                         }
                       });
                       print(jsonEncode(topicData));
@@ -1053,13 +1056,13 @@ class _ChangePageState extends State<CreateQuestionNew> {
                                 'Accept': 'application/json',
                                 'Content-Type': 'application/json',
                               };
+                              print(msg);
                               var response = await http.post(
                                 new Uri.https(BASE_URL,
                                     API_PATH + "/institute-test-createnew"),
                                 body: msg,
                                 headers: headers,
                               );
-                              print(msg);
 
                               if (response.statusCode == 200) {
                                 setState(() {

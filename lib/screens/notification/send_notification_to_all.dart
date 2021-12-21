@@ -36,6 +36,7 @@ class _SendNotificationsToAllTypesState
     {'item': 'Whole Batch', 'value': 'B'},
     {'item': 'All in Institute', 'value': 'A'}
   ];
+  int defaultValueIndex = 0;
 
   List studentList = [];
   List batchList = [];
@@ -242,7 +243,8 @@ class _SendNotificationsToAllTypesState
                   _selectedStudent.text = "";
                   _selectedBatch.text = "";
                   _message.text = "";
-
+                  _subject.text = "";
+                  defaultValueIndex = 0;
                   selected = null;
                   fileSelected = false;
                   selectedFileName = "No file selected";
@@ -454,15 +456,12 @@ class _SendNotificationsToAllTypesState
                         SizedBox(
                           height: 10,
                         ),
-                        Card(
-                          elevation: 10,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: fileSelected
-                                ? Image.file(File(_image.path))
-                                : Image.asset("assets/images/noImage.png"),
-                          ),
-                        )
+                        if (fileSelected)
+                          Card(
+                              elevation: 10,
+                              child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Image.file(File(_image.path))))
                       ],
                     ),
                   ),

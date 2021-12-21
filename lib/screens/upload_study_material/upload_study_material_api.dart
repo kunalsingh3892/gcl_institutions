@@ -18,7 +18,6 @@ class UploadStudyMaterialAPI {
       body: {"institute_id": user_id},
       headers: headers,
     );
-    print(response.body);
     if (jsonDecode(response.body)['ErrorCode'] == 0) {
       return jsonDecode(response.body)['Response']['folderList'];
     }
@@ -121,17 +120,41 @@ class UploadStudyMaterialAPI {
     return [];
   }
 
-  Future<bool> uploadOfflineFile(institute_id, file, fileName) async {
+  Future<bool> uploadOfflineFile(
+      institute_id, file, fileName, selectedBatch, userFileName) async {
     var uri = Uri.https(BASE_URL, API_PATH + "/offline-test-paper");
     var request = http.MultipartRequest('POST', uri);
     request.fields["institute_id"] = institute_id.toString();
+    request.fields["batch_id"] = selectedBatch.toString();
+    request.fields["name"] = userFileName.toString().isEmpty
+        ? "Unnamed File"
+        : userFileName.toString();
     request.files.add(http.MultipartFile(
         'file_name', file.readAsBytes().asStream(), file.lengthSync(),
         filename: fileName));
     var res = await request.send();
+    print(request.fields);
     if (res.statusCode == 200) {
       return true;
     }
     return false;
+  }
+
+  Future<List> getAssignedBatchListOfSelectedFile(user_id, file_id) async {
+    Map<String, String> headers = {
+      // 'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      // "authorization": basicAuth
+    };
+    var response = await http.post(
+      new Uri.https(BASE_URL, API_PATH + "/assign-batch-list"),
+      body: {"institute_id": user_id.toString(), "file_id": file_id.toString()},
+      headers: headers,
+    );
+    print(response.body);
+    if (jsonDecode(response.body)['ErrorCode'] == 0) {
+      return jsonDecode(response.body)['Response'];
+    }
+    return [];
   }
 }

@@ -3,7 +3,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:flutter/cupertino.dart';
+import 'package:collection/collection.dart';
 import 'package:grewal/screens/upload_study_material/show_uploaded_files.dart';
 import 'package:grewal/screens/upload_study_material/view_file.dart';
 import 'package:http/http.dart' as http;
@@ -22,9 +22,7 @@ import 'package:grewal/services/shared_preferences.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
-import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
-import 'package:multi_select_flutter/util/multi_select_item.dart';
 
 class UploadOfflineTestPaper extends StatefulWidget {
   @override
@@ -50,6 +48,7 @@ class _UploadOfflineTestPaperState extends State<UploadOfflineTestPaper> {
   List data = [];
   List dataCopy = [];
   List batchList = [];
+
   bool isSearching = false;
   bool uploadFile = false;
   _getUser() async {
@@ -60,10 +59,23 @@ class _UploadOfflineTestPaperState extends State<UploadOfflineTestPaper> {
       await UploadStudyMaterialAPI()
           .getOfflineFileList(institute_id)
           .then((value) {
-        setState(() {
-          data.addAll(value);
-          dataCopy.addAll(value);
-        });
+        if (value.length > 0) {
+          List fileNameList = [];
+          value.forEach((element) {
+            if (!fileNameList.contains(element['file_name'])) {
+              fileNameList.add(element['file_name'].toString());
+            }
+          });
+          Map newMap = groupBy(value, (obj) => obj['file_name']);
+
+          fileNameList.forEach((element) {
+            setState(() {
+              data.add(newMap[element]);
+              dataCopy.add(newMap[element]);
+            });
+          });
+          print(data[4]);
+        }
       });
       await SendNotificationAPI().getAllBatchList(institute_id).then((value) {
         setState(() {
@@ -150,6 +162,46 @@ class _UploadOfflineTestPaperState extends State<UploadOfflineTestPaper> {
         SizedBox(
           height: 15,
         ),
+        TextFormField(
+            controller: _fileName,
+            keyboardType: TextInputType.text,
+            cursorColor: Color(0xff000000),
+            textCapitalization: TextCapitalization.sentences,
+            decoration: InputDecoration(
+                isDense: true,
+                contentPadding: EdgeInsets.fromLTRB(10, 30, 30, 0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(
+                    color: Color(0xfff9f9fb),
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(
+                    color: Color(0xfff9f9fb),
+                  ),
+                ),
+                disabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(
+                    color: Color(0xfff9f9fb),
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(
+                    color: Color(0xfff9f9fb),
+                  ),
+                ),
+                counterText: "",
+                hintText: 'File Name',
+                hintStyle: TextStyle(color: Color(0xffBBBFC3), fontSize: 16),
+                fillColor: Color(0xfff9f9fb),
+                filled: true)),
+        SizedBox(
+          height: 15,
+        ),
         MultiSelectDialogField(
           height: MediaQuery.of(context).size.height / 3,
           searchable: true,
@@ -195,9 +247,11 @@ class _UploadOfflineTestPaperState extends State<UploadOfflineTestPaper> {
                           TextButton(
                               onPressed: () async {
                                 Navigator.of(context).pop();
+                                String batches = selectedBatch.join(",");
+
                                 UploadStudyMaterialAPI()
-                                    .uploadOfflineFile(
-                                        institute_id, file, fileName)
+                                    .uploadOfflineFile(institute_id, file,
+                                        fileName, batches, _fileName.text)
                                     .then((value) {
                                   Fluttertoast.showToast(
                                       msg: value
@@ -363,36 +417,92 @@ class _UploadOfflineTestPaperState extends State<UploadOfflineTestPaper> {
                                 style: normalText5,
                               ),
                             )
-                          : ListView(
-                              children: data
-                                  .map((e) => Card(
-                                        elevation: 8,
-                                        child: ListTile(
-                                          title:
-                                              Text(e['file_name'].toString()),
-                                          subtitle: Text(e['created_at']
-                                              .toString()
-                                              .split(" ")[0]),
-                                          trailing: IconButton(
-                                              onPressed: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) => ViewPdfFile(
-                                                            url:
-                                                                e['fullFilePath']
-                                                                    .toString(),
-                                                            file_name: e['name']
-                                                                    .toString()
-                                                                    .isEmpty
-                                                                ? "Unnamed File"
-                                                                : e['name']
-                                                                    .toString())));
-                                              },
-                                              icon: Icon(Icons.remove_red_eye)),
-                                        ),
-                                      ))
-                                  .toList(),
+                          : Container(
+                              height: MediaQuery.of(context).size.height / 1.3,
+                              child: ListView(
+                                children: data
+                                    .map((e) => Card(
+                                          elevation: 8,
+                                          child: ListTile(
+                                            title: e[0]['name'] == "null" ||
+                                                    e[0]['name'] == null
+                                                ? Text("Unnamed File")
+                                                : Text(e[0]['name'].toString()),
+                                            // subtitle: Text(e[0]['created_at']
+                                            //     .toString()
+                                            //     .split(" ")[0]),
+                                            minLeadingWidth: 2,
+                                            leading: InkWell(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) => ViewPdfFile(
+                                                              url: e[0][
+                                                                      'fileName']
+                                                                  .toString(),
+                                                              fileName: e[0][
+                                                                          'name'] ==
+                                                                      null
+                                                                  ? "Unnamed File"
+                                                                  : e[0]['name']
+                                                                      .toString())));
+                                                },
+                                                child: Icon(
+                                                  Icons.remove_red_eye,
+                                                  color: Colors.blue,
+                                                )),
+                                            trailing: IconButton(
+                                                onPressed: () async {
+                                                  List list = e;
+                                                  showDialog(
+                                                      context: context,
+                                                      builder:
+                                                          (context) =>
+                                                              AlertDialog(
+                                                                title: Text(
+                                                                  "Assigned Batch/s",
+                                                                  style:
+                                                                      normalText5,
+                                                                ),
+                                                                content:
+                                                                    Container(
+                                                                  height: MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .height /
+                                                                      2,
+                                                                  child: ListView(
+                                                                      children: list
+                                                                          .map((e) => ListTile(
+                                                                                title: Text(e['batch_name'].toString()),
+                                                                              ))
+                                                                          .toList()),
+                                                                ),
+                                                                actions: [
+                                                                  TextButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                      },
+                                                                      child:
+                                                                          Text(
+                                                                        "Cancel",
+                                                                        style:
+                                                                            normalText5,
+                                                                      ))
+                                                                ],
+                                                              ));
+                                                },
+                                                icon: Icon(
+                                                  Icons.list,
+                                                  color: Colors.green,
+                                                )),
+                                          ),
+                                        ))
+                                    .toList(),
+                              ),
                             )
                   // expansionCallback: (int index, bool isExpanded) {},
                   ),

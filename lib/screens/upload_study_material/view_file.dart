@@ -4,13 +4,20 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class ViewPdfFile extends StatefulWidget {
   String url;
-  String file_name;
-  ViewPdfFile({this.url, this.file_name});
+  String fileName;
+  ViewPdfFile({this.url, this.fileName});
   @override
   _ViewPdfFileState createState() => _ViewPdfFileState();
 }
 
 class _ViewPdfFileState extends State<ViewPdfFile> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print(widget.url);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +41,7 @@ class _ViewPdfFileState extends State<ViewPdfFile> {
         ),
         centerTitle: true,
         title: Container(
-          child: Text(widget.file_name.toString(), style: normalText5),
+          child: Text(widget.fileName.toString(), style: normalText5),
         ),
         flexibleSpace: Container(
           height: 100,
@@ -47,8 +54,9 @@ class _ViewPdfFileState extends State<ViewPdfFile> {
       ),
       body: Container(
         child: SfPdfViewer.network(
-          widget.file_name,
-        ),
+            // Uri.parse(widget.file_name).toString(),
+            // onDocumentLoadFailed: (val) => Text("Document loading failed"),
+            widget.url),
       ),
     );
   }

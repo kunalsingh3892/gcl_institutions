@@ -71,7 +71,7 @@ class _ShowUploadedFilesState extends State<ShowUploadedFiles> {
     // TODO: implement initState
     super.initState();
     SendNotificationAPI()
-        .getAllBatchList (widget.user_id.toString())
+        .getAllBatchList(widget.user_id.toString())
         .then((value) {
       if (value.length > 0) {
         setState(() {
@@ -202,163 +202,247 @@ class _ShowUploadedFilesState extends State<ShowUploadedFiles> {
                 .map((e) => Card(
                       elevation: 8,
                       child: ListTile(
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Text(
-                                            "Cancel",
-                                            style: normalText5,
-                                          )),
-                                      TextButton(
-                                          onPressed: () async {
-                                            if (formKey.currentState
-                                                .validate()) {
-                                              ProgressBar()
-                                                  .showLoaderDialog(context);
-                                              await UploadStudyMaterialAPI()
-                                                  .assignFileToBatch(
-                                                      _verticalGroupValue ==
-                                                              "Batch"
-                                                          ? true
-                                                          : false,
-                                                      widget.user_id,
-                                                      e['institute_folder_id'],
-                                                      _selectedBatch.text,
-                                                      e['id'])
-                                                  .then((value) {
-                                                Navigator.of(context).pop();
-                                                value
-                                                    ? Fluttertoast.showToast(
-                                                        msg: "File Assigned",
-                                                        toastLength:
-                                                            Toast.LENGTH_LONG,
-                                                        gravity:
-                                                            ToastGravity.CENTER)
-                                                    : Fluttertoast.showToast(
-                                                        msg:
-                                                            "File Assign Failed",
-                                                        toastLength:
-                                                            Toast.LENGTH_LONG,
-                                                        gravity: ToastGravity
-                                                            .CENTER);
-                                                Navigator.of(context).pop();
-                                              });
-                                            }
-                                          },
-                                          child: Text(
-                                            "Assign",
-                                            style: normalText5,
-                                          )),
-                                    ],
-                                    content: StatefulBuilder(
-                                      builder: (BuildContext context,
-                                          StateSetter setState) {
-                                        return Container(
-                                          height: 200,
-                                          width: 300,
-                                          child: Form(
-                                            key: formKey,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Column(
-                                                children: [
-                                                  RadioGroup<String>.builder(
-                                                    horizontalAlignment:
-                                                        MainAxisAlignment.start,
-                                                    direction: Axis.horizontal,
-                                                    groupValue:
-                                                        _verticalGroupValue,
-                                                    onChanged: (value) =>
-                                                        setState(() {
-                                                      _verticalGroupValue =
-                                                          value;
-                                                    }),
-                                                    items: _status,
-                                                    itemBuilder: (item) =>
-                                                        RadioButtonBuilder(
-                                                      item,
+                        minLeadingWidth: 2,
+                        leading: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ViewPdfFile(
+                                        url: e['fullFilePath'].toString(),
+                                        fileName: e['name'].toString().isEmpty
+                                            ? "Unnamed File"
+                                            : e['name'].toString())));
+                          },
+                          child: Icon(
+                            Icons.remove_red_eye,
+                            color: Colors.blue,
+                          ),
+                        ),
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              e['created_at'].toString().split(" ")[0],
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 16),
+                            ),
+                            Text(
+                              e['name'].toString().isEmpty ||
+                                      e['name'].toString() == "null"
+                                  ? "Unnamed File"
+                                  : e['name'].toString(),
+                              style: normalText5,
+                            ),
+                          ],
+                        ),
+                        contentPadding: EdgeInsets.all(8),
+                        subtitle: InkWell(
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text(
+                                              "Cancel",
+                                              style: normalText5,
+                                            )),
+                                        TextButton(
+                                            onPressed: () async {
+                                              if (formKey.currentState
+                                                  .validate()) {
+                                                ProgressBar()
+                                                    .showLoaderDialog(context);
+                                                await UploadStudyMaterialAPI()
+                                                    .assignFileToBatch(
+                                                        _verticalGroupValue ==
+                                                                "Batch"
+                                                            ? true
+                                                            : false,
+                                                        widget.user_id,
+                                                        e['institute_folder_id'],
+                                                        _selectedBatch.text,
+                                                        e['id'])
+                                                    .then((value) {
+                                                  Navigator.of(context).pop();
+                                                  value
+                                                      ? Fluttertoast.showToast(
+                                                          msg: "File Assigned",
+                                                          toastLength:
+                                                              Toast.LENGTH_LONG,
+                                                          gravity: ToastGravity
+                                                              .CENTER)
+                                                      : Fluttertoast.showToast(
+                                                          msg:
+                                                              "File Assign Failed",
+                                                          toastLength:
+                                                              Toast.LENGTH_LONG,
+                                                          gravity: ToastGravity
+                                                              .CENTER);
+                                                  Navigator.of(context).pop();
+                                                });
+                                              }
+                                            },
+                                            child: Text(
+                                              "Assign",
+                                              style: normalText5,
+                                            )),
+                                      ],
+                                      content: StatefulBuilder(
+                                        builder: (BuildContext context,
+                                            StateSetter setState) {
+                                          return Container(
+                                            height: 200,
+                                            width: 300,
+                                            child: Form(
+                                              key: formKey,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Column(
+                                                  children: [
+                                                    RadioGroup<String>.builder(
+                                                      horizontalAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      direction:
+                                                          Axis.horizontal,
+                                                      groupValue:
+                                                          _verticalGroupValue,
+                                                      onChanged: (value) =>
+                                                          setState(() {
+                                                        _verticalGroupValue =
+                                                            value;
+                                                      }),
+                                                      items: _status,
+                                                      itemBuilder: (item) =>
+                                                          RadioButtonBuilder(
+                                                        item,
+                                                      ),
                                                     ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 15,
-                                                  ),
-                                                  _verticalGroupValue == "Batch"
-                                                      ? DropdownButtonFormField(
-                                                          autofocus: true,
-                                                          validator: (value) =>
-                                                              value == null
-                                                                  ? "Required"
-                                                                  : null,
-                                                          decoration:
-                                                              InputDecoration(
-                                                            contentPadding:
-                                                                EdgeInsets.all(
-                                                                    14),
-                                                            border:
-                                                                OutlineInputBorder(),
-                                                            labelText:
-                                                                'Select Batch',
-                                                            isDense: true,
+                                                    SizedBox(
+                                                      height: 15,
+                                                    ),
+                                                    _verticalGroupValue ==
+                                                            "Batch"
+                                                        ? DropdownButtonFormField(
+                                                            autofocus: true,
+                                                            validator: (value) =>
+                                                                value == null
+                                                                    ? "Required"
+                                                                    : null,
+                                                            decoration:
+                                                                InputDecoration(
+                                                              contentPadding:
+                                                                  EdgeInsets
+                                                                      .all(14),
+                                                              border:
+                                                                  OutlineInputBorder(),
+                                                              labelText:
+                                                                  'Select Batch',
+                                                              isDense: true,
+                                                            ),
+                                                            items: batchList
+                                                                .map((e) =>
+                                                                    DropdownMenuItem(
+                                                                      child: Text(
+                                                                          e['batch_name']
+                                                                              .toString()),
+                                                                      value: e[
+                                                                          'id'],
+                                                                    ))
+                                                                .toList(),
+                                                            onChanged: (val) {
+                                                              print(val);
+                                                              setState(() {
+                                                                _selectedBatch
+                                                                    .text = "";
+                                                                _selectedBatch
+                                                                        .text =
+                                                                    val.toString();
+                                                              });
+                                                            })
+                                                        : Text(
+                                                            "Send to Institute",
+                                                            style: normalText5,
                                                           ),
-                                                          items: batchList
-                                                              .map((e) =>
-                                                                  DropdownMenuItem(
-                                                                    child: Text(
-                                                                        e['batch_name']
-                                                                            .toString()),
-                                                                    value:
-                                                                        e['id'],
-                                                                  ))
-                                                              .toList(),
-                                                          onChanged: (val) {
-                                                            print(val);
-                                                            setState(() {
-                                                              _selectedBatch
-                                                                  .text = "";
-                                                              _selectedBatch
-                                                                      .text =
-                                                                  val.toString();
-                                                            });
-                                                          })
-                                                      : Text(
-                                                          "Send to Institute",
-                                                          style: normalText5,
-                                                        ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ));
-                        },
-                        trailing: IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ViewPdfFile(
-                                          url: e['fullFilePath'].toString(),
-                                          file_name:
-                                              e['name'].toString().isEmpty
-                                                  ? "Unnamed File"
-                                                  : e['name'].toString())));
-                            },
-                            icon: Icon(Icons.remove_red_eye)),
-                        title: Text(
-                          e['name'].toString().isEmpty
-                              ? "Unnamed File"
-                              : e['name'].toString(),
-                          style: normalText5,
+                                          );
+                                        },
+                                      ),
+                                    ));
+                          },
+                          child: Text(
+                            "\nAssig Batch",
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
+                        trailing: IconButton(
+                            onPressed: () async {
+                              ProgressBar().showLoaderDialog(context);
+                              UploadStudyMaterialAPI()
+                                  .getAssignedBatchListOfSelectedFile(
+                                      widget.user_id.toString(), e['id'])
+                                  .then((value) {
+                                Navigator.of(context).pop();
+                                value.length > 0
+                                    ? showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                              title: Text(
+                                                "Assigned Batch",
+                                                style: normalText5,
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: Text(
+                                                      "Cancel",
+                                                      style: normalText5,
+                                                    ))
+                                              ],
+                                              content: Container(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height /
+                                                    3,
+                                                child: ListView(
+                                                  children: value
+                                                      .map((e) => ListTile(
+                                                          title: e['batch_name'] !=
+                                                                  "null"
+                                                              ? Text(
+                                                                  e['batch_name']
+                                                                      .toString())
+                                                              : Text(
+                                                                  "Assigned to all batch institute")))
+                                                      .toList(),
+                                                ),
+                                              ),
+                                            ))
+                                    : Fluttertoast.showToast(
+                                        msg: "No batch assigned",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.BOTTOM);
+                              });
+                            },
+                            icon: Icon(
+                              Icons.list,
+                              color: Colors.green,
+                            )),
                       ),
                     ))
                 .toList(),

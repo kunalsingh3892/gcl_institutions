@@ -220,191 +220,209 @@ class _UploadStudyMaterialState extends State<UploadStudyMaterial> {
                               .map((e) => Card(
                                     elevation: 8,
                                     child: ListTile(
+                                      leading: Icon(Icons.folder,
+                                          color: Colors.yellow[800]),
                                       title: Text(e['institute_folder_name']
                                           .toString()),
-                                      trailing: IconButton(
-                                          onPressed: () async {
-                                            FilePickerResult result =
-                                                await FilePicker.platform
-                                                    .pickFiles(
-                                              type: FileType.custom,
-                                              allowedExtensions: [
-                                                'pdf',
-                                              ],
-                                            );
+                                      trailing: TextButton(
+                                        child: Text(
+                                          "Upload",
+                                          style: TextStyle(color: Colors.blue),
+                                        ),
+                                        onPressed: () async {
+                                          Fluttertoast.showToast(
+                                              msg: "Select PDF File",
+                                              toastLength: Toast.LENGTH_LONG,
+                                              gravity: ToastGravity.BOTTOM);
+                                          FilePickerResult result =
+                                              await FilePicker.platform
+                                                  .pickFiles(
+                                            type: FileType.custom,
+                                            allowedExtensions: [
+                                              'pdf',
+                                            ],
+                                          );
 
-                                            if (result != null) {
-                                              _fileName.text = "";
-                                              showDialog(
-                                                  context: _scaffoldKey
-                                                      .currentContext,
-                                                  builder:
-                                                      (context) => AlertDialog(
-                                                            title: Text(
-                                                                "Confirmation"),
-                                                            content: Container(
-                                                              height: MediaQuery.of(
+                                          if (result != null) {
+                                            _fileName.text = "";
+                                            showDialog(
+                                                context:
+                                                    _scaffoldKey.currentContext,
+                                                builder:
+                                                    (context) => AlertDialog(
+                                                          title: Text(
+                                                              "Confirmation"),
+                                                          content: Container(
+                                                            height: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .height /
+                                                                2.5,
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text("Selected File : \n" +
+                                                                    result
+                                                                        .files
+                                                                        .single
+                                                                        .name
+                                                                        .toString()),
+                                                                SizedBox(
+                                                                  height: 15,
+                                                                ),
+                                                                TextFormField(
+                                                                    maxLines: 2,
+                                                                    controller:
+                                                                        _fileName,
+                                                                    keyboardType:
+                                                                        TextInputType
+                                                                            .text,
+                                                                    cursorColor:
+                                                                        Color(
+                                                                            0xff000000),
+                                                                    textCapitalization:
+                                                                        TextCapitalization
+                                                                            .sentences,
+                                                                    validator:
+                                                                        (value) {
+                                                                      if (value
+                                                                          .isEmpty) {
+                                                                        return 'Required';
+                                                                      }
+                                                                      return null;
+                                                                    },
+                                                                    decoration: InputDecoration(
+                                                                        isDense: true,
+                                                                        contentPadding: EdgeInsets.fromLTRB(10, 30, 30, 0),
+                                                                        border: OutlineInputBorder(
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(5.0),
+                                                                          borderSide:
+                                                                              BorderSide(
+                                                                            color:
+                                                                                Color(0xfff9f9fb),
+                                                                          ),
+                                                                        ),
+                                                                        enabledBorder: OutlineInputBorder(
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(5.0),
+                                                                          borderSide:
+                                                                              BorderSide(
+                                                                            color:
+                                                                                Color(0xfff9f9fb),
+                                                                          ),
+                                                                        ),
+                                                                        disabledBorder: OutlineInputBorder(
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(5.0),
+                                                                          borderSide:
+                                                                              BorderSide(
+                                                                            color:
+                                                                                Color(0xfff9f9fb),
+                                                                          ),
+                                                                        ),
+                                                                        focusedBorder: OutlineInputBorder(
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(5.0),
+                                                                          borderSide:
+                                                                              BorderSide(
+                                                                            color:
+                                                                                Color(0xfff9f9fb),
+                                                                          ),
+                                                                        ),
+                                                                        counterText: "",
+                                                                        hintText: 'File Name',
+                                                                        hintStyle: TextStyle(color: Color(0xffBBBFC3), fontSize: 16),
+                                                                        fillColor: Color(0xfff9f9fb),
+                                                                        filled: true)),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          actions: [
+                                                            TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.of(
                                                                           context)
-                                                                      .size
-                                                                      .height /
-                                                                  2.5,
-                                                              child: Column(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Text("Selected File : \n" +
-                                                                      result
+                                                                      .pop();
+                                                                },
+                                                                child: Text(
+                                                                  "Cancel",
+                                                                  style:
+                                                                      normalText5,
+                                                                )),
+                                                            TextButton(
+                                                                onPressed:
+                                                                    () async {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                  var uri = Uri.https(
+                                                                      BASE_URL,
+                                                                      API_PATH +
+                                                                          "/upload-file-to-folder");
+                                                                  var request =
+                                                                      http.MultipartRequest(
+                                                                          'POST',
+                                                                          uri);
+                                                                  request.fields[
+                                                                          "institute_id"] =
+                                                                      institute_id
+                                                                          .toString();
+                                                                  request.fields[
+                                                                      "folder_id"] = e[
+                                                                          "id"]
+                                                                      .toString();
+                                                                  request.fields[
+                                                                          "name"] =
+                                                                      _fileName
+                                                                          .text;
+                                                                  request.files.add(http.MultipartFile(
+                                                                      'file_name',
+                                                                      File(result
+                                                                              .files
+                                                                              .single
+                                                                              .path)
+                                                                          .readAsBytes()
+                                                                          .asStream(),
+                                                                      File(result
+                                                                              .files
+                                                                              .single
+                                                                              .path)
+                                                                          .lengthSync(),
+                                                                      filename: result
                                                                           .files
                                                                           .single
-                                                                          .name
-                                                                          .toString()),
-                                                                  SizedBox(
-                                                                    height: 15,
-                                                                  ),
-                                                                  TextFormField(
-                                                                      maxLines:
-                                                                          2,
-                                                                      controller:
-                                                                          _fileName,
-                                                                      keyboardType:
-                                                                          TextInputType
-                                                                              .text,
-                                                                      cursorColor:
-                                                                          Color(
-                                                                              0xff000000),
-                                                                      textCapitalization:
-                                                                          TextCapitalization
-                                                                              .sentences,
-                                                                      validator:
-                                                                          (value) {
-                                                                        if (value
-                                                                            .isEmpty) {
-                                                                          return 'Required';
-                                                                        }
-                                                                        return null;
-                                                                      },
-                                                                      decoration: InputDecoration(
-                                                                          isDense: true,
-                                                                          contentPadding: EdgeInsets.fromLTRB(10, 30, 30, 0),
-                                                                          border: OutlineInputBorder(
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(5.0),
-                                                                            borderSide:
-                                                                                BorderSide(
-                                                                              color: Color(0xfff9f9fb),
-                                                                            ),
-                                                                          ),
-                                                                          enabledBorder: OutlineInputBorder(
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(5.0),
-                                                                            borderSide:
-                                                                                BorderSide(
-                                                                              color: Color(0xfff9f9fb),
-                                                                            ),
-                                                                          ),
-                                                                          disabledBorder: OutlineInputBorder(
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(5.0),
-                                                                            borderSide:
-                                                                                BorderSide(
-                                                                              color: Color(0xfff9f9fb),
-                                                                            ),
-                                                                          ),
-                                                                          focusedBorder: OutlineInputBorder(
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(5.0),
-                                                                            borderSide:
-                                                                                BorderSide(
-                                                                              color: Color(0xfff9f9fb),
-                                                                            ),
-                                                                          ),
-                                                                          counterText: "",
-                                                                          hintText: 'File Name',
-                                                                          hintStyle: TextStyle(color: Color(0xffBBBFC3), fontSize: 16),
-                                                                          fillColor: Color(0xfff9f9fb),
-                                                                          filled: true)),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            actions: [
-                                                              TextButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.of(
-                                                                            context)
-                                                                        .pop();
-                                                                  },
-                                                                  child: Text(
-                                                                    "Cancel",
-                                                                    style:
-                                                                        normalText5,
-                                                                  )),
-                                                              TextButton(
-                                                                  onPressed:
-                                                                      () async {
-                                                                    Navigator.of(
-                                                                            context)
-                                                                        .pop();
-                                                                    var uri = Uri.https(
-                                                                        BASE_URL,
-                                                                        API_PATH +
-                                                                            "/upload-file-to-folder");
-                                                                    var request =
-                                                                        http.MultipartRequest(
-                                                                            'POST',
-                                                                            uri);
-                                                                    request.fields[
-                                                                            "institute_id"] =
-                                                                        institute_id
-                                                                            .toString();
-                                                                    request.fields[
-                                                                        "folder_id"] = e[
-                                                                            "id"]
-                                                                        .toString();
-                                                                    request.fields[
-                                                                            "name"] =
-                                                                        _fileName
-                                                                            .text;
-                                                                    request.files.add(http.MultipartFile(
-                                                                        'file_name',
-                                                                        File(result.files.single.path)
-                                                                            .readAsBytes()
-                                                                            .asStream(),
-                                                                        File(result.files.single.path)
-                                                                            .lengthSync(),
-                                                                        filename: result
-                                                                            .files
-                                                                            .single
-                                                                            .name));
+                                                                          .name));
 
-                                                                    var res =
-                                                                        await request
-                                                                            .send();
+                                                                  var res =
+                                                                      await request
+                                                                          .send();
 
-                                                                    Fluttertoast.showToast(
-                                                                        msg: res.statusCode ==
-                                                                                200
-                                                                            ? "File Uploaded"
-                                                                            : "File Upload Failed",
-                                                                        toastLength:
-                                                                            Toast
-                                                                                .LENGTH_LONG,
-                                                                        gravity:
-                                                                            ToastGravity.CENTER);
-                                                                  },
-                                                                  child: Text(
-                                                                    "Upload",
-                                                                    style:
-                                                                        normalText5,
-                                                                  )),
-                                                            ],
-                                                          ));
-                                            }
-                                          },
-                                          icon: Icon(Icons.upload_file)),
+                                                                  Fluttertoast.showToast(
+                                                                      msg: res.statusCode ==
+                                                                              200
+                                                                          ? "File Uploaded"
+                                                                          : "File Upload Failed",
+                                                                      toastLength:
+                                                                          Toast
+                                                                              .LENGTH_LONG,
+                                                                      gravity:
+                                                                          ToastGravity
+                                                                              .CENTER);
+                                                                },
+                                                                child: Text(
+                                                                  "Upload",
+                                                                  style:
+                                                                      normalText5,
+                                                                )),
+                                                          ],
+                                                        ));
+                                          }
+                                        },
+                                      ),
                                       onTap: () async {
-                                        print(e['id']);
                                         ProgressBar().showLoaderDialog(context);
                                         UploadStudyMaterialAPI()
                                             .getUploadedFileList(
@@ -441,6 +459,7 @@ class _UploadStudyMaterialState extends State<UploadStudyMaterial> {
                   ),
             ),
       floatingActionButton: FloatingActionButton.extended(
+        icon: Icon(Icons.add),
         onPressed: () {
           setState(() {
             _folder_name.text = "";
