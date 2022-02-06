@@ -631,10 +631,10 @@ class _ChangePageState extends State<HomePage> {
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         color: Color(0xffffffff),
-                                        image: DecorationImage(
-                                          image: NetworkImage(profile_image),
-                                          fit: BoxFit.cover,
-                                        ),
+                                        // image: DecorationImage(
+                                        //   image: NetworkImage(profile_image),
+                                        //   fit: BoxFit.cover,
+                                        // ),
                                       ),
                                     ),
                                   ),
@@ -1515,7 +1515,7 @@ class _ChangePageState extends State<HomePage> {
                               );
                             },
                             child: _buildWikiCategory(
-                                "assets/images/notification.png",
+                                "assets/images/dash_3.png",
                                 "Notification",
                                 Color(0xff567DF4),
                                 Color(0xffEEF7FE)),
@@ -1542,7 +1542,7 @@ class _ChangePageState extends State<HomePage> {
                               );
                             },
                             child: _buildWikiCategory(
-                                "assets/images/add_question.png",
+                                "assets/images/ordered_list.png",
                                 "Upload Study\nMaterial",
                                 Color(0xffFFB110),
                                 Color(0xffFFFBEC)),
@@ -1558,7 +1558,7 @@ class _ChangePageState extends State<HomePage> {
                               );
                             },
                             child: _buildWikiCategory(
-                                "assets/images/add_question.png",
+                                "assets/images/ordered_list.png",
                                 "Upload Offline\Test",
                                 Color(0xffF45656),
                                 Color(0xffFEEEEE)),

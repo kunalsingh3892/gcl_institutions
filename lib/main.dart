@@ -12,6 +12,7 @@ import 'package:grewal/screens/batch_list.dart';
 import 'package:grewal/screens/change_password.dart';
 import 'package:grewal/screens/chapter_overview.dart';
 import 'package:grewal/screens/chapter_select.dart';
+import 'package:grewal/screens/chapter_select_new.dart';
 
 import 'package:grewal/screens/chapters_list.dart';
 import 'package:grewal/screens/create_batch.dart';
@@ -621,7 +622,14 @@ class _MyAppState extends State<MyApp> {
               settings: settings,
             );
             break;
-
+          case '/chapter-select-2':
+            // var obj = settings.arguments;
+            return PageTransition(
+              child: ChapterSelect2(),
+              type: PageTransitionType.leftToRight,
+              settings: settings,
+            );
+            break;
           default:
             return null;
         }

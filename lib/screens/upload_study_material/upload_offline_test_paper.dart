@@ -507,15 +507,35 @@ class _UploadOfflineTestPaperState extends State<UploadOfflineTestPaper> {
                   // expansionCallback: (int index, bool isExpanded) {},
                   ),
             ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          setState(() {
-            uploadFile = !uploadFile;
-          });
-        },
-        label: uploadFile ? Text("Back") : Text("Upload File"),
-        backgroundColor: Color(0xff017EFF),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.blue,
+        child: TextButton(
+            onPressed: () {
+              setState(() {
+                uploadFile = !uploadFile;
+              });
+            },
+            child: uploadFile
+                ? Text(
+                    "Back",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.white),
+                  )
+                : Text(
+                    "Upload File",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.white),
+                  )),
       ),
+      // floatingActionButton: FloatingActionButton.extended(
+      //   onPressed: () {
+      //     setState(() {
+      //       uploadFile = !uploadFile;
+      //     });
+      //   },
+      //   label: uploadFile ? Text("Back") : Text("Upload File"),
+      //   backgroundColor: Color(0xff017EFF),
+      // ),
     );
   }
 }

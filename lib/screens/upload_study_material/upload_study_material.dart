@@ -1,26 +1,17 @@
 // ignore_for_file: deprecated_member_use, invalid_use_of_visible_for_testing_member
 
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:grewal/screens/upload_study_material/show_uploaded_files.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grewal/components/progress_bar.dart';
 import 'package:grewal/constants.dart';
-import 'package:grewal/screens/login_with_logo.dart';
-import 'package:grewal/screens/notification/notification_api.dart';
 import 'package:grewal/screens/upload_study_material/upload_study_material_api.dart';
 import 'package:grewal/services/shared_preferences.dart';
-import 'package:http/http.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:mime/mime.dart';
 
 class UploadStudyMaterial extends StatefulWidget {
   @override
@@ -458,108 +449,111 @@ class _UploadStudyMaterialState extends State<UploadStudyMaterial> {
                   // expansionCallback: (int index, bool isExpanded) {},
                   ),
             ),
-      floatingActionButton: FloatingActionButton.extended(
-        icon: Icon(Icons.add),
-        onPressed: () {
-          setState(() {
-            _folder_name.text = "";
-          });
-          showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                    title: Text(
-                      "Add Folder",
-                      style: normalText5,
-                    ),
-                    content: Form(
-                      key: formKey,
-                      child: TextFormField(
-                          autofocus: true,
-                          controller: _folder_name,
-                          keyboardType: TextInputType.text,
-                          cursorColor: Color(0xff000000),
-                          textCapitalization: TextCapitalization.sentences,
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Required';
-                            }
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                              isDense: true,
-                              contentPadding:
-                                  EdgeInsets.fromLTRB(10, 30, 30, 0),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                borderSide: BorderSide(
-                                  color: Color(0xfff9f9fb),
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                borderSide: BorderSide(
-                                  color: Color(0xfff9f9fb),
-                                ),
-                              ),
-                              disabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                borderSide: BorderSide(
-                                  color: Color(0xfff9f9fb),
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                borderSide: BorderSide(
-                                  color: Color(0xfff9f9fb),
-                                ),
-                              ),
-                              counterText: "",
-                              hintText: 'Folder Name',
-                              hintStyle: TextStyle(
-                                  color: Color(0xffBBBFC3), fontSize: 16),
-                              fillColor: Color(0xfff9f9fb),
-                              filled: true)),
-                    ),
-                    actions: [
-                      TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text(
-                            "Cancel",
-                            style: normalText5,
-                          )),
-                      TextButton(
-                          onPressed: () async {
-                            if (formKey.currentState.validate()) {
-                              await UploadStudyMaterialAPI()
-                                  .addFolder(institute_id.toString(),
-                                      _folder_name.text)
-                                  .then((value) {
-                                value
-                                    ? Fluttertoast.showToast(
-                                        msg: "Folder Created",
-                                        toastLength: Toast.LENGTH_LONG,
-                                        gravity: ToastGravity.CENTER)
-                                    : Fluttertoast.showToast(
-                                        msg: "Folder Creation Failed",
-                                        toastLength: Toast.LENGTH_LONG,
-                                        gravity: ToastGravity.CENTER);
-                              }).then((value) {
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.blue,
+        child: TextButton(
+            onPressed: () {
+              setState(() {
+                _folder_name.text = "";
+              });
+              showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        title: Text(
+                          "Add Folder",
+                          style: normalText5,
+                        ),
+                        content: Form(
+                          key: formKey,
+                          child: TextFormField(
+                              autofocus: true,
+                              controller: _folder_name,
+                              keyboardType: TextInputType.text,
+                              cursorColor: Color(0xff000000),
+                              textCapitalization: TextCapitalization.sentences,
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Required';
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                  isDense: true,
+                                  contentPadding:
+                                      EdgeInsets.fromLTRB(10, 30, 30, 0),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    borderSide: BorderSide(
+                                      color: Color(0xfff9f9fb),
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    borderSide: BorderSide(
+                                      color: Color(0xfff9f9fb),
+                                    ),
+                                  ),
+                                  disabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    borderSide: BorderSide(
+                                      color: Color(0xfff9f9fb),
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    borderSide: BorderSide(
+                                      color: Color(0xfff9f9fb),
+                                    ),
+                                  ),
+                                  counterText: "",
+                                  hintText: 'Folder Name',
+                                  hintStyle: TextStyle(
+                                      color: Color(0xffBBBFC3), fontSize: 16),
+                                  fillColor: Color(0xfff9f9fb),
+                                  filled: true)),
+                        ),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
                                 Navigator.of(context).pop();
-                              });
-                              await _getUser();
-                            }
-                          },
-                          child: Text(
-                            "Create",
-                            style: normalText5,
-                          )),
-                    ],
-                  ));
-        },
-        label: Text("Add Folder"),
-        backgroundColor: Color(0xff017EFF),
+                              },
+                              child: Text(
+                                "Cancel",
+                                style: normalText5,
+                              )),
+                          TextButton(
+                              onPressed: () async {
+                                if (formKey.currentState.validate()) {
+                                  await UploadStudyMaterialAPI()
+                                      .addFolder(institute_id.toString(),
+                                          _folder_name.text)
+                                      .then((value) {
+                                    value
+                                        ? Fluttertoast.showToast(
+                                            msg: "Folder Created",
+                                            toastLength: Toast.LENGTH_LONG,
+                                            gravity: ToastGravity.CENTER)
+                                        : Fluttertoast.showToast(
+                                            msg: "Folder Creation Failed",
+                                            toastLength: Toast.LENGTH_LONG,
+                                            gravity: ToastGravity.CENTER);
+                                  }).then((value) {
+                                    Navigator.of(context).pop();
+                                  });
+                                  await _getUser();
+                                }
+                              },
+                              child: Text(
+                                "Create",
+                                style: normalText5,
+                              )),
+                        ],
+                      ));
+            },
+            child: Text(
+              "Add Folder",
+              style: TextStyle(color: Colors.white),
+            )),
       ),
     );
   }

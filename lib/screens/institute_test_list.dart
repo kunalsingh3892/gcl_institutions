@@ -52,9 +52,9 @@ class _SettingsState extends State<InstituteTestList> {
   @override
   void initState() {
     super.initState();
-   /* var encodedJson = json.encode(widget.argument);
+    /* var encodedJson = json.encode(widget.argument);
     var data = json.decode(encodedJson);*/
-   /* users_id = data['user_id'];
+    /* users_id = data['user_id'];
     chapter_name = data['chapter_name'];
     type = data['type'];
     print(type);*/
@@ -67,7 +67,7 @@ class _SettingsState extends State<InstituteTestList> {
         email_id = prefs.getString('email_id').toString();
         _mobile = prefs.getString('mobile_no').toString();
         user_id = prefs.getString('user_id').toString();
-      //  order_id = prefs.getString('order_id').toString();
+        //  order_id = prefs.getString('order_id').toString();
         profile_image = prefs.getString('profile_image').toString();
 
         _chapterData = _getChapterData();
@@ -110,7 +110,6 @@ class _SettingsState extends State<InstituteTestList> {
       new Uri.https(BASE_URL, API_PATH + "/institute-test-list"),
       body: {
         "institute_id": user_id,
-
       },
       headers: headers,
     );
@@ -205,8 +204,6 @@ class _SettingsState extends State<InstituteTestList> {
     }
   }
 
-
-
   Widget chapterList(Size deviceSize) {
     return FutureBuilder(
       future: _chapterData,
@@ -224,19 +221,18 @@ class _SettingsState extends State<InstituteTestList> {
                       actionExtentRatio: 0.25,
                       child: InkWell(
                         onTap: () {
-
-                            Navigator.pushNamed(
-                                context, '/test-dash',
-                              arguments: <String, String>{
-                                'test_id': snapshot.data['Response']
-                                [index]['institute_test_id'].toString(),
-
-                              },
-
-                            );
-
-
-
+                          Navigator.pushNamed(
+                            context,
+                            '/test-dash',
+                            arguments: <String, String>{
+                              'test_id': snapshot.data['Response'][index]
+                                      ['institute_test_id']
+                                  .toString(),
+                              'test_name': snapshot.data['Response'][index]
+                                      ['name']
+                                  .toString()
+                            },
+                          );
                         },
                         child: Column(children: <Widget>[
                           Stack(children: <Widget>[
@@ -256,14 +252,14 @@ class _SettingsState extends State<InstituteTestList> {
                                         height: 50,
                                         width: 50,
                                         decoration: new BoxDecoration(
-                                          // color: Color(0xffF6F6F6),
+                                            // color: Color(0xffF6F6F6),
                                             borderRadius: new BorderRadius.only(
                                                 topLeft:
-                                                const Radius.circular(5.0),
+                                                    const Radius.circular(5.0),
                                                 bottomLeft:
-                                                const Radius.circular(5.0),
+                                                    const Radius.circular(5.0),
                                                 bottomRight:
-                                                const Radius.circular(5.0),
+                                                    const Radius.circular(5.0),
                                                 topRight: const Radius.circular(
                                                     5.0))),
                                         child: CircleAvatar(
@@ -278,7 +274,6 @@ class _SettingsState extends State<InstituteTestList> {
                                             color: Colors.white,
                                           ),
                                         ),
-
                                       ),
                                     ),
                                     SizedBox(
@@ -287,23 +282,23 @@ class _SettingsState extends State<InstituteTestList> {
                                     Expanded(
                                       child: Column(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.center,
+                                            MainAxisAlignment.center,
                                         mainAxisSize: MainAxisSize.min,
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                         children: <Widget>[
                                           Row(
                                             mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                                MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
                                               Expanded(
                                                 child: Text(
                                                     snapshot.data['Response']
-                                                    [index]['name'],
+                                                        [index]['name'],
                                                     maxLines: 2,
                                                     softWrap: true,
                                                     overflow:
-                                                    TextOverflow.ellipsis,
+                                                        TextOverflow.ellipsis,
                                                     style: normalText5),
                                               ),
                                             ],
@@ -311,7 +306,7 @@ class _SettingsState extends State<InstituteTestList> {
                                           Container(
                                             child: Text(
                                                 snapshot.data['Response'][index]
-                                                ['created_at'],
+                                                    ['created_at'],
                                                 maxLines: 1,
                                                 softWrap: true,
                                                 overflow: TextOverflow.ellipsis,
@@ -320,7 +315,7 @@ class _SettingsState extends State<InstituteTestList> {
                                         ],
                                       ),
                                     ),
-                                 /*   SizedBox(
+                                    /*   SizedBox(
                                       width: 5.0,
                                     ),
                                     Icon(
@@ -330,14 +325,11 @@ class _SettingsState extends State<InstituteTestList> {
                                     )*/
                                   ]),
                             ),
-
                           ]),
-
-
                         ]),
                       ),
                       secondaryActions: <Widget>[
-                      /*  snapshot.data['Response'][index]['is_taken'] == 0
+                        /*  snapshot.data['Response'][index]['is_taken'] == 0
                             ? IconSlideAction(
                           caption: 'Delete',
                           color: Color(0xff017EFF),
@@ -363,20 +355,21 @@ class _SettingsState extends State<InstituteTestList> {
         } else {
           return Center(
               child: Align(
-                alignment: Alignment.center,
-                child: Container(
-                  child: SpinKitFadingCube(
-                    itemBuilder: (_, int index) {
-                      return DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: index.isEven ? Color(0xff017EFF) :Color(0xffFFC700),
-                        ),
-                      );
-                    },
-                    size: 30.0,
-                  ),
-                ),
-              ));
+            alignment: Alignment.center,
+            child: Container(
+              child: SpinKitFadingCube(
+                itemBuilder: (_, int index) {
+                  return DecoratedBox(
+                    decoration: BoxDecoration(
+                      color:
+                          index.isEven ? Color(0xff017EFF) : Color(0xffFFC700),
+                    ),
+                  );
+                },
+                size: 30.0,
+              ),
+            ),
+          ));
         }
       },
     );
@@ -386,10 +379,10 @@ class _SettingsState extends State<InstituteTestList> {
     return Center(
       child: Container(
           child: Text(
-            'NO TEST FOUND!',
-            style:
+        'NO TEST FOUND!',
+        style:
             TextStyle(fontSize: 20, letterSpacing: 1, color: Color(0xff2E2A4A)),
-          )),
+      )),
     );
   }
 
@@ -397,46 +390,47 @@ class _SettingsState extends State<InstituteTestList> {
   Widget build(BuildContext context) {
     Size deviceSize = MediaQuery.of(context).size;
     return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: widget.modal != ""?AppBar(
-          elevation: 0.0,
-          leading: widget.modal != ""? Row(children: <Widget>[
-            IconButton(
-              icon: Image(
-                image: AssetImage("assets/images/Icon.png"),
-                height: 20.0,
-                width: 10.0,
-                color: Color(0xff2E2A4A),
+      backgroundColor: Colors.white,
+      appBar: widget.modal != ""
+          ? AppBar(
+              elevation: 0.0,
+              leading: widget.modal != ""
+                  ? Row(children: <Widget>[
+                      IconButton(
+                        icon: Image(
+                          image: AssetImage("assets/images/Icon.png"),
+                          height: 20.0,
+                          width: 10.0,
+                          color: Color(0xff2E2A4A),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop(false);
+                        },
+                      ),
+                    ])
+                  : Row(children: <Widget>[
+                      IconButton(
+                        icon: Image(
+                          image: AssetImage("assets/images/list_icon.png"),
+                          height: 20.0,
+                          width: 10.0,
+                          color: Color(0xff2E2A4A),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop(false);
+                        },
+                      ),
+                    ]),
+              centerTitle: true,
+              title: Container(
+                child: Text("Test List", style: normalText6),
               ),
-              onPressed: (){
-                Navigator.of(context).pop(false);
-              },
-            ),
-
-          ]):Row(children: <Widget>[
-            IconButton(
-              icon: Image(
-                image: AssetImage("assets/images/list_icon.png"),
-                height: 20.0,
-                width: 10.0,
-                color: Color(0xff2E2A4A),
+              flexibleSpace: Container(
+                height: 100,
+                color: Color(0xffffffff),
               ),
-              onPressed: (){
-                Navigator.of(context).pop(false);
-              },
-            ),
-
-          ]),
-          centerTitle: true,
-          title: Container(
-            child: Text("Test List", style: normalText6),
-          ),
-          flexibleSpace: Container(
-            height: 100,
-            color: Color(0xffffffff),
-          ),
-          actions: <Widget>[
-            /*  Align(
+              actions: <Widget>[
+                /*  Align(
             alignment: Alignment.center,
             child: CircleAvatar(
               backgroundColor: Colors.white,
@@ -446,13 +440,14 @@ class _SettingsState extends State<InstituteTestList> {
               ),
             ),
           ),*/
-          ],
-          iconTheme: IconThemeData(
-            color: Colors.white, //change your color here
-          ),
-          backgroundColor: Colors.transparent,
-        ):null,
-       /* floatingActionButton:  FloatingActionButton.extended(
+              ],
+              iconTheme: IconThemeData(
+                color: Colors.white, //change your color here
+              ),
+              backgroundColor: Colors.transparent,
+            )
+          : null,
+      /* floatingActionButton:  FloatingActionButton.extended(
 
           onPressed: () {
             Navigator.pushNamed(
@@ -470,20 +465,20 @@ class _SettingsState extends State<InstituteTestList> {
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation,*/
 
-        body: ModalProgressHUD(
-          inAsyncCall: isLoading,
-          child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
+      body: ModalProgressHUD(
+        inAsyncCall: isLoading,
+        child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+            ),
+            child: Container(
+              margin: EdgeInsets.symmetric(
+                horizontal: deviceSize.width * 0.02,
               ),
-              child: Container(
-                margin: EdgeInsets.symmetric(
-                  horizontal: deviceSize.width * 0.02,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                   /* Align(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  /* Align(
                       alignment: Alignment.topRight,
                       child: Container(
                         width: deviceSize.width*0.30,
@@ -509,53 +504,64 @@ class _SettingsState extends State<InstituteTestList> {
                         ),
                       ),
                     ),*/
-                    SizedBox(
-                      height: 5.0,
+                  SizedBox(
+                    height: 5.0,
+                  ),
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.only(bottom: 5),
+                      child: chapterList(deviceSize),
                     ),
-
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.only(bottom: 5),
-                        child: chapterList(deviceSize),
-                      ),
-                    ),
-
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: Container(
-                        width: deviceSize.width*0.30,
-
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              primary:Color(0xff017EFF), elevation: 2),
-                          onPressed: () {
-                            Navigator.pushNamed(
-                              context,
-                              '/chapter-select',
-                            );
-                          },
-                          child: Row(
-                            children: [
-                              Icon( Icons.add),
-                              SizedBox(
-                                width: 10.0,
-                              ),
-                              Text('Create'),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                  ],
-                ),
-              )),
-        ));
+                  ),
+                  // SizedBox(
+                  //   height: 10.0,
+                  // ),
+                  // Align(
+                  //   alignment: Alignment.topRight,
+                  //   child: Container(
+                  //     width: deviceSize.width * 0.30,
+                  //     child: ElevatedButton(
+                  //       style: ElevatedButton.styleFrom(
+                  //           primary: Color(0xff017EFF), elevation: 2),
+                  //       onPressed: () {
+                  //         Navigator.pushNamed(
+                  //           context,
+                  //           '/chapter-select-2',
+                  //         );
+                  //       },
+                  //       child: Row(
+                  //         children: [
+                  //           Icon(Icons.add),
+                  //           SizedBox(
+                  //             width: 10.0,
+                  //           ),
+                  //           Text('Create'),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  // SizedBox(
+                  //   height: 10.0,
+                  // ),
+                ],
+              ),
+            )),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.blue,
+        child: TextButton(
+            onPressed: () {
+              Navigator.pushNamed(
+                context,
+                '/chapter-select-2',
+              );
+            },
+            child: Text(
+              "Create",
+              style: TextStyle(color: Colors.white),
+            )),
+      ),
+    );
   }
 }

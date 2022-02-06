@@ -1113,19 +1113,28 @@ class _ChangePageState extends State<ChapterListScreen> {
                                               ",";
                                         }
                                       }
-                                      Navigator.pushNamed(
-                                        context,
-                                        '/create-test-new',
-                                        arguments: <String, String>{
-                                          'chapter_id': chapter_id,
-                                          'batch_id': _type5,
-                                          'submission_date': dobController.text,
-                                          'board_id': _type,
-                                          'class_id': _type3,
-                                          'content_type': type,
-                                          'test_type': testType
-                                        },
-                                      );
+                                      // Navigator.pushNamed(
+                                      //   context,
+                                      //   '/create-test-new',
+                                      //   arguments: <String, String>{
+                                      //     'chapter_id': chapter_id,
+                                      //     'batch_id': _type5,
+                                      //     'submission_date': dobController.text,
+                                      //     'board_id': _type,
+                                      //     'class_id': _type3,
+                                      //     'content_type': type,
+                                      //     'test_type': testType
+                                      //   },
+                                      // );
+                                      print(jsonEncode({
+                                        'chapter_id': chapter_id,
+                                        'batch_id': _type5,
+                                        'submission_date': dobController.text,
+                                        'board_id': _type,
+                                        'class_id': _type3,
+                                        'content_type': type,
+                                        'test_type': testType
+                                      }));
                                     } else {
                                       Fluttertoast.showToast(
                                           msg: "Please select any chapter.");

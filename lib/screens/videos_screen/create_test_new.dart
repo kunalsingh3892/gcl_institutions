@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -10,12 +9,8 @@ import 'package:grewal/models/topic_json.dart';
 import 'package:grewal/services/shared_preferences.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:screenshot/screenshot.dart';
-
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constants.dart';
 
@@ -140,6 +135,7 @@ class _ChangePageState extends State<CreateQuestionNew> {
       },
       headers: headers,
     );
+    print(new Uri.https(BASE_URL, API_PATH + "/topiclistchapterwise"));
     print({
       "chapter_id": chapter_id,
     });
@@ -151,8 +147,20 @@ class _ChangePageState extends State<CreateQuestionNew> {
           catData5 = jsonEncode(result);
 
           final json = JsonDecoder().convert(catData5);
+          List temp = [];
+          json.forEach((e) {
+            if (test_type == "O") {
+              if (e['totalmcq'] != 0) {
+                temp.add(e);
+              }
+            } else {
+              if (e['totaldetails'] != 0) {
+                temp.add(e);
+              }
+            }
+          });
           _region5 =
-              (json).map<Region5>((item) => Region5.fromJson(item)).toList();
+              (temp).map<Region5>((item) => Region5.fromJson(item)).toList();
           List<String> item = _region5.map((Region5 map) {
             for (int i = 0; i < _region5.length; i++) {
               if (selectedRegion6 == map.THIRD_LEVEL_NAME) {
@@ -225,10 +233,10 @@ class _ChangePageState extends State<CreateQuestionNew> {
                         for (int i = 0; i < topicData.length; i++) {
                           if (test_type == "O") {
                             mcq_total =
-                                mcq_total + int.parse(topicData[i].mcqattempt);
+                                mcq_total + int.parse(topicData[i].attempt);
                           } else {
-                            detail_total = detail_total +
-                                int.parse(topicData[i].detailsattempt);
+                            detail_total =
+                                detail_total + int.parse(topicData[i].attempt);
                           }
                         }
                       });
@@ -254,7 +262,7 @@ class _ChangePageState extends State<CreateQuestionNew> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                      topicData[index].mcqattempt.toString() +
+                                      topicData[index].attempt.toString() +
                                           " MCQ",
                                       style: normalText1),
                                 ],
@@ -266,7 +274,7 @@ class _ChangePageState extends State<CreateQuestionNew> {
                                 children: <Widget>[
                                   Text(
                                     topicData[index]
-                                            .detailsattempt
+                                            .attempt
                                             .toString()
                                             .toString() +
                                         " Detailed",
@@ -285,255 +293,255 @@ class _ChangePageState extends State<CreateQuestionNew> {
   Widget chapterList(Size deviceSize) {
     return Column(mainAxisAlignment: MainAxisAlignment.start, children: <
         Widget>[
-      test_type == "O"
-          ? Container(
-              width: deviceSize.width,
-              decoration: new BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: new BorderRadius.only(
-                      topLeft: const Radius.circular(10.0),
-                      bottomLeft: const Radius.circular(10.0),
-                      bottomRight: const Radius.circular(10.0),
-                      topRight: const Radius.circular(10.0))),
-              margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5),
-              padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 5),
-              child: Column(children: [
-                Container(
-                  child: Text("No. of Questions", style: normalText6),
-                ),
-                Center(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    margin: EdgeInsets.only(left: 5, right: 5),
-                    child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            height: 25,
-                            width: MediaQuery.of(context).size.width * 0.09,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Color(0xff567DF4),
-                                  Color(0xff567DF4),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(3),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  '10',
-                                  // snapshot.data['cart_quantity'] > 0 ? 'Go to Basket' : 'Add to Basket',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.bold),
-                                )
-                              ],
-                            ),
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.70,
-                            child: SliderTheme(
-                              data: SliderTheme.of(context).copyWith(
-                                activeTrackColor: Color(0xFFe7bf2e),
-                                inactiveTrackColor: Color(0xff567DF4),
-                                trackShape: RoundedRectSliderTrackShape(),
-                                trackHeight: 3.0,
-                                thumbShape: RoundSliderThumbShape(
-                                    enabledThumbRadius: 12.0),
-                                thumbColor: Color(0xFFe7bf2e),
-                                overlayColor: Colors.red.withAlpha(32),
-                                overlayShape: RoundSliderOverlayShape(
-                                    overlayRadius: 28.0),
-                                tickMarkShape: RoundSliderTickMarkShape(),
-                                activeTickMarkColor: Color(0xFFe7bf2e),
-                                inactiveTickMarkColor: Color(0xFFe7bf2e),
-                                valueIndicatorShape:
-                                    PaddleSliderValueIndicatorShape(),
-                                valueIndicatorColor: Color(0xFFe7bf2e),
-                                valueIndicatorTextStyle: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              child: Slider(
-                                value: _value,
-                                min: 10,
-                                max: 40,
-                                divisions: 3,
-                                label: '$_value',
-                                onChanged: (value) {
-                                  setState(
-                                    () {
-                                      _value = value;
-                                    },
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                          Container(
-                            height: 25,
-                            width: MediaQuery.of(context).size.width * 0.09,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Color(0xff567DF4),
-                                  Color(0xff567DF4),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(3),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  "40",
-                                  // snapshot.data['cart_quantity'] > 0 ? 'Go to Basket' : 'Add to Basket',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold),
-                                )
-                              ],
-                            ),
-                          ),
-                        ]),
-                  ),
-                ),
-              ]),
-            )
-          : Container(
-              width: deviceSize.width,
-              decoration: new BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: new BorderRadius.only(
-                      topLeft: const Radius.circular(10.0),
-                      bottomLeft: const Radius.circular(10.0),
-                      bottomRight: const Radius.circular(10.0),
-                      topRight: const Radius.circular(10.0))),
-              margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5),
-              padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 5),
-              child: Column(children: [
-                Container(
-                  child: Text("Detailed %", style: normalText6),
-                ),
-                Center(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    margin: EdgeInsets.only(left: 5, right: 5),
-                    child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            height: 25,
-                            width: MediaQuery.of(context).size.width * 0.09,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Color(0xff567DF4),
-                                  Color(0xff567DF4),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(3),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  '10',
-                                  // snapshot.data['cart_quantity'] > 0 ? 'Go to Basket' : 'Add to Basket',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold),
-                                )
-                              ],
-                            ),
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.70,
-                            child: SliderTheme(
-                              data: SliderTheme.of(context).copyWith(
-                                activeTrackColor: Color(0xFFe7bf2e),
-                                inactiveTrackColor: Color(0xff567DF4),
-                                trackShape: RoundedRectSliderTrackShape(),
-                                trackHeight: 3.0,
-                                thumbShape: RoundSliderThumbShape(
-                                    enabledThumbRadius: 12.0),
-                                thumbColor: Color(0xFFe7bf2e),
-                                overlayColor: Colors.red.withAlpha(32),
-                                overlayShape: RoundSliderOverlayShape(
-                                    overlayRadius: 28.0),
-                                tickMarkShape: RoundSliderTickMarkShape(),
-                                activeTickMarkColor: Color(0xFFe7bf2e),
-                                inactiveTickMarkColor: Color(0xFFe7bf2e),
-                                valueIndicatorShape:
-                                    PaddleSliderValueIndicatorShape(),
-                                valueIndicatorColor: Color(0xFFe7bf2e),
-                                valueIndicatorTextStyle: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              child: Slider(
-                                value: _value1,
-                                min: 10,
-                                max: 100,
-                                divisions: 9,
-                                label: '$_value1',
-                                onChanged: (value) {
-                                  setState(
-                                    () {
-                                      _value1 = value;
-                                    },
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                          Container(
-                            height: 25,
-                            width: MediaQuery.of(context).size.width * 0.09,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Color(0xff567DF4),
-                                  Color(0xff567DF4),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(3),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  "100",
-                                  // snapshot.data['cart_quantity'] > 0 ? 'Go to Basket' : 'Add to Basket',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold),
-                                )
-                              ],
-                            ),
-                          ),
-                        ]),
-                  ),
-                ),
-              ]),
-            ),
+      // test_type == "O"
+      //     ? Container(
+      //         width: deviceSize.width,
+      //         decoration: new BoxDecoration(
+      //             color: Colors.white,
+      //             borderRadius: new BorderRadius.only(
+      //                 topLeft: const Radius.circular(10.0),
+      //                 bottomLeft: const Radius.circular(10.0),
+      //                 bottomRight: const Radius.circular(10.0),
+      //                 topRight: const Radius.circular(10.0))),
+      //         margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5),
+      //         padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 5),
+      //         child: Column(children: [
+      //           Container(
+      //             child: Text("No. of Questions", style: normalText6),
+      //           ),
+      //           Center(
+      //             child: Container(
+      //               width: MediaQuery.of(context).size.width,
+      //               margin: EdgeInsets.only(left: 5, right: 5),
+      //               child: Row(
+      //                   crossAxisAlignment: CrossAxisAlignment.center,
+      //                   mainAxisAlignment: MainAxisAlignment.center,
+      //                   children: <Widget>[
+      //                     Container(
+      //                       height: 25,
+      //                       width: MediaQuery.of(context).size.width * 0.09,
+      //                       decoration: BoxDecoration(
+      //                         gradient: LinearGradient(
+      //                           begin: Alignment.topCenter,
+      //                           end: Alignment.bottomCenter,
+      //                           colors: [
+      //                             Color(0xff567DF4),
+      //                             Color(0xff567DF4),
+      //                           ],
+      //                         ),
+      //                         borderRadius: BorderRadius.circular(3),
+      //                       ),
+      //                       child: Row(
+      //                         mainAxisAlignment: MainAxisAlignment.center,
+      //                         children: <Widget>[
+      //                           Text(
+      //                             '10',
+      //                             // snapshot.data['cart_quantity'] > 0 ? 'Go to Basket' : 'Add to Basket',
+      //                             style: TextStyle(
+      //                                 color: Colors.white,
+      //                                 fontSize: 13,
+      //                                 fontWeight: FontWeight.bold),
+      //                           )
+      //                         ],
+      //                       ),
+      //                     ),
+      //                     Container(
+      //                       width: MediaQuery.of(context).size.width * 0.70,
+      //                       child: SliderTheme(
+      //                         data: SliderTheme.of(context).copyWith(
+      //                           activeTrackColor: Color(0xFFe7bf2e),
+      //                           inactiveTrackColor: Color(0xff567DF4),
+      //                           trackShape: RoundedRectSliderTrackShape(),
+      //                           trackHeight: 3.0,
+      //                           thumbShape: RoundSliderThumbShape(
+      //                               enabledThumbRadius: 12.0),
+      //                           thumbColor: Color(0xFFe7bf2e),
+      //                           overlayColor: Colors.red.withAlpha(32),
+      //                           overlayShape: RoundSliderOverlayShape(
+      //                               overlayRadius: 28.0),
+      //                           tickMarkShape: RoundSliderTickMarkShape(),
+      //                           activeTickMarkColor: Color(0xFFe7bf2e),
+      //                           inactiveTickMarkColor: Color(0xFFe7bf2e),
+      //                           valueIndicatorShape:
+      //                               PaddleSliderValueIndicatorShape(),
+      //                           valueIndicatorColor: Color(0xFFe7bf2e),
+      //                           valueIndicatorTextStyle: TextStyle(
+      //                             color: Colors.white,
+      //                           ),
+      //                         ),
+      //                         child: Slider(
+      //                           value: _value,
+      //                           min: 10,
+      //                           max: 40,
+      //                           divisions: 3,
+      //                           label: '$_value',
+      //                           onChanged: (value) {
+      //                             setState(
+      //                               () {
+      //                                 _value = value;
+      //                               },
+      //                             );
+      //                           },
+      //                         ),
+      //                       ),
+      //                     ),
+      //                     Container(
+      //                       height: 25,
+      //                       width: MediaQuery.of(context).size.width * 0.09,
+      //                       decoration: BoxDecoration(
+      //                         gradient: LinearGradient(
+      //                           begin: Alignment.topCenter,
+      //                           end: Alignment.bottomCenter,
+      //                           colors: [
+      //                             Color(0xff567DF4),
+      //                             Color(0xff567DF4),
+      //                           ],
+      //                         ),
+      //                         borderRadius: BorderRadius.circular(3),
+      //                       ),
+      //                       child: Row(
+      //                         mainAxisAlignment: MainAxisAlignment.center,
+      //                         children: <Widget>[
+      //                           Text(
+      //                             "40",
+      //                             // snapshot.data['cart_quantity'] > 0 ? 'Go to Basket' : 'Add to Basket',
+      //                             style: TextStyle(
+      //                                 color: Colors.white,
+      //                                 fontSize: 14,
+      //                                 fontWeight: FontWeight.bold),
+      //                           )
+      //                         ],
+      //                       ),
+      //                     ),
+      //                   ]),
+      //             ),
+      //           ),
+      //         ]),
+      //       )
+      //     : Container(
+      //   width: deviceSize.width,
+      //   decoration: new BoxDecoration(
+      //       color: Colors.white,
+      //       borderRadius: new BorderRadius.only(
+      //           topLeft: const Radius.circular(10.0),
+      //           bottomLeft: const Radius.circular(10.0),
+      //           bottomRight: const Radius.circular(10.0),
+      //           topRight: const Radius.circular(10.0))),
+      //   margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5),
+      //   padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 5),
+      //   child: Column(children: [
+      //     Container(
+      //       child: Text("Detailed %", style: normalText6),
+      //     ),
+      //     Center(
+      //       child: Container(
+      //         width: MediaQuery.of(context).size.width,
+      //         margin: EdgeInsets.only(left: 5, right: 5),
+      //         child: Row(
+      //             crossAxisAlignment: CrossAxisAlignment.center,
+      //             mainAxisAlignment: MainAxisAlignment.center,
+      //             children: <Widget>[
+      //               Container(
+      //                 height: 25,
+      //                 width: MediaQuery.of(context).size.width * 0.09,
+      //                 decoration: BoxDecoration(
+      //                   gradient: LinearGradient(
+      //                     begin: Alignment.topCenter,
+      //                     end: Alignment.bottomCenter,
+      //                     colors: [
+      //                       Color(0xff567DF4),
+      //                       Color(0xff567DF4),
+      //                     ],
+      //                   ),
+      //                   borderRadius: BorderRadius.circular(3),
+      //                 ),
+      //                 child: Row(
+      //                   mainAxisAlignment: MainAxisAlignment.center,
+      //                   children: <Widget>[
+      //                     Text(
+      //                       '10',
+      //                       // snapshot.data['cart_quantity'] > 0 ? 'Go to Basket' : 'Add to Basket',
+      //                       style: TextStyle(
+      //                           color: Colors.white,
+      //                           fontSize: 14,
+      //                           fontWeight: FontWeight.bold),
+      //                     )
+      //                   ],
+      //                 ),
+      //               ),
+      //               Container(
+      //                 width: MediaQuery.of(context).size.width * 0.70,
+      //                 child: SliderTheme(
+      //                   data: SliderTheme.of(context).copyWith(
+      //                     activeTrackColor: Color(0xFFe7bf2e),
+      //                     inactiveTrackColor: Color(0xff567DF4),
+      //                     trackShape: RoundedRectSliderTrackShape(),
+      //                     trackHeight: 3.0,
+      //                     thumbShape: RoundSliderThumbShape(
+      //                         enabledThumbRadius: 12.0),
+      //                     thumbColor: Color(0xFFe7bf2e),
+      //                     overlayColor: Colors.red.withAlpha(32),
+      //                     overlayShape: RoundSliderOverlayShape(
+      //                         overlayRadius: 28.0),
+      //                     tickMarkShape: RoundSliderTickMarkShape(),
+      //                     activeTickMarkColor: Color(0xFFe7bf2e),
+      //                     inactiveTickMarkColor: Color(0xFFe7bf2e),
+      //                     valueIndicatorShape:
+      //                         PaddleSliderValueIndicatorShape(),
+      //                     valueIndicatorColor: Color(0xFFe7bf2e),
+      //                     valueIndicatorTextStyle: TextStyle(
+      //                       color: Colors.white,
+      //                     ),
+      //                   ),
+      //                   child: Slider(
+      //                     value: _value1,
+      //                     min: 10,
+      //                     max: 100,
+      //                     divisions: 9,
+      //                     label: '$_value1',
+      //                     onChanged: (value) {
+      //                       setState(
+      //                         () {
+      //                           _value1 = value;
+      //                         },
+      //                       );
+      //                     },
+      //                   ),
+      //                 ),
+      //               ),
+      //               Container(
+      //                 height: 25,
+      //                 width: MediaQuery.of(context).size.width * 0.09,
+      //                 decoration: BoxDecoration(
+      //                   gradient: LinearGradient(
+      //                     begin: Alignment.topCenter,
+      //                     end: Alignment.bottomCenter,
+      //                     colors: [
+      //                       Color(0xff567DF4),
+      //                       Color(0xff567DF4),
+      //                     ],
+      //                   ),
+      //                   borderRadius: BorderRadius.circular(3),
+      //                 ),
+      //                 child: Row(
+      //                   mainAxisAlignment: MainAxisAlignment.center,
+      //                   children: <Widget>[
+      //                     Text(
+      //                       "100",
+      //                       // snapshot.data['cart_quantity'] > 0 ? 'Go to Basket' : 'Add to Basket',
+      //                       style: TextStyle(
+      //                           color: Colors.white,
+      //                           fontSize: 14,
+      //                           fontWeight: FontWeight.bold),
+      //                     )
+      //                   ],
+      //                 ),
+      //               ),
+      //             ]),
+      //       ),
+      //     ),
+      //   ]),
+      // ),
       Container(
         width: deviceSize.width,
         decoration: new BoxDecoration(
@@ -582,6 +590,7 @@ class _ChangePageState extends State<CreateQuestionNew> {
                     padding: EdgeInsets.only(right: 0, left: 3),
                     child: new DropdownButton<String>(
                       isExpanded: true,
+
                       hint: new Text(
                         "Select Topic",
                         style: TextStyle(color: Color(0xffBBBFC3)),
@@ -594,14 +603,42 @@ class _ChangePageState extends State<CreateQuestionNew> {
                         ),
                       ),
                       value: selectedRegion6,
-                      //  isDense: true,
+                      // isDense: true,
+                      itemHeight: 100,
                       onChanged: (newValue) {
                         setState(() {
                           selectedRegion6 = newValue;
+
                           List<String> item = _region5.map((Region5 map) {
                             for (int i = 0; i < _region5.length; i++) {
                               if (selectedRegion6 == map.THIRD_LEVEL_NAME) {
                                 _type5 = map.THIRD_LEVEL_ID;
+
+                                if (test_type == "O") {
+                                  mcqController.text = map.totalmcq.toString();
+                                  if (mcqController.text.isEmpty) {
+                                    setState(() {
+                                      onChange = false;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      onChange = true;
+                                    });
+                                  }
+                                } else {
+                                  detailController.text =
+                                      map.totaldetails.toString();
+                                  if (detailController.text.isEmpty) {
+                                    setState(() {
+                                      onChange = false;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      onChange = true;
+                                    });
+                                  }
+                                }
+
                                 return map.THIRD_LEVEL_ID;
                               }
                             }
@@ -613,13 +650,13 @@ class _ChangePageState extends State<CreateQuestionNew> {
                           value: map.THIRD_LEVEL_NAME,
                           child: test_type == "O"
                               ? Text(
-                                  map.THIRD_LEVEL_NAME +
+                                  map.THIRD_LEVEL_NAME.toUpperCase() +
                                       " - " +
                                       map.totalmcq +
                                       " MCQ",
                                   style: new TextStyle(color: Colors.black87))
                               : Text(
-                                  map.THIRD_LEVEL_NAME +
+                                  map.THIRD_LEVEL_NAME.toUpperCase() +
                                       " - " +
                                       map.totaldetails +
                                       " Detailed",
@@ -808,11 +845,11 @@ class _ChangePageState extends State<CreateQuestionNew> {
                         topicJson.topicid = _type5;
                         topicJson.topicName = selectedRegion6;
                         if (test_type == "O") {
-                          topicJson.mcqattempt = mcqController.text != ""
+                          topicJson.attempt = mcqController.text != ""
                               ? mcqController.text
                               : "0";
                         } else {
-                          topicJson.detailsattempt = detailController.text != ""
+                          topicJson.attempt = detailController.text != ""
                               ? detailController.text
                               : "0";
                         }
@@ -824,10 +861,10 @@ class _ChangePageState extends State<CreateQuestionNew> {
                         for (int i = 0; i < topicData.length; i++) {
                           if (test_type == "O") {
                             mcq_total =
-                                mcq_total + int.parse(topicData[i].mcqattempt);
+                                mcq_total + int.parse(topicData[i].attempt);
                           } else {
-                            detail_total = detail_total +
-                                int.parse(topicData[i].detailsattempt);
+                            detail_total =
+                                detail_total + int.parse(topicData[i].attempt);
                           }
                         }
                       });
@@ -886,10 +923,10 @@ class _ChangePageState extends State<CreateQuestionNew> {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: Color(0xffffffff),
-        image: DecorationImage(
-          image: NetworkImage(profile_image),
-          fit: BoxFit.cover,
-        ),
+        // image: DecorationImage(
+        //   image: NetworkImage(profile_image),
+        //   fit: BoxFit.cover,
+        // ),
       ),
     );
   }
@@ -913,7 +950,7 @@ class _ChangePageState extends State<CreateQuestionNew> {
               ),
               onPressed: () {
                 Navigator.of(context).pop(false);
-                Navigator.pushNamed(context, '/dashboard');
+                // Navigator.pushNamed(context, '/dashboard');
               },
             ),
           ]),
@@ -933,9 +970,9 @@ class _ChangePageState extends State<CreateQuestionNew> {
             child: CircleAvatar(
               backgroundColor: Colors.white,
               radius: 30,
-              child: _networkImage1(
-                profile_image,
-              ),
+              // child: _networkImage1(
+              //   profile_image,
+              // ),
             ),
           ),
         ],
@@ -1039,15 +1076,22 @@ class _ChangePageState extends State<CreateQuestionNew> {
                               setState(() {
                                 _loading = true;
                               });
+
+                              int totalQue = 0;
+                              topicData.forEach((element) {
+                                totalQue = totalQue +
+                                    int.parse(element.attempt.toString());
+                              });
+                              print(totalQue);
                               final msg = jsonEncode({
-                                "type": "2",
                                 "batch_id": batch_id,
                                 "contenttype": content_type,
                                 "submission_date": lastSubmissionDate,
                                 "board_id": board_id,
                                 "class_id": class_id,
-                                "total_question": _value.toString(),
-                                "mcq_percentage": _value1.toString(),
+                                "total_question": totalQue.toString(),
+                                "question_type":
+                                    test_type == "O" ? "objective" : "",
                                 "institute_id": user_id,
                                 "chapter": chapter_id,
                                 "topiclist": topicData
@@ -1078,6 +1122,8 @@ class _ChangePageState extends State<CreateQuestionNew> {
                                     _loading = false;
                                   });
                                   Fluttertoast.showToast(msg: errorMessage);
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
                                   Navigator.pop(context);
                                   Navigator.pushNamed(
                                       context, '/institute-test-list');
@@ -1133,7 +1179,10 @@ class Region5 {
       this.totalmcq,
       this.totaldetails});
 
+  // ignore: missing_return
   factory Region5.fromJson(Map<String, dynamic> json) {
+    // ignore: unrelated_type_equality_checks
+
     return new Region5(
       THIRD_LEVEL_ID: json['topic_id'].toString(),
       THIRD_LEVEL_NAME: json['name'],

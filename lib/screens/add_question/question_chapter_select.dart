@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grewal/components/general.dart';
+import 'package:grewal/screens/api/data_list_api.dart';
 import 'package:grewal/services/shared_preferences.dart';
 
 import 'package:http/http.dart' as http;
@@ -18,14 +19,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constants.dart';
 
-
 class AddQuestionFirst extends StatefulWidget {
   @override
   _ChangePageState createState() => _ChangePageState();
 }
 
 class _ChangePageState extends State<AddQuestionFirst> {
-
   bool _loading = false;
   var access_token;
   final _formKey = GlobalKey<FormState>();
@@ -84,10 +83,17 @@ class _ChangePageState extends State<AddQuestionFirst> {
   Future _topicData;
   Future _dLData;
   Future _dTData;
-
+  List subjectList = [];
   @override
   void initState() {
     super.initState();
+    DataListAPI().getSubjectsList().then((val) {
+      setState(() {
+        val.forEach((element) {
+          subjectList.add(element['id'].toString());
+        });
+      });
+    });
     _getUser();
   }
 
@@ -105,7 +111,7 @@ class _ChangePageState extends State<AddQuestionFirst> {
 
   var result;
 
-  Future _getChapterData(String boardId, String classId) async {
+  Future _getChapterData(String boardId, String classId, String subject) async {
     Map<String, String> headers = {
       'Accept': 'application/json',
     };
@@ -114,7 +120,7 @@ class _ChangePageState extends State<AddQuestionFirst> {
       body: {
         "board_id": boardId,
         "class_id": classId,
-        "subject_id": "8",
+        "subject_id": subject.toString(),
         "student_id": ""
       },
       headers: headers,
@@ -153,8 +159,7 @@ class _ChangePageState extends State<AddQuestionFirst> {
             selectedRegion1 = _region1[0].THIRD_LEVEL_NAME;
             // _type = _region[0].THIRD_LEVEL_ID;
           }
-        //  _topicData=_getTopicData(_type1);
-
+          //  _topicData=_getTopicData(_type1);
         });
       }
 
@@ -165,20 +170,15 @@ class _ChangePageState extends State<AddQuestionFirst> {
   }
 
   Future _getTopicData(String chapter_id) async {
-
     Map<String, String> headers = {
       'Accept': 'application/json',
     };
     var response = await http.post(
       new Uri.https(BASE_URL, API_PATH + "/topiclistchapterwise"),
-      body: {
-        "chapter_id": chapter_id
-      },
+      body: {"chapter_id": chapter_id},
       headers: headers,
     );
-    print({
-      "chapter_id": chapter_id
-    });
+    print({"chapter_id": chapter_id});
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
       print(data);
@@ -203,12 +203,10 @@ class _ChangePageState extends State<AddQuestionFirst> {
               }
             }
           }).toList();
-         // if (selectedRegion2 == "") {
-            selectedRegion2 = _region2[0].THIRD_LEVEL_NAME;
-            _type2 = _region2[0].THIRD_LEVEL_ID;
-         // }
-
-
+          // if (selectedRegion2 == "") {
+          selectedRegion2 = _region2[0].THIRD_LEVEL_NAME;
+          _type2 = _region2[0].THIRD_LEVEL_ID;
+          // }
         });
       }
 
@@ -361,6 +359,7 @@ class _ChangePageState extends State<AddQuestionFirst> {
       throw Exception('Something went wrong');
     }
   }
+
   Future _difTypeCategories() async {
     Map<String, String> headers = {
       //'Content-Type': 'application/json',
@@ -399,7 +398,6 @@ class _ChangePageState extends State<AddQuestionFirst> {
             selectedRegion4 = _region4[0].THIRD_LEVEL_NAME;
             //  _type5 = _region5[0].THIRD_LEVEL_ID;
           }
-
         });
       }
 
@@ -447,7 +445,6 @@ class _ChangePageState extends State<AddQuestionFirst> {
             selectedRegion6 = _region6[0].THIRD_LEVEL_NAME;
             //  _type5 = _region5[0].THIRD_LEVEL_ID;
           }
-
         });
       }
 
@@ -461,15 +458,12 @@ class _ChangePageState extends State<AddQuestionFirst> {
     return Center(
       child: Container(
           child: Text(
-            'NO RECORDS FOUND!',
-            style:
+        'NO RECORDS FOUND!',
+        style:
             TextStyle(fontSize: 20, letterSpacing: 1, color: Color(0xff2E2A4A)),
-          )),
+      )),
     );
   }
-
-
-
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -604,501 +598,475 @@ class _ChangePageState extends State<AddQuestionFirst> {
       body: ModalProgressHUD(
         inAsyncCall: _loading,
         child: Container(
-          child:  Container(
-                margin: EdgeInsets.symmetric(
-                  horizontal: deviceSize.width * 0.02,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 15.0,
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: const EdgeInsets.only(right: 8.0, left: 8),
-                      padding: EdgeInsets.all(10),
-                      decoration: ShapeDecoration(
-                        color: Color(0xfff9f9fb),
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            width: 0.0,
-                            color: Color(0xfff9f9fb),
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+          child: Container(
+              margin: EdgeInsets.symmetric(
+                horizontal: deviceSize.width * 0.02,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  SizedBox(
+                    height: 15.0,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    margin: const EdgeInsets.only(right: 8.0, left: 8),
+                    padding: EdgeInsets.all(10),
+                    decoration: ShapeDecoration(
+                      color: Color(0xfff9f9fb),
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          width: 0.0,
+                          color: Color(0xfff9f9fb),
                         ),
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
                       ),
-                      child: DropdownButtonHideUnderline(
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 0, left: 3),
-                          child: new DropdownButton<String>(
-                            isExpanded: true,
-                            hint: new Text(
-                              "Select Batch",
-                              style: TextStyle(color: Color(0xffBBBFC3)),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 0, left: 3),
+                        child: new DropdownButton<String>(
+                          isExpanded: true,
+                          hint: new Text(
+                            "Select Batch",
+                            style: TextStyle(color: Color(0xffBBBFC3)),
+                          ),
+                          icon: Padding(
+                            padding: const EdgeInsets.only(left: 0),
+                            child: Icon(
+                              Icons.arrow_drop_down,
+                              color: Colors.black,
                             ),
-                            icon: Padding(
-                              padding: const EdgeInsets.only(left: 0),
-                              child: Icon(
-                                Icons.arrow_drop_down,
-                                color: Colors.black,
-                              ),
-                            ),
-                            value: selectedRegion5,
-                            isDense: true,
-                            onChanged: (newValue) {
-                              setState(() {
-                                selectedRegion5 = newValue;
-                                List<String> item = _region5.map((Region5 map) {
-                                  for (int i = 0; i < _region5.length; i++) {
-                                    if (selectedRegion5 ==
-                                        map.THIRD_LEVEL_NAME) {
-                                      _type5 = map.THIRD_LEVEL_ID;
-                                      return map.THIRD_LEVEL_ID;
-                                    }
+                          ),
+                          value: selectedRegion5,
+                          isDense: true,
+                          onChanged: (newValue) {
+                            setState(() {
+                              selectedRegion5 = newValue;
+                              List<String> item = _region5.map((Region5 map) {
+                                for (int i = 0; i < _region5.length; i++) {
+                                  if (selectedRegion5 == map.THIRD_LEVEL_NAME) {
+                                    _type5 = map.THIRD_LEVEL_ID;
+                                    return map.THIRD_LEVEL_ID;
                                   }
-                                }).toList();
-                              });
-                            },
-                            items: _region5.map((Region5 map) {
-                              return new DropdownMenuItem<String>(
-                                value: map.THIRD_LEVEL_NAME,
-                                child: new Text(map.THIRD_LEVEL_NAME,
-                                    style:
-                                    new TextStyle(color: Colors.black87)),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 15.0),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: const EdgeInsets.only(right: 8.0, left: 8),
-                      padding: EdgeInsets.all(10),
-                      decoration: ShapeDecoration(
-                        color: Color(0xfff9f9fb),
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            width: 0.0,
-                            color: Color(0xfff9f9fb),
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        ),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 0, left: 3),
-                          child: new DropdownButton<String>(
-                            isExpanded: true,
-                            hint: new Text(
-                              "Select Class",
-                              style: TextStyle(color: Color(0xffBBBFC3)),
-                            ),
-                            icon: Padding(
-                              padding: const EdgeInsets.only(left: 0),
-                              child: Icon(
-                                Icons.arrow_drop_down,
-                                color: Colors.black,
-                              ),
-                            ),
-                            value: selectedRegion3,
-                            isDense: true,
-                            onChanged: (newValue) {
-                              setState(() {
-                                selectedRegion3 = newValue;
-                                List<String> item = _region3.map((Region3 map) {
-                                  for (int i = 0; i < _region3.length; i++) {
-                                    if (selectedRegion3 ==
-                                        map.THIRD_LEVEL_NAME) {
-                                      _type3 = map.THIRD_LEVEL_ID;
-                                      return map.THIRD_LEVEL_ID;
-                                    }
-                                  }
-                                }).toList();
-                              });
-                            },
-                            items: _region3.map((Region3 map) {
-                              return new DropdownMenuItem<String>(
-                                value: map.THIRD_LEVEL_NAME,
-                                child: new Text(map.THIRD_LEVEL_NAME,
-                                    style:
-                                    new TextStyle(color: Colors.black87)),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 15.0),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: const EdgeInsets.only(right: 8.0, left: 8),
-                      padding: EdgeInsets.all(10),
-                      decoration: ShapeDecoration(
-                        color: Color(0xfff9f9fb),
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            width: 0.0,
-                            color: Color(0xfff9f9fb),
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        ),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 0, left: 3),
-                          child: new DropdownButton<String>(
-                            isExpanded: true,
-                            hint: new Text(
-                              "Select Board",
-                              style: TextStyle(color: Color(0xffBBBFC3)),
-                            ),
-                            icon: Padding(
-                              padding: const EdgeInsets.only(left: 0),
-                              child: Icon(
-                                Icons.arrow_drop_down,
-                                color: Colors.black,
-                              ),
-                            ),
-                            value: selectedRegion,
-                            isDense: true,
-                            onChanged: (newValue) {
-                              setState(() {
-                                selectedRegion = newValue;
-                                List<String> item = _region.map((Region map) {
-                                  for (int i = 0; i < _region.length; i++) {
-                                    if (selectedRegion ==
-                                        map.THIRD_LEVEL_NAME) {
-                                      _type = map.THIRD_LEVEL_ID;
-                                      return map.THIRD_LEVEL_ID;
-                                    }
-                                  }
-                                }).toList();
-                                valuefirst = false;
-                                list.clear();
-
-                                _chapterData = _getChapterData(_type, _type3);
-                              });
-                            },
-                            items: _region.map((Region map) {
-                              return new DropdownMenuItem<String>(
-                                value: map.THIRD_LEVEL_NAME,
-                                child: new Text(map.THIRD_LEVEL_NAME,
-                                    style:
-                                    new TextStyle(color: Colors.black87)),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 15.0),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: const EdgeInsets.only(right: 8.0, left: 8),
-                      padding: EdgeInsets.all(10),
-                      decoration: ShapeDecoration(
-                        color: Color(0xfff9f9fb),
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            width: 0.0,
-                            color: Color(0xfff9f9fb),
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        ),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 0, left: 3),
-                          child: new DropdownButton<String>(
-                            isExpanded: true,
-                            hint: new Text(
-                              "Select Chapter",
-                              style: TextStyle(color: Color(0xffBBBFC3)),
-                            ),
-                            icon: Padding(
-                              padding: const EdgeInsets.only(left: 0),
-                              child: Icon(
-                                Icons.arrow_drop_down,
-                                color: Colors.black,
-                              ),
-                            ),
-                            value: selectedRegion1,
-
-                            onChanged: (newValue) {
-                              setState(() {
-                                selectedRegion1 = newValue;
-                                List<String> item = _region1.map((Region1 map) {
-                                  for (int i = 0; i < _region1.length; i++) {
-                                    if (selectedRegion1 ==
-                                        map.THIRD_LEVEL_NAME) {
-                                      _type1 = map.THIRD_LEVEL_ID;
-                                      return map.THIRD_LEVEL_ID;
-                                    }
-                                  }
-                                }).toList();
-
-
-                                _topicData=_getTopicData(_type1);
-                              });
-                            },
-                            items: _region1.map((Region1 map) {
-                              return new DropdownMenuItem<String>(
-                                value: map.THIRD_LEVEL_NAME,
-                                child: new Text(map.THIRD_LEVEL_NAME,
-                                    style:
-                                    new TextStyle(color: Colors.black87)),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 15.0),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: const EdgeInsets.only(right: 8.0, left: 8),
-                      padding: EdgeInsets.all(10),
-                      decoration: ShapeDecoration(
-                        color: Color(0xfff9f9fb),
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            width: 0.0,
-                            color: Color(0xfff9f9fb),
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        ),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 0, left: 3),
-                          child: new DropdownButton<String>(
-                            isExpanded: true,
-                            hint: new Text(
-                              "Select Topic",
-                              style: TextStyle(color: Color(0xffBBBFC3)),
-                            ),
-                            icon: Padding(
-                              padding: const EdgeInsets.only(left: 0),
-                              child: Icon(
-                                Icons.arrow_drop_down,
-                                color: Colors.black,
-                              ),
-                            ),
-                            value: selectedRegion2,
-
-                            onChanged: (newValue) {
-                              setState(() {
-                                selectedRegion2 = newValue;
-                                List<String> item = _region2.map((Region2 map) {
-                                  for (int i = 0; i < _region2.length; i++) {
-                                    if (selectedRegion2 ==
-                                        map.THIRD_LEVEL_NAME) {
-                                      _type2 = map.THIRD_LEVEL_ID;
-                                      return map.THIRD_LEVEL_ID;
-                                    }
-                                  }
-                                }).toList();
-                                _dTData=_difTypeCategories();
-                                _dLData= _difLevCategories();
-
-                              });
-                            },
-                            items: _region2.map((Region2 map) {
-                              return new DropdownMenuItem<String>(
-                                value: map.THIRD_LEVEL_NAME,
-                                child: new Text(map.THIRD_LEVEL_NAME,
-                                    style:
-                                    new TextStyle(color: Colors.black87)),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 15.0),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: const EdgeInsets.only(right: 8.0, left: 8),
-                      padding: EdgeInsets.all(10),
-                      decoration: ShapeDecoration(
-                        color: Color(0xfff9f9fb),
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            width: 0.0,
-                            color: Color(0xfff9f9fb),
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        ),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 0, left: 3),
-                          child: new DropdownButton<String>(
-                            isExpanded: true,
-                            hint: new Text(
-                              "Select question type",
-                              style: TextStyle(color: Color(0xffBBBFC3)),
-                            ),
-                            icon: Padding(
-                              padding: const EdgeInsets.only(left: 0),
-                              child: Icon(
-                                Icons.arrow_drop_down,
-                                color: Colors.black,
-                              ),
-                            ),
-                            value: selectedRegion4,
-                            isDense: true,
-                            onChanged: (newValue) {
-                              setState(() {
-                                selectedRegion4 = newValue;
-                                List<String> item = _region4.map((Region4 map) {
-                                  for (int i = 0; i < _region4.length; i++) {
-                                    if (selectedRegion4 ==
-                                        map.THIRD_LEVEL_NAME) {
-                                      _type4 = map.THIRD_LEVEL_ID;
-                                      return map.THIRD_LEVEL_ID;
-                                    }
-                                  }
-                                }).toList();
-
-                              });
-                            },
-                            items: _region4.map((Region4 map) {
-                              return new DropdownMenuItem<String>(
-                                value: map.THIRD_LEVEL_NAME,
-                                child: new Text(map.THIRD_LEVEL_NAME,
-                                    style:
-                                    new TextStyle(color: Colors.black87)),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 15.0),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: const EdgeInsets.only(right: 8.0, left: 8),
-                      padding: EdgeInsets.all(10),
-                      decoration: ShapeDecoration(
-                        color: Color(0xfff9f9fb),
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            width: 0.0,
-                            color: Color(0xfff9f9fb),
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        ),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 0, left: 3),
-                          child: new DropdownButton<String>(
-                            isExpanded: true,
-                            hint: new Text(
-                              "Select difficulty level",
-                              style: TextStyle(color: Color(0xffBBBFC3)),
-                            ),
-                            icon: Padding(
-                              padding: const EdgeInsets.only(left: 0),
-                              child: Icon(
-                                Icons.arrow_drop_down,
-                                color: Colors.black,
-                              ),
-                            ),
-                            value: selectedRegion6,
-                            isDense: true,
-                            onChanged: (newValue) {
-                              setState(() {
-                                selectedRegion6 = newValue;
-                                List<String> item = _region6.map((Region6 map) {
-                                  for (int i = 0; i < _region6.length; i++) {
-                                    if (selectedRegion6 ==
-                                        map.THIRD_LEVEL_NAME) {
-                                      _type6 = map.THIRD_LEVEL_ID;
-                                      return map.THIRD_LEVEL_ID;
-                                    }
-                                  }
-                                }).toList();
-
-                              });
-                            },
-                            items: _region6.map((Region6 map) {
-                              return new DropdownMenuItem<String>(
-                                value: map.THIRD_LEVEL_NAME,
-                                child: new Text(map.THIRD_LEVEL_NAME,
-                                    style:
-                                    new TextStyle(color: Colors.black87)),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 15.0),
-
-
-                    SizedBox(
-                      height: 30.0,
-                    ),
-                    Container(
-                      alignment: Alignment.bottomCenter,
-                      width: MediaQuery.of(context).size.width,
-                      margin: const EdgeInsets.only(
-                          right: 8.0, left: 8, bottom: 30),
-                      child: ButtonTheme(
-                        height: 28.0,
-                        minWidth: MediaQuery.of(context).size.width * 0.80,
-                        child: RaisedButton(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 15, horizontal: 50),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0)),
-                          textColor: Colors.white,
-                          color: Color(0xff017EFF),
-                          onPressed: () async {
-
-                              if (_type5 != "") {
-                                if (_type != "") {
-                                  if (_type1 != "") {
-
-                                    Navigator.pushNamed(
-                                      context,
-                                      '/enter-question',
-                                      arguments: <String, String>{
-                                        'chapter_id': _type1,
-                                        'batch_id': _type5,
-                                        'topic_name': selectedRegion2,
-                                        'board_id': _type,
-                                        'class_id': _type3,
-                                        'question_type': _type4,
-                                        'difficulty_level': _type6,
-                                      },
-                                    );
-                                  } else {
-                                    Fluttertoast.showToast(
-                                        msg: "Please select any chapter.");
-                                  }
-                                } else {
-                                  Fluttertoast.showToast(
-                                      msg: "Please select board.");
                                 }
+                              }).toList();
+                            });
+                          },
+                          items: _region5.map((Region5 map) {
+                            return new DropdownMenuItem<String>(
+                              value: map.THIRD_LEVEL_NAME,
+                              child: new Text(map.THIRD_LEVEL_NAME,
+                                  style: new TextStyle(color: Colors.black87)),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15.0),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    margin: const EdgeInsets.only(right: 8.0, left: 8),
+                    padding: EdgeInsets.all(10),
+                    decoration: ShapeDecoration(
+                      color: Color(0xfff9f9fb),
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          width: 0.0,
+                          color: Color(0xfff9f9fb),
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      ),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 0, left: 3),
+                        child: new DropdownButton<String>(
+                          isExpanded: true,
+                          hint: new Text(
+                            "Select Class",
+                            style: TextStyle(color: Color(0xffBBBFC3)),
+                          ),
+                          icon: Padding(
+                            padding: const EdgeInsets.only(left: 0),
+                            child: Icon(
+                              Icons.arrow_drop_down,
+                              color: Colors.black,
+                            ),
+                          ),
+                          value: selectedRegion3,
+                          isDense: true,
+                          onChanged: (newValue) {
+                            setState(() {
+                              selectedRegion3 = newValue;
+                              List<String> item = _region3.map((Region3 map) {
+                                for (int i = 0; i < _region3.length; i++) {
+                                  if (selectedRegion3 == map.THIRD_LEVEL_NAME) {
+                                    _type3 = map.THIRD_LEVEL_ID;
+                                    return map.THIRD_LEVEL_ID;
+                                  }
+                                }
+                              }).toList();
+                            });
+                          },
+                          items: _region3.map((Region3 map) {
+                            return new DropdownMenuItem<String>(
+                              value: map.THIRD_LEVEL_NAME,
+                              child: new Text(map.THIRD_LEVEL_NAME,
+                                  style: new TextStyle(color: Colors.black87)),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15.0),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    margin: const EdgeInsets.only(right: 8.0, left: 8),
+                    padding: EdgeInsets.all(10),
+                    decoration: ShapeDecoration(
+                      color: Color(0xfff9f9fb),
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          width: 0.0,
+                          color: Color(0xfff9f9fb),
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      ),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 0, left: 3),
+                        child: new DropdownButton<String>(
+                          isExpanded: true,
+                          hint: new Text(
+                            "Select Board",
+                            style: TextStyle(color: Color(0xffBBBFC3)),
+                          ),
+                          icon: Padding(
+                            padding: const EdgeInsets.only(left: 0),
+                            child: Icon(
+                              Icons.arrow_drop_down,
+                              color: Colors.black,
+                            ),
+                          ),
+                          value: selectedRegion,
+                          isDense: true,
+                          onChanged: (newValue) {
+                            setState(() {
+                              selectedRegion = newValue;
+                              List<String> item = _region.map((Region map) {
+                                for (int i = 0; i < _region.length; i++) {
+                                  if (selectedRegion == map.THIRD_LEVEL_NAME) {
+                                    _type = map.THIRD_LEVEL_ID;
+                                    return map.THIRD_LEVEL_ID;
+                                  }
+                                }
+                              }).toList();
+                              valuefirst = false;
+                              list.clear();
+
+                              _chapterData = _getChapterData(_type, _type3,
+                                  subjectList.join(",").toString());
+                            });
+                          },
+                          items: _region.map((Region map) {
+                            return new DropdownMenuItem<String>(
+                              value: map.THIRD_LEVEL_NAME,
+                              child: new Text(map.THIRD_LEVEL_NAME,
+                                  style: new TextStyle(color: Colors.black87)),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15.0),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    margin: const EdgeInsets.only(right: 8.0, left: 8),
+                    padding: EdgeInsets.all(10),
+                    decoration: ShapeDecoration(
+                      color: Color(0xfff9f9fb),
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          width: 0.0,
+                          color: Color(0xfff9f9fb),
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      ),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 0, left: 3),
+                        child: new DropdownButton<String>(
+                          isExpanded: true,
+                          hint: new Text(
+                            "Select Chapter",
+                            style: TextStyle(color: Color(0xffBBBFC3)),
+                          ),
+                          icon: Padding(
+                            padding: const EdgeInsets.only(left: 0),
+                            child: Icon(
+                              Icons.arrow_drop_down,
+                              color: Colors.black,
+                            ),
+                          ),
+                          value: selectedRegion1,
+                          onChanged: (newValue) {
+                            setState(() {
+                              selectedRegion1 = newValue;
+                              List<String> item = _region1.map((Region1 map) {
+                                for (int i = 0; i < _region1.length; i++) {
+                                  if (selectedRegion1 == map.THIRD_LEVEL_NAME) {
+                                    _type1 = map.THIRD_LEVEL_ID;
+                                    return map.THIRD_LEVEL_ID;
+                                  }
+                                }
+                              }).toList();
+
+                              _topicData = _getTopicData(_type1);
+                            });
+                          },
+                          items: _region1.map((Region1 map) {
+                            return new DropdownMenuItem<String>(
+                              value: map.THIRD_LEVEL_NAME,
+                              child: new Text(map.THIRD_LEVEL_NAME,
+                                  style: new TextStyle(color: Colors.black87)),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15.0),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    margin: const EdgeInsets.only(right: 8.0, left: 8),
+                    padding: EdgeInsets.all(10),
+                    decoration: ShapeDecoration(
+                      color: Color(0xfff9f9fb),
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          width: 0.0,
+                          color: Color(0xfff9f9fb),
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      ),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 0, left: 3),
+                        child: new DropdownButton<String>(
+                          isExpanded: true,
+                          hint: new Text(
+                            "Select Topic",
+                            style: TextStyle(color: Color(0xffBBBFC3)),
+                          ),
+                          icon: Padding(
+                            padding: const EdgeInsets.only(left: 0),
+                            child: Icon(
+                              Icons.arrow_drop_down,
+                              color: Colors.black,
+                            ),
+                          ),
+                          value: selectedRegion2,
+                          onChanged: (newValue) {
+                            setState(() {
+                              selectedRegion2 = newValue;
+                              List<String> item = _region2.map((Region2 map) {
+                                for (int i = 0; i < _region2.length; i++) {
+                                  if (selectedRegion2 == map.THIRD_LEVEL_NAME) {
+                                    _type2 = map.THIRD_LEVEL_ID;
+                                    return map.THIRD_LEVEL_ID;
+                                  }
+                                }
+                              }).toList();
+                              _dTData = _difTypeCategories();
+                              _dLData = _difLevCategories();
+                            });
+                          },
+                          items: _region2.map((Region2 map) {
+                            return new DropdownMenuItem<String>(
+                              value: map.THIRD_LEVEL_NAME,
+                              child: new Text(map.THIRD_LEVEL_NAME,
+                                  style: new TextStyle(color: Colors.black87)),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15.0),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    margin: const EdgeInsets.only(right: 8.0, left: 8),
+                    padding: EdgeInsets.all(10),
+                    decoration: ShapeDecoration(
+                      color: Color(0xfff9f9fb),
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          width: 0.0,
+                          color: Color(0xfff9f9fb),
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      ),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 0, left: 3),
+                        child: new DropdownButton<String>(
+                          isExpanded: true,
+                          hint: new Text(
+                            "Select question type",
+                            style: TextStyle(color: Color(0xffBBBFC3)),
+                          ),
+                          icon: Padding(
+                            padding: const EdgeInsets.only(left: 0),
+                            child: Icon(
+                              Icons.arrow_drop_down,
+                              color: Colors.black,
+                            ),
+                          ),
+                          value: selectedRegion4,
+                          isDense: true,
+                          onChanged: (newValue) {
+                            setState(() {
+                              selectedRegion4 = newValue;
+                              List<String> item = _region4.map((Region4 map) {
+                                for (int i = 0; i < _region4.length; i++) {
+                                  if (selectedRegion4 == map.THIRD_LEVEL_NAME) {
+                                    _type4 = map.THIRD_LEVEL_ID;
+                                    return map.THIRD_LEVEL_ID;
+                                  }
+                                }
+                              }).toList();
+                            });
+                          },
+                          items: _region4.map((Region4 map) {
+                            return new DropdownMenuItem<String>(
+                              value: map.THIRD_LEVEL_NAME,
+                              child: new Text(map.THIRD_LEVEL_NAME,
+                                  style: new TextStyle(color: Colors.black87)),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15.0),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    margin: const EdgeInsets.only(right: 8.0, left: 8),
+                    padding: EdgeInsets.all(10),
+                    decoration: ShapeDecoration(
+                      color: Color(0xfff9f9fb),
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          width: 0.0,
+                          color: Color(0xfff9f9fb),
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      ),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 0, left: 3),
+                        child: new DropdownButton<String>(
+                          isExpanded: true,
+                          hint: new Text(
+                            "Select difficulty level",
+                            style: TextStyle(color: Color(0xffBBBFC3)),
+                          ),
+                          icon: Padding(
+                            padding: const EdgeInsets.only(left: 0),
+                            child: Icon(
+                              Icons.arrow_drop_down,
+                              color: Colors.black,
+                            ),
+                          ),
+                          value: selectedRegion6,
+                          isDense: true,
+                          onChanged: (newValue) {
+                            setState(() {
+                              selectedRegion6 = newValue;
+                              List<String> item = _region6.map((Region6 map) {
+                                for (int i = 0; i < _region6.length; i++) {
+                                  if (selectedRegion6 == map.THIRD_LEVEL_NAME) {
+                                    _type6 = map.THIRD_LEVEL_ID;
+                                    return map.THIRD_LEVEL_ID;
+                                  }
+                                }
+                              }).toList();
+                            });
+                          },
+                          items: _region6.map((Region6 map) {
+                            return new DropdownMenuItem<String>(
+                              value: map.THIRD_LEVEL_NAME,
+                              child: new Text(map.THIRD_LEVEL_NAME,
+                                  style: new TextStyle(color: Colors.black87)),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15.0),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  Container(
+                    alignment: Alignment.bottomCenter,
+                    width: MediaQuery.of(context).size.width,
+                    margin:
+                        const EdgeInsets.only(right: 8.0, left: 8, bottom: 30),
+                    child: ButtonTheme(
+                      height: 28.0,
+                      minWidth: MediaQuery.of(context).size.width * 0.80,
+                      child: RaisedButton(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 15, horizontal: 50),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0)),
+                        textColor: Colors.white,
+                        color: Color(0xff017EFF),
+                        onPressed: () async {
+                          if (_type5 != "") {
+                            if (_type != "") {
+                              if (_type1 != "") {
+                                Navigator.pushNamed(
+                                  context,
+                                  '/enter-question',
+                                  arguments: <String, String>{
+                                    'chapter_id': _type1,
+                                    'batch_id': _type5,
+                                    'topic_name': selectedRegion2,
+                                    'board_id': _type,
+                                    'class_id': _type3,
+                                    'question_type': _type4,
+                                    'difficulty_level': _type6,
+                                  },
+                                );
                               } else {
                                 Fluttertoast.showToast(
-                                    msg: "Please select batch.");
+                                    msg: "Please select any chapter.");
                               }
-
-                          },
-                          child: Text("Next", style: next),
-                        ),
+                            } else {
+                              Fluttertoast.showToast(
+                                  msg: "Please select board.");
+                            }
+                          } else {
+                            Fluttertoast.showToast(msg: "Please select batch.");
+                          }
+                        },
+                        child: Text("Next", style: next),
                       ),
                     ),
-                  ],
-                )),
-
+                  ),
+                ],
+              )),
         ),
       ),
     );
@@ -1201,4 +1169,3 @@ class Region4 {
     );
   }
 }
-

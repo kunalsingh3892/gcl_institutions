@@ -64,7 +64,7 @@ class _SettingsState extends State<TestList> {
         email_id = prefs.getString('email_id').toString();
         _mobile = prefs.getString('mobile_no').toString();
         user_id = prefs.getString('user_id').toString();
-       // order_id = prefs.getString('order_id').toString();
+        // order_id = prefs.getString('order_id').toString();
         profile_image = prefs.getString('profile_image').toString();
 
         _chapterData = _getChapterData();
@@ -105,20 +105,16 @@ class _SettingsState extends State<TestList> {
     };
     var response = await http.post(
       new Uri.https(BASE_URL, API_PATH + "/institute-studenttest-list"),
-      body: {
-        "user_id": users_id
-
-      },
+      body: {"user_id": users_id},
       headers: headers,
     );
 
-    print(jsonEncode({
-      "user_id": users_id
-    }));
+    print(jsonEncode({"user_id": users_id}));
+    print(response.body);
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
 
-     /* setState(() {
+      /* setState(() {
         payment = data['student_info']['payment_flag'].toString();
         total_test_quetion = data['total_test'].toString();
       });*/
@@ -299,11 +295,16 @@ class _SettingsState extends State<TestList> {
                               context,
                               '/view-performance',
                               arguments: <String, String>{
-                                'test_id': snapshot.data['Response'][index]['inst_test_id']!=null?
-                                snapshot.data['Response'][index]['inst_test_id'].toString():
-                                snapshot.data['Response'][index]['id'].toString(),
+                                'test_id': snapshot.data['Response'][index]
+                                            ['inst_test_id'] !=
+                                        null
+                                    ? snapshot.data['Response'][index]
+                                            ['inst_test_id']
+                                        .toString()
+                                    : snapshot.data['Response'][index]['id']
+                                        .toString(),
                                 'user_id': users_id,
-                                'type':type,
+                                'type': type,
                               },
                             );
                           }
@@ -348,7 +349,6 @@ class _SettingsState extends State<TestList> {
                                             color: Colors.white,
                                           ),
                                         ),
-
                                       ),
                                     ),
                                     SizedBox(
@@ -394,14 +394,16 @@ class _SettingsState extends State<TestList> {
                                       width: 5.0,
                                     ),
                                     snapshot.data['Response'][index]
-                                    ['is_taken']!=0?  Icon(
-                                      Icons.arrow_right,
-                                      color: Color(0xff017EFF),
-                                      size: 20,
-                                    ):Container()
+                                                ['is_taken'] !=
+                                            0
+                                        ? Icon(
+                                            Icons.arrow_right,
+                                            color: Color(0xff017EFF),
+                                            size: 20,
+                                          )
+                                        : Container()
                                   ]),
                             ),
-
                           ]),
 
                           /*   new Container(
@@ -413,7 +415,7 @@ class _SettingsState extends State<TestList> {
                         ]),
                       ),
                       secondaryActions: <Widget>[
-                  /*      snapshot.data['Response'][index]['is_taken'] == 0
+                        /*      snapshot.data['Response'][index]['is_taken'] == 0
                             ? IconSlideAction(
                                 caption: 'Delete',
                                 color: Color(0xff017EFF),
@@ -439,20 +441,21 @@ class _SettingsState extends State<TestList> {
         } else {
           return Center(
               child: Align(
-                alignment: Alignment.center,
-                child: Container(
-                  child: SpinKitFadingCube(
-                    itemBuilder: (_, int index) {
-                      return DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: index.isEven ? Color(0xff017EFF) :Color(0xffFFC700),
-                        ),
-                      );
-                    },
-                    size: 30.0,
-                  ),
-                ),
-              ));
+            alignment: Alignment.center,
+            child: Container(
+              child: SpinKitFadingCube(
+                itemBuilder: (_, int index) {
+                  return DecoratedBox(
+                    decoration: BoxDecoration(
+                      color:
+                          index.isEven ? Color(0xff017EFF) : Color(0xffFFC700),
+                    ),
+                  );
+                },
+                size: 30.0,
+              ),
+            ),
+          ));
         }
       },
     );
@@ -516,8 +519,6 @@ class _SettingsState extends State<TestList> {
           ),
           backgroundColor: Colors.transparent,
         ),
-
-
         body: ModalProgressHUD(
           inAsyncCall: isLoading,
           child: Container(
@@ -531,7 +532,7 @@ class _SettingsState extends State<TestList> {
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                   /* Container(
+                    /* Container(
                       padding: EdgeInsets.only(left: 15, right: 15, top: 5),
                       margin: EdgeInsets.only(bottom: 10),
                       child: Row(children: <Widget>[
@@ -598,7 +599,7 @@ class _SettingsState extends State<TestList> {
                             ),
                           ),
                         ),
-                        *//* SizedBox(
+                        */ /* SizedBox(
                           height: 10.0,
                         ),
                         Container(
@@ -610,7 +611,7 @@ class _SettingsState extends State<TestList> {
                               height: 15,
                               width: 15,
                               fit: BoxFit.fill),
-                        ),*//*
+                        ),*/ /*
                       ]),
                     ),*/
                     Expanded(

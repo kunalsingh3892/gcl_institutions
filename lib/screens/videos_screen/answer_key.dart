@@ -19,10 +19,7 @@ import 'package:http/http.dart' as http;
 
 import '../../constants.dart';
 
-
-
 class ReViewMCQ extends StatefulWidget {
-
   final Object argument;
 
   const ReViewMCQ({Key key, this.argument}) : super(key: key);
@@ -87,18 +84,19 @@ class _LoginWithLogoState extends State<ReViewMCQ> {
     var response = await http.post(
       new Uri.https(BASE_URL, API_PATH + "/answerkey"),
       body: {
-        "test_id": test_id,
+        "institute_id": user_id.toString(),
+        "inst_test_id": test_id.toString(),
+        "test_id": ""
       },
       headers: headers,
     );
-    print(
-        {
-      "test_id": test_id,
-
+    print({
+      "institute_id": user_id.toString(),
+      "inst_test_id": test_id.toString(),
+      "test_id": ""
     });
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
-
 
       return data;
     } else {
@@ -108,13 +106,15 @@ class _LoginWithLogoState extends State<ReViewMCQ> {
 
   var currentTime;
 
-
   int id = 0;
 
   TextStyle normalText7 = GoogleFonts.montserrat(
       fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xff2E2A4A));
   TextStyle normalText6 = GoogleFonts.montserrat(
-      fontSize: 15, fontWeight: FontWeight.w500, color: Color(0xff2E2A4A),letterSpacing: 1);
+      fontSize: 15,
+      fontWeight: FontWeight.w500,
+      color: Color(0xff2E2A4A),
+      letterSpacing: 1);
   TextStyle normalText5 = GoogleFonts.montserrat(
       fontSize: 15, fontWeight: FontWeight.w400, color: Color(0xff2E2A4A));
 
@@ -124,7 +124,7 @@ class _LoginWithLogoState extends State<ReViewMCQ> {
   TextStyle normalText3 = GoogleFonts.montserrat(
       fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xff2E2A4A));
 
-  bool full_show=false;
+  bool full_show = false;
 
   CarouselController buttonCarouselController = CarouselController();
 
@@ -133,353 +133,689 @@ class _LoginWithLogoState extends State<ReViewMCQ> {
       future: _quiz,
       builder: (context, snapshot) {
         var getScreenHeight = MediaQuery.of(context).size.height;
-        if (snapshot.connectionState == ConnectionState.done) {
+        if (snapshot.hasData) {
           var errorCode = snapshot.data['ErrorCode'];
           var response = snapshot.data['Response'];
+          print(errorCode);
           if (errorCode == 0) {
-            return Column(
-              children: [
-                response.length != 0
-                    ? Container(
-                  child: CarouselSlider.builder(
-                      carouselController: buttonCarouselController,
-                      options: CarouselOptions(
-                        height: getScreenHeight,
-                        initialPage: 0,
-                        viewportFraction: 1.0,
-                        enableInfiniteScroll: false,
-                        //  aspectRatio: 1,
-                        scrollPhysics: NeverScrollableScrollPhysics(),
-                        reverse: false,
-                        // autoPlay: false,
-                        enlargeCenterPage: false,
-                        scrollDirection: Axis.horizontal,
-                      ),
-                      itemCount: response.length,
-                      itemBuilder: (BuildContext context, int itemIndex) {
-                        return ListView(
-                            primary: false,
-                            children: <Widget>[
+            return response.length != 0
+                ? Container(
+                    child: CarouselSlider.builder(
+                        carouselController: buttonCarouselController,
+                        options: CarouselOptions(
+                          height: getScreenHeight,
+                          initialPage: 0,
+                          viewportFraction: 1.0,
+                          enableInfiniteScroll: false,
+                          //  aspectRatio: 1,
+                          scrollPhysics: NeverScrollableScrollPhysics(),
+                          reverse: false,
+                          // autoPlay: false,
+                          enlargeCenterPage: false,
+                          scrollDirection: Axis.horizontal,
+                        ),
+                        itemCount: response.length,
+                        itemBuilder: (BuildContext context, int itemIndex) {
+                          return ListView(primary: false, children: <Widget>[
+                            Container(
+                                child: Column(children: <Widget>[
                               Container(
-                                  child: Column(children: <Widget>[
-                                    Container(
-                                      child: Stack(children: <Widget>[
-                                        Image(
-                                          image: AssetImage(
-                                              'assets/images/Vector6.png'),
-                                          // fit: BoxFit.fill,
-                                        ),
-                                        InkWell(
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 30, left: 22),
-                                            child: Container(
-                                              width: 10,
-                                              height: 17,
-                                              child: Image(
-                                                  image: AssetImage(
-                                                      'assets/images/Icon.png'),
-                                                  height: 20,
-                                                  width: 10,
-                                                  fit: BoxFit.fill),
+                                child: Stack(children: <Widget>[
+                                  Image(
+                                    image:
+                                        AssetImage('assets/images/Vector6.png'),
+                                    // fit: BoxFit.fill,
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 30, left: 22),
+                                      child: Container(
+                                        width: 10,
+                                        height: 17,
+                                        child: Image(
+                                            image: AssetImage(
+                                                'assets/images/Icon.png'),
+                                            height: 20,
+                                            width: 10,
+                                            fit: BoxFit.fill),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    right: 0.0,
+                                    left: 0.0,
+                                    top: 30.0,
+                                    bottom: 0.0,
+                                    child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Container(
+                                            child: Image.asset(
+                                              'assets/images/question.png',
+                                              width: 50,
+                                              height: 50,
                                             ),
                                           ),
-                                        ),
-                                        Positioned(
-                                          right: 0.0,
-                                          left: 0.0,
-                                          top: 30.0,
-                                          bottom: 0.0,
-                                          child: Column(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                              children: <Widget>[
-                                                Container(
-                                                  child: Image.asset(
-                                                    'assets/images/question.png',
-                                                    width: 50,
-                                                    height: 50,
-                                                  ),
+                                          Expanded(
+                                            child: CircleAvatar(
+                                              backgroundColor:
+                                                  Color(0xff51DEA0),
+                                              radius: 40,
+                                              child: Icon(
+                                                Icons.reviews,
+                                                color: Colors.white,
+                                                size: 50,
+                                              ),
+                                            ),
+                                          )
+                                        ]),
+                                  ),
+                                ]),
+                              ),
+                              response[itemIndex]['question_type'] ==
+                                      "Case Study"
+                                  ? itemIndex == 11
+                                      ? Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Container(
+                                            color: Color(0xffF9F9FB),
+                                            padding: EdgeInsets.only(
+                                                left: 15,
+                                                right: 15,
+                                                top: 10,
+                                                bottom: 10),
+                                            margin: EdgeInsets.only(
+                                                left: 10, right: 10),
+                                            child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  response[itemIndex][
+                                                              'comprahensive_paragraph ']
+                                                          .contains("<")
+                                                      ? Flexible(
+                                                          child: Html(
+                                                            data: response[
+                                                                    itemIndex][
+                                                                'comprahensive_paragraph '],
+                                                            style: {
+                                                              "table": Style(
+                                                                backgroundColor:
+                                                                    Color.fromARGB(
+                                                                        0x50,
+                                                                        0xee,
+                                                                        0xee,
+                                                                        0xee),
+                                                              ),
+                                                              "tr": Style(
+                                                                border: Border(
+                                                                  bottom: BorderSide(
+                                                                      color: Colors
+                                                                          .black),
+                                                                  top: BorderSide(
+                                                                      color: Colors
+                                                                          .black),
+                                                                  right: BorderSide(
+                                                                      color: Colors
+                                                                          .black),
+                                                                  left: BorderSide(
+                                                                      color: Colors
+                                                                          .black),
+                                                                ),
+                                                              ),
+                                                              "th": Style(
+                                                                padding:
+                                                                    EdgeInsets
+                                                                        .all(6),
+                                                                backgroundColor:
+                                                                    Colors.grey,
+                                                              ),
+                                                              "td": Style(
+                                                                padding:
+                                                                    EdgeInsets
+                                                                        .all(6),
+                                                                alignment:
+                                                                    Alignment
+                                                                        .topLeft,
+                                                              ),
+                                                              'h5': Style(
+                                                                  maxLines: 2,
+                                                                  textOverflow:
+                                                                      TextOverflow
+                                                                          .ellipsis),
+                                                            },
+                                                          ),
+                                                        )
+                                                      : Flexible(
+                                                          child: Text(
+                                                              response[
+                                                                      itemIndex]
+                                                                  [
+                                                                  'comprahensive_paragraph '],
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .left,
+                                                              maxLines: 100,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .visible,
+                                                              style:
+                                                                  normalText4),
+                                                        ),
+                                                  /*  Icon(
+                                              Icons.arrow_drop_down,
+                                              color: Color(0xff017EFF),
+                                              size: 24,
+                                            )*/
+                                                ]),
+                                          ),
+                                        )
+                                      : InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              full_show = !full_show;
+                                            });
+                                          },
+                                          child: Align(
+                                            alignment: Alignment.topLeft,
+                                            child: Container(
+                                              color: Color(0xffF9F9FB),
+                                              padding: EdgeInsets.only(
+                                                  left: 15,
+                                                  right: 15,
+                                                  top: 10,
+                                                  bottom: 10),
+                                              margin: EdgeInsets.only(
+                                                  left: 10, right: 10),
+                                              child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    full_show
+                                                        ? response[itemIndex][
+                                                                    'comprahensive_paragraph ']
+                                                                .contains("<")
+                                                            ? Flexible(
+                                                                child: Html(
+                                                                  data: response[
+                                                                          itemIndex]
+                                                                      [
+                                                                      'comprahensive_paragraph '],
+                                                                  style: {
+                                                                    "table":
+                                                                        Style(
+                                                                      backgroundColor: Color.fromARGB(
+                                                                          0x50,
+                                                                          0xee,
+                                                                          0xee,
+                                                                          0xee),
+                                                                    ),
+                                                                    "tr": Style(
+                                                                      border:
+                                                                          Border(
+                                                                        bottom: BorderSide(
+                                                                            color:
+                                                                                Colors.black),
+                                                                        top: BorderSide(
+                                                                            color:
+                                                                                Colors.black),
+                                                                        right: BorderSide(
+                                                                            color:
+                                                                                Colors.black),
+                                                                        left: BorderSide(
+                                                                            color:
+                                                                                Colors.black),
+                                                                      ),
+                                                                    ),
+                                                                    "th": Style(
+                                                                      padding:
+                                                                          EdgeInsets.all(
+                                                                              6),
+                                                                      backgroundColor:
+                                                                          Colors
+                                                                              .grey,
+                                                                    ),
+                                                                    "td": Style(
+                                                                      padding:
+                                                                          EdgeInsets.all(
+                                                                              6),
+                                                                      alignment:
+                                                                          Alignment
+                                                                              .topLeft,
+                                                                    ),
+                                                                    'h5': Style(
+                                                                        maxLines:
+                                                                            2,
+                                                                        textOverflow:
+                                                                            TextOverflow.ellipsis),
+                                                                  },
+                                                                ),
+                                                              )
+                                                            : Flexible(
+                                                                child: Text(
+                                                                    response[
+                                                                            itemIndex]
+                                                                        [
+                                                                        'comprahensive_paragraph '],
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .left,
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .visible,
+                                                                    style:
+                                                                        normalText4),
+                                                              )
+                                                        : response[itemIndex][
+                                                                    'comprahensive_paragraph ']
+                                                                .contains("<")
+                                                            ? Flexible(
+                                                                child: Html(
+                                                                  data: response[
+                                                                          itemIndex]
+                                                                      [
+                                                                      'comprahensive_paragraph '],
+                                                                  style: {
+                                                                    "table":
+                                                                        Style(
+                                                                      backgroundColor: Color.fromARGB(
+                                                                          0x50,
+                                                                          0xee,
+                                                                          0xee,
+                                                                          0xee),
+                                                                    ),
+                                                                    "tr": Style(
+                                                                      border:
+                                                                          Border(
+                                                                        bottom: BorderSide(
+                                                                            color:
+                                                                                Colors.black),
+                                                                        top: BorderSide(
+                                                                            color:
+                                                                                Colors.black),
+                                                                        right: BorderSide(
+                                                                            color:
+                                                                                Colors.black),
+                                                                        left: BorderSide(
+                                                                            color:
+                                                                                Colors.black),
+                                                                      ),
+                                                                    ),
+                                                                    "th": Style(
+                                                                      padding:
+                                                                          EdgeInsets.all(
+                                                                              6),
+                                                                      backgroundColor:
+                                                                          Colors
+                                                                              .grey,
+                                                                    ),
+                                                                    "td": Style(
+                                                                      padding:
+                                                                          EdgeInsets.all(
+                                                                              6),
+                                                                      alignment:
+                                                                          Alignment
+                                                                              .topLeft,
+                                                                    ),
+                                                                    'h5': Style(
+                                                                        maxLines:
+                                                                            2,
+                                                                        textOverflow:
+                                                                            TextOverflow.ellipsis),
+                                                                  },
+                                                                ),
+                                                              )
+                                                            : Flexible(
+                                                                child: Text(
+                                                                    response[
+                                                                            itemIndex]
+                                                                        [
+                                                                        'comprahensive_paragraph '],
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .left,
+                                                                    maxLines: 1,
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .visible,
+                                                                    style:
+                                                                        normalText4),
+                                                              ),
+                                                    full_show
+                                                        ? Icon(
+                                                            Icons
+                                                                .arrow_drop_up_outlined,
+                                                            color: Color(
+                                                                0xff017EFF),
+                                                            size: 24,
+                                                          )
+                                                        : Icon(
+                                                            Icons
+                                                                .arrow_drop_down,
+                                                            color: Color(
+                                                                0xff017EFF),
+                                                            size: 24,
+                                                          )
+                                                  ]),
+                                            ),
+                                          ),
+                                        )
+                                  : Container(),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Container(
+                                  padding: EdgeInsets.only(left: 15, right: 15),
+                                  child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Flexible(
+                                          child: Html(
+                                            data: "Q" +
+                                                (itemIndex + 1).toString() +
+                                                '. ' +
+                                                response[itemIndex]['question'],
+                                            style: {
+                                              "body": Style(
+                                                fontSize: FontSize(15.0),
+                                                color: Color(0xff2E2A4A),
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                              "table": Style(
+                                                backgroundColor: Color.fromARGB(
+                                                    0x50, 0xee, 0xee, 0xee),
+                                              ),
+                                              "tr": Style(
+                                                border: Border(
+                                                  bottom: BorderSide(
+                                                      color: Colors.black),
+                                                  top: BorderSide(
+                                                      color: Colors.black),
+                                                  right: BorderSide(
+                                                      color: Colors.black),
+                                                  left: BorderSide(
+                                                      color: Colors.black),
                                                 ),
-                                                Expanded(
-                                                  child: CircleAvatar(
-                                                    backgroundColor:
-                                                    Color(0xff51DEA0),
-                                                    radius: 40,
-                                                    child: Icon(
-                                                      Icons.reviews,
-                                                      color: Colors.white,
-                                                      size: 50,
-                                                    ),
-                                                  ),
-                                                )
-
-
-                                              ]),
+                                              ),
+                                              "th": Style(
+                                                padding: EdgeInsets.all(6),
+                                                backgroundColor: Colors.grey,
+                                              ),
+                                              "td": Style(
+                                                padding: EdgeInsets.all(6),
+                                                alignment: Alignment.topLeft,
+                                              ),
+                                              'h5': Style(
+                                                  maxLines: 2,
+                                                  textOverflow:
+                                                      TextOverflow.ellipsis),
+                                            },
+                                          ),
                                         ),
                                       ]),
-                                    ),
-
-                                    response[itemIndex]['question_type']=="Case Study"?
-                                    itemIndex==11?
-                                    Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Container(
-                                        color: Color(0xffF9F9FB),
-                                        padding: EdgeInsets.only(left: 15, right: 15,top: 10,bottom: 10),
-                                        margin: EdgeInsets.only(left: 10, right: 10),
-                                        child: Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: <Widget>[
-
-                                              response[itemIndex][
-                                              'comprahensive_paragraph '].contains("<")?Flexible(
-                                                child: Html(
-                                                  data: response[itemIndex][
-                                                  'comprahensive_paragraph '],
-                                                  style: {
-                                                    "table": Style(
-                                                      backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
-                                                    ),
-                                                    "tr": Style(
-                                                      border: Border(
-                                                        bottom: BorderSide(color: Colors.black),
-                                                        top: BorderSide(color: Colors.black),
-                                                        right: BorderSide(color: Colors.black),
-                                                        left: BorderSide(color: Colors.black),
-                                                      ),
-                                                    ),
-                                                    "th": Style(
-                                                      padding: EdgeInsets.all(6),
-                                                      backgroundColor: Colors.grey,
-                                                    ),
-                                                    "td": Style(
-                                                      padding: EdgeInsets.all(6),
-                                                      alignment: Alignment.topLeft,
-                                                    ),
-                                                    'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
-                                                  },
-
+                                ),
+                              ),
+                              SizedBox(
+                                height: 12,
+                              ),
+                              response[itemIndex]['question_type'] ==
+                                      "True False"
+                                  ? response[itemIndex]['final_result'] == "R"
+                                      ? Column(children: <Widget>[
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 12, horizontal: 10),
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.80,
+                                            decoration: BoxDecoration(
+                                                color: response[itemIndex][
+                                                            'option_first_color'] !=
+                                                        ""
+                                                    ? Color(0xff51DEA0)
+                                                    : Color(0xffF9F9FB),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(10))),
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 5, vertical: 5),
+                                            child: Html(
+                                              data: response[itemIndex]
+                                                  ['option_first'],
+                                              style: {
+                                                "table": Style(
+                                                  backgroundColor:
+                                                      Color.fromARGB(0x50, 0xee,
+                                                          0xee, 0xee),
                                                 ),
-                                              ):  Flexible(
-                                                child: Text(
-                                                    response[itemIndex]['comprahensive_paragraph '],
-                                                    textAlign: TextAlign.left,
-                                                    maxLines: 100,
-                                                    overflow: TextOverflow.visible,
-                                                    style: normalText4),
-                                              ),
-                                              /*  Icon(
-                                                  Icons.arrow_drop_down,
-                                                  color: Color(0xff017EFF),
-                                                  size: 24,
-                                                )*/
-                                            ]),
-                                      ),
-                                    ):
-                                    InkWell(
-                                      onTap: (){
-                                        setState(() {
-                                          full_show=!full_show;
-                                        });
-                                      },
-                                      child: Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Container(
-                                          color: Color(0xffF9F9FB),
-                                          padding: EdgeInsets.only(left: 15, right: 15,top: 10,bottom: 10),
-                                          margin: EdgeInsets.only(left: 10, right: 10),
-                                          child: Row(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: <Widget>[
-
-                                                full_show? response[itemIndex][
-                                                'comprahensive_paragraph '].contains("<")?Flexible(
-                                                  child: Html(
-                                                    data: response[itemIndex][
-                                                    'comprahensive_paragraph '],
-                                                    style: {
-                                                      "table": Style(
-                                                        backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
-                                                      ),
-                                                      "tr": Style(
-                                                        border: Border(
-                                                          bottom: BorderSide(color: Colors.black),
-                                                          top: BorderSide(color: Colors.black),
-                                                          right: BorderSide(color: Colors.black),
-                                                          left: BorderSide(color: Colors.black),
-                                                        ),
-                                                      ),
-                                                      "th": Style(
-                                                        padding: EdgeInsets.all(6),
-                                                        backgroundColor: Colors.grey,
-                                                      ),
-                                                      "td": Style(
-                                                        padding: EdgeInsets.all(6),
-                                                        alignment: Alignment.topLeft,
-                                                      ),
-                                                      'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
-                                                    },
-
-                                                  ),
-                                                ): Flexible(
-                                                  child: Text(
-                                                      response[itemIndex]['comprahensive_paragraph '],
-                                                      textAlign: TextAlign.left,
-
-                                                      overflow: TextOverflow.visible,
-                                                      style: normalText4),
-                                                ): response[itemIndex][
-                                                'comprahensive_paragraph '].contains("<")?Flexible(
-                                                  child: Html(
-                                                    data: response[itemIndex][
-                                                    'comprahensive_paragraph '],
-                                                    style: {
-                                                      "table": Style(
-                                                        backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
-                                                      ),
-                                                      "tr": Style(
-                                                        border: Border(
-                                                          bottom: BorderSide(color: Colors.black),
-                                                          top: BorderSide(color: Colors.black),
-                                                          right: BorderSide(color: Colors.black),
-                                                          left: BorderSide(color: Colors.black),
-                                                        ),
-                                                      ),
-                                                      "th": Style(
-                                                        padding: EdgeInsets.all(6),
-                                                        backgroundColor: Colors.grey,
-                                                      ),
-                                                      "td": Style(
-                                                        padding: EdgeInsets.all(6),
-                                                        alignment: Alignment.topLeft,
-                                                      ),
-                                                      'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
-                                                    },
-
-                                                  ),
-                                                ):Flexible(
-                                                  child: Text(
-                                                      response[itemIndex]['comprahensive_paragraph '],
-                                                      textAlign: TextAlign.left,
-                                                      maxLines: 1,
-                                                      overflow: TextOverflow.visible,
-                                                      style: normalText4),
+                                                "tr": Style(
+                                                  border: Border(
+                                                      bottom: BorderSide(
+                                                          color: Colors.grey)),
                                                 ),
-                                                full_show?Icon(
-                                                  Icons.arrow_drop_up_outlined,
-                                                  color: Color(0xff017EFF),
-                                                  size: 24,
-                                                ):Icon(
-                                                  Icons.arrow_drop_down,
-                                                  color: Color(0xff017EFF),
-                                                  size: 24,
-                                                )
-                                              ]),
-                                        ),
-                                      ),
-                                    ):Container(),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Container(
-                                        padding:
-                                        EdgeInsets.only(left: 15, right: 15),
-                                        child: Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Flexible(
-                                                child: Html(
-                                                  data: "Q" +
-                                                      (itemIndex + 1)
-                                                          .toString() +
-                                                      '. '+ response[itemIndex][
-                                                  'question'],
-                                                  style: {
-                                                    "body": Style(
-                                                      fontSize: FontSize(15.0),
-                                                      color: Color(0xff2E2A4A),
-                                                      fontWeight: FontWeight.w600,
-                                                    ),
-                                                    "table": Style(
-                                                      backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
-                                                    ),
-                                                    "tr": Style(
-                                                      border: Border(
-                                                        bottom: BorderSide(color: Colors.black),
-                                                        top: BorderSide(color: Colors.black),
-                                                        right: BorderSide(color: Colors.black),
-                                                        left: BorderSide(color: Colors.black),
-                                                      ),
-                                                    ),
-                                                    "th": Style(
-                                                      padding: EdgeInsets.all(6),
-                                                      backgroundColor: Colors.grey,
-                                                    ),
-                                                    "td": Style(
-                                                      padding: EdgeInsets.all(6),
-                                                      alignment: Alignment.topLeft,
-                                                    ),
-                                                    'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
-                                                  },
-
+                                                "th": Style(
+                                                  padding: EdgeInsets.all(6),
+                                                  backgroundColor: Colors.grey,
                                                 ),
-                                              ),
-                                            ]),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 12,
-                                    ),
-                                    response[itemIndex]['question_type'] == "True False"
-                                        ? response[itemIndex]['final_result'] == "R" ?
-                                    Column(children: <Widget>[
+                                                "td": Style(
+                                                  padding: EdgeInsets.all(6),
+                                                  alignment: Alignment.topLeft,
+                                                ),
+                                                'h5': Style(
+                                                    maxLines: 2,
+                                                    textOverflow:
+                                                        TextOverflow.ellipsis),
+                                              },
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 12, horizontal: 10),
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.80,
+                                            decoration: BoxDecoration(
+                                                color: response[itemIndex][
+                                                            'option_second_color'] !=
+                                                        ""
+                                                    ? Color(0xff51DEA0)
+                                                    : Color(0xffF9F9FB),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(10))),
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 5, vertical: 5),
+                                            child: Html(
+                                              data: response[itemIndex]
+                                                  ['option_second'],
+                                              style: {
+                                                "table": Style(
+                                                  backgroundColor:
+                                                      Color.fromARGB(0x50, 0xee,
+                                                          0xee, 0xee),
+                                                ),
+                                                "tr": Style(
+                                                  border: Border(
+                                                      bottom: BorderSide(
+                                                          color: Colors.grey)),
+                                                ),
+                                                "th": Style(
+                                                  padding: EdgeInsets.all(6),
+                                                  backgroundColor: Colors.grey,
+                                                ),
+                                                "td": Style(
+                                                  padding: EdgeInsets.all(6),
+                                                  alignment: Alignment.topLeft,
+                                                ),
+                                                'h5': Style(
+                                                    maxLines: 2,
+                                                    textOverflow:
+                                                        TextOverflow.ellipsis),
+                                              },
+                                            ),
+                                          ),
+                                        ])
+                                      : Column(children: <Widget>[
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 12, horizontal: 10),
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.80,
+                                            decoration: BoxDecoration(
+                                                color: response[itemIndex][
+                                                            'option_first_color'] ==
+                                                        ""
+                                                    ? Color(0xffF9F9FB)
+                                                    : response[itemIndex][
+                                                                'option_first_color'] !=
+                                                            "green"
+                                                        ? Color(0xffF9F9FB)
+                                                        : Color(0xff51DEA0),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(10))),
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 5, vertical: 5),
+                                            child: Html(
+                                              data: response[itemIndex]
+                                                  ['option_first'],
+                                              style: {
+                                                "table": Style(
+                                                  backgroundColor:
+                                                      Color.fromARGB(0x50, 0xee,
+                                                          0xee, 0xee),
+                                                ),
+                                                "tr": Style(
+                                                  border: Border(
+                                                      bottom: BorderSide(
+                                                          color: Colors.grey)),
+                                                ),
+                                                "th": Style(
+                                                  padding: EdgeInsets.all(6),
+                                                  backgroundColor: Colors.grey,
+                                                ),
+                                                "td": Style(
+                                                  padding: EdgeInsets.all(6),
+                                                  alignment: Alignment.topLeft,
+                                                ),
+                                                'h5': Style(
+                                                    maxLines: 2,
+                                                    textOverflow:
+                                                        TextOverflow.ellipsis),
+                                              },
+                                            ) /*Text(
+                                      response[itemIndex]
+                                      ['option_first'],
+                                      maxLines: 3,
+                                      softWrap: true,
+                                      overflow:
+                                      TextOverflow.ellipsis,
+                                      style: normalText5)*/
+                                            ,
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 12, horizontal: 10),
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.80,
+                                            decoration: BoxDecoration(
+                                                color: response[itemIndex][
+                                                            'option_second_color'] ==
+                                                        ""
+                                                    ? Color(0xffF9F9FB)
+                                                    : response[itemIndex][
+                                                                'option_second_color'] !=
+                                                            "green"
+                                                        ? Color(0xffF9F9FB)
+                                                        : Color(0xff51DEA0),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(10))),
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 5, vertical: 5),
+                                            child: Html(
+                                              data: response[itemIndex]
+                                                  ['option_second'],
+                                              style: {
+                                                "table": Style(
+                                                  backgroundColor:
+                                                      Color.fromARGB(0x50, 0xee,
+                                                          0xee, 0xee),
+                                                ),
+                                                "tr": Style(
+                                                  border: Border(
+                                                      bottom: BorderSide(
+                                                          color: Colors.grey)),
+                                                ),
+                                                "th": Style(
+                                                  padding: EdgeInsets.all(6),
+                                                  backgroundColor: Colors.grey,
+                                                ),
+                                                "td": Style(
+                                                  padding: EdgeInsets.all(6),
+                                                  alignment: Alignment.topLeft,
+                                                ),
+                                                'h5': Style(
+                                                    maxLines: 2,
+                                                    textOverflow:
+                                                        TextOverflow.ellipsis),
+                                              },
+                                            ) /*Text(
+                                      response[itemIndex]
+                                      ['option_second'],
+                                      maxLines: 3,
+                                      softWrap: true,
+                                      overflow:
+                                      TextOverflow.ellipsis,
+                                      style: normalText5)*/
+                                            ,
+                                          ),
+                                        ])
+                                  : Column(children: <Widget>[
                                       Container(
-                                        padding:
-                                        const EdgeInsets.symmetric(
-                                            vertical: 12,
-                                            horizontal: 10),
-                                        width: MediaQuery.of(context)
-                                            .size
-                                            .width *
-                                            0.80,
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 12, horizontal: 10),
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.80,
                                         decoration: BoxDecoration(
-                                            color: response[itemIndex][
-                                            'option_first_color'] !=
-                                                ""
+                                            color: response[itemIndex]
+                                                        ['answer'] ==
+                                                    "A"
                                                 ? Color(0xff51DEA0)
                                                 : Color(0xffF9F9FB),
-                                            borderRadius:
-                                            BorderRadius.all(
-                                                Radius.circular(
-                                                    10))),
-                                        margin:
-                                        const EdgeInsets.symmetric(
-                                            horizontal: 5,
-                                            vertical: 5),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10))),
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 5, vertical: 5),
                                         child: Html(
                                           data: response[itemIndex]
-                                          ['option_first'],
+                                              ['option_first'],
                                           style: {
                                             "table": Style(
-                                              backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
+                                              backgroundColor: Color.fromARGB(
+                                                  0x50, 0xee, 0xee, 0xee),
                                             ),
                                             "tr": Style(
-                                              border: Border(bottom: BorderSide(color: Colors.grey)),
+                                              border: Border(
+                                                  bottom: BorderSide(
+                                                      color: Colors.grey)),
                                             ),
                                             "th": Style(
                                               padding: EdgeInsets.all(6),
@@ -489,43 +825,49 @@ class _LoginWithLogoState extends State<ReViewMCQ> {
                                               padding: EdgeInsets.all(6),
                                               alignment: Alignment.topLeft,
                                             ),
-                                            'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
+                                            'h5': Style(
+                                                maxLines: 2,
+                                                textOverflow:
+                                                    TextOverflow.ellipsis),
                                           },
-                                        ),
+                                        ) /*Text(
+                                      response[itemIndex]
+                                      ['option_first'],
+                                      maxLines: 3,
+                                      softWrap: true,
+                                      overflow:
+                                      TextOverflow.ellipsis,
+                                      style: normalText5)*/
+                                        ,
                                       ),
-
                                       Container(
-                                        padding:
-                                        const EdgeInsets.symmetric(
-                                            vertical: 12,
-                                            horizontal: 10),
-                                        width: MediaQuery.of(context)
-                                            .size
-                                            .width *
-                                            0.80,
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 12, horizontal: 10),
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.80,
                                         decoration: BoxDecoration(
-                                            color: response[itemIndex][
-                                            'option_second_color'] !=
-                                                ""
+                                            color: response[itemIndex]
+                                                        ['answer'] ==
+                                                    "B"
                                                 ? Color(0xff51DEA0)
                                                 : Color(0xffF9F9FB),
-                                            borderRadius:
-                                            BorderRadius.all(
-                                                Radius.circular(
-                                                    10))),
-                                        margin:
-                                        const EdgeInsets.symmetric(
-                                            horizontal: 5,
-                                            vertical: 5),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10))),
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 5, vertical: 5),
                                         child: Html(
                                           data: response[itemIndex]
-                                          ['option_second'],
+                                              ['option_second'],
                                           style: {
                                             "table": Style(
-                                              backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
+                                              backgroundColor: Color.fromARGB(
+                                                  0x50, 0xee, 0xee, 0xee),
                                             ),
                                             "tr": Style(
-                                              border: Border(bottom: BorderSide(color: Colors.grey)),
+                                              border: Border(
+                                                  bottom: BorderSide(
+                                                      color: Colors.grey)),
                                             ),
                                             "th": Style(
                                               padding: EdgeInsets.all(6),
@@ -535,163 +877,49 @@ class _LoginWithLogoState extends State<ReViewMCQ> {
                                               padding: EdgeInsets.all(6),
                                               alignment: Alignment.topLeft,
                                             ),
-                                            'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
-                                          },
-                                        ),
-                                      ),
-
-                                    ]) :
-                                    Column(children: <Widget>[
-                                      Container(
-                                        padding:
-                                        const EdgeInsets.symmetric(
-                                            vertical: 12,
-                                            horizontal: 10),
-                                        width: MediaQuery.of(context)
-                                            .size
-                                            .width *
-                                            0.80,
-                                        decoration: BoxDecoration(
-                                            color: response[itemIndex][
-                                            'option_first_color'] ==
-                                                ""
-                                                ? Color(0xffF9F9FB)
-                                                : response[itemIndex][
-                                            'option_first_color'] !=
-                                                "green"
-                                                ? Color(0xffF9F9FB)
-                                                : Color(0xff51DEA0),
-                                            borderRadius:
-                                            BorderRadius.all(
-                                                Radius.circular(
-                                                    10))),
-                                        margin:
-                                        const EdgeInsets.symmetric(
-                                            horizontal: 5,
-                                            vertical: 5),
-                                        child:  Html(
-                                          data: response[itemIndex]
-                                          ['option_first'],
-                                          style: {
-                                            "table": Style(
-                                              backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
-                                            ),
-                                            "tr": Style(
-                                              border: Border(bottom: BorderSide(color: Colors.grey)),
-                                            ),
-                                            "th": Style(
-                                              padding: EdgeInsets.all(6),
-                                              backgroundColor: Colors.grey,
-                                            ),
-                                            "td": Style(
-                                              padding: EdgeInsets.all(6),
-                                              alignment: Alignment.topLeft,
-                                            ),
-                                            'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
+                                            'h5': Style(
+                                                maxLines: 2,
+                                                textOverflow:
+                                                    TextOverflow.ellipsis),
                                           },
                                         ) /*Text(
-                                          response[itemIndex]
-                                          ['option_first'],
-                                          maxLines: 3,
-                                          softWrap: true,
-                                          overflow:
-                                          TextOverflow.ellipsis,
-                                          style: normalText5)*/,
-
+                                      response[itemIndex]
+                                      ['option_second'],
+                                      maxLines: 3,
+                                      softWrap: true,
+                                      overflow:
+                                      TextOverflow.ellipsis,
+                                      style: normalText5)*/
+                                        ,
                                       ),
                                       Container(
-                                        padding:
-                                        const EdgeInsets.symmetric(
-                                            vertical: 12,
-                                            horizontal: 10),
-                                        width: MediaQuery.of(context)
-                                            .size
-                                            .width *
-                                            0.80,
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 12, horizontal: 10),
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.80,
                                         decoration: BoxDecoration(
-                                            color: response[itemIndex][
-                                            'option_second_color'] ==
-                                                ""
-                                                ? Color(0xffF9F9FB)
-                                                : response[itemIndex][
-                                            'option_second_color'] !=
-                                                "green"
-                                                ? Color(0xffF9F9FB)
-                                                : Color(0xff51DEA0),
-                                            borderRadius:
-                                            BorderRadius.all(
-                                                Radius.circular(
-                                                    10))),
-                                        margin:
-                                        const EdgeInsets.symmetric(
-                                            horizontal: 5,
-                                            vertical: 5),
-                                        child:  Html(
-                                          data: response[itemIndex]
-                                          ['option_second'],
-                                          style: {
-                                            "table": Style(
-                                              backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
-                                            ),
-                                            "tr": Style(
-                                              border: Border(bottom: BorderSide(color: Colors.grey)),
-                                            ),
-                                            "th": Style(
-                                              padding: EdgeInsets.all(6),
-                                              backgroundColor: Colors.grey,
-                                            ),
-                                            "td": Style(
-                                              padding: EdgeInsets.all(6),
-                                              alignment: Alignment.topLeft,
-                                            ),
-                                            'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
-                                          },
-                                        ) /*Text(
-                                          response[itemIndex]
-                                          ['option_second'],
-                                          maxLines: 3,
-                                          softWrap: true,
-                                          overflow:
-                                          TextOverflow.ellipsis,
-                                          style: normalText5)*/,
-                                      ),
-
-                                    ])
-                                        :
-
-                                    Column(children: <Widget>[
-                                      Container(
-                                        padding:
-                                        const EdgeInsets.symmetric(
-                                            vertical: 12,
-                                            horizontal: 10),
-                                        width: MediaQuery.of(context)
-                                            .size
-                                            .width *
-                                            0.80,
-                                        decoration: BoxDecoration(
-                                            color: response[itemIndex][
-                                            'answer'] ==
-                                                "A"
+                                            color: response[itemIndex]
+                                                        ['answer'] ==
+                                                    "C"
                                                 ? Color(0xff51DEA0)
-                                                :Color(0xffF9F9FB),
-                                            borderRadius:
-                                            BorderRadius.all(
-                                                Radius.circular(
-                                                    10))),
-                                        margin:
-                                        const EdgeInsets.symmetric(
-                                            horizontal: 5,
-                                            vertical: 5),
-                                        child:  Html(
+                                                : Color(0xffF9F9FB),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10))),
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 5, vertical: 5),
+                                        child: Html(
                                           data: response[itemIndex]
-                                          ['option_first'],
+                                              ['option_third'],
                                           style: {
                                             "table": Style(
-                                              backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
+                                              backgroundColor: Color.fromARGB(
+                                                  0x50, 0xee, 0xee, 0xee),
                                             ),
                                             "tr": Style(
-                                              border: Border(bottom: BorderSide(color: Colors.grey)),
+                                              border: Border(
+                                                  bottom: BorderSide(
+                                                      color: Colors.grey)),
                                             ),
                                             "th": Style(
                                               padding: EdgeInsets.all(6),
@@ -701,50 +929,49 @@ class _LoginWithLogoState extends State<ReViewMCQ> {
                                               padding: EdgeInsets.all(6),
                                               alignment: Alignment.topLeft,
                                             ),
-                                            'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
+                                            'h5': Style(
+                                                maxLines: 2,
+                                                textOverflow:
+                                                    TextOverflow.ellipsis),
                                           },
                                         ) /*Text(
-                                          response[itemIndex]
-                                          ['option_first'],
-                                          maxLines: 3,
-                                          softWrap: true,
-                                          overflow:
-                                          TextOverflow.ellipsis,
-                                          style: normalText5)*/,
-
+                                      response[itemIndex]
+                                      ['option_third'],
+                                      maxLines: 3,
+                                      softWrap: true,
+                                      overflow:
+                                      TextOverflow.ellipsis,
+                                      style: normalText5)*/
+                                        ,
                                       ),
                                       Container(
-                                        padding:
-                                        const EdgeInsets.symmetric(
-                                            vertical: 12,
-                                            horizontal: 10),
-                                        width: MediaQuery.of(context)
-                                            .size
-                                            .width *
-                                            0.80,
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 12, horizontal: 10),
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.80,
                                         decoration: BoxDecoration(
-                                            color: response[itemIndex][
-                                            'answer'] ==
-                                                "B"
+                                            color: response[itemIndex]
+                                                        ['answer'] ==
+                                                    "D"
                                                 ? Color(0xff51DEA0)
-                                                :Color(0xffF9F9FB),
-                                            borderRadius:
-                                            BorderRadius.all(
-                                                Radius.circular(
-                                                    10))),
-                                        margin:
-                                        const EdgeInsets.symmetric(
-                                            horizontal: 5,
-                                            vertical: 5),
-                                        child:  Html(
+                                                : Color(0xffF9F9FB),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10))),
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 5),
+                                        child: Html(
                                           data: response[itemIndex]
-                                          ['option_second'],
+                                              ['option_fourth'],
                                           style: {
                                             "table": Style(
-                                              backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
+                                              backgroundColor: Color.fromARGB(
+                                                  0x50, 0xee, 0xee, 0xee),
                                             ),
                                             "tr": Style(
-                                              border: Border(bottom: BorderSide(color: Colors.grey)),
+                                              border: Border(
+                                                  bottom: BorderSide(
+                                                      color: Colors.grey)),
                                             ),
                                             "th": Style(
                                               padding: EdgeInsets.all(6),
@@ -754,135 +981,33 @@ class _LoginWithLogoState extends State<ReViewMCQ> {
                                               padding: EdgeInsets.all(6),
                                               alignment: Alignment.topLeft,
                                             ),
-                                            'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
+                                            'h5': Style(
+                                                maxLines: 2,
+                                                textOverflow:
+                                                    TextOverflow.ellipsis),
                                           },
                                         ) /*Text(
-                                          response[itemIndex]
-                                          ['option_second'],
-                                          maxLines: 3,
-                                          softWrap: true,
-                                          overflow:
-                                          TextOverflow.ellipsis,
-                                          style: normalText5)*/,
+                                      response[itemIndex]
+                                      ['option_fourth'],
+                                      maxLines: 3,
+                                      softWrap: true,
+                                      overflow:
+                                      TextOverflow.ellipsis,
+                                      style: normalText5)*/
+                                        ,
                                       ),
-
-                                      Container(
-                                        padding:
-                                        const EdgeInsets.symmetric(
-                                            vertical: 12,
-                                            horizontal: 10),
-                                        width: MediaQuery.of(context)
-                                            .size
-                                            .width *
-                                            0.80,
-                                        decoration: BoxDecoration(
-                                            color: response[itemIndex][
-                                            'answer'] ==
-                                                "C"
-                                                ? Color(0xff51DEA0)
-                                                :Color(0xffF9F9FB),
-                                            borderRadius:
-                                            BorderRadius.all(
-                                                Radius.circular(
-                                                    10))),
-                                        margin:
-                                        const EdgeInsets.symmetric(
-                                            horizontal: 5,
-                                            vertical: 5),
-                                        child:  Html(
-                                          data: response[itemIndex]
-                                          ['option_third'],
-                                          style: {
-                                            "table": Style(
-                                              backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
-                                            ),
-                                            "tr": Style(
-                                              border: Border(bottom: BorderSide(color: Colors.grey)),
-                                            ),
-                                            "th": Style(
-                                              padding: EdgeInsets.all(6),
-                                              backgroundColor: Colors.grey,
-                                            ),
-                                            "td": Style(
-                                              padding: EdgeInsets.all(6),
-                                              alignment: Alignment.topLeft,
-                                            ),
-                                            'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
-                                          },
-                                        ) /*Text(
-                                          response[itemIndex]
-                                          ['option_third'],
-                                          maxLines: 3,
-                                          softWrap: true,
-                                          overflow:
-                                          TextOverflow.ellipsis,
-                                          style: normalText5)*/,
-                                      ),
-
-                                      Container(
-                                        padding:
-                                        const EdgeInsets.symmetric(
-                                            vertical: 12,
-                                            horizontal: 10),
-                                        width: MediaQuery.of(context)
-                                            .size
-                                            .width *
-                                            0.80,
-                                        decoration: BoxDecoration(
-                                            color: response[itemIndex][
-                                            'answer'] ==
-                                                "D"
-                                                ? Color(0xff51DEA0)
-                                                :Color(0xffF9F9FB),
-                                            borderRadius:
-                                            BorderRadius.all(
-                                                Radius.circular(
-                                                    10))),
-                                        margin:
-                                        const EdgeInsets.symmetric(
-                                            horizontal: 10,
-                                            vertical: 5),
-                                        child:  Html(
-                                          data: response[itemIndex]
-                                          ['option_fourth'],
-                                          style: {
-                                            "table": Style(
-                                              backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
-                                            ),
-                                            "tr": Style(
-                                              border: Border(bottom: BorderSide(color: Colors.grey)),
-                                            ),
-                                            "th": Style(
-                                              padding: EdgeInsets.all(6),
-                                              backgroundColor: Colors.grey,
-                                            ),
-                                            "td": Style(
-                                              padding: EdgeInsets.all(6),
-                                              alignment: Alignment.topLeft,
-                                            ),
-                                            'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
-                                          },
-                                        ) /*Text(
-                                          response[itemIndex]
-                                          ['option_fourth'],
-                                          maxLines: 3,
-                                          softWrap: true,
-                                          overflow:
-                                          TextOverflow.ellipsis,
-                                          style: normalText5)*/,
-                                      ),
-
                                     ]),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    lastAns != true
-                                        ? Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              lastAns != true
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
                                           Align(
                                             alignment:
-                                            FractionalOffset.bottomRight,
+                                                FractionalOffset.bottomRight,
                                             child: ButtonTheme(
                                               minWidth: 50.0,
                                               height: 34.0,
@@ -890,18 +1015,20 @@ class _LoginWithLogoState extends State<ReViewMCQ> {
                                                 alignment: Alignment.topRight,
                                                 child: Container(
                                                   margin:
-                                                  EdgeInsets.only(left: 20),
+                                                      EdgeInsets.only(left: 20),
                                                   child: RaisedButton(
                                                     padding:
-                                                    const EdgeInsets.only(
-                                                        top: 2,
-                                                        bottom: 2,
-                                                        left: 25,
-                                                        right: 25),
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                        BorderRadius.circular(
-                                                            25.0)),
+                                                        const EdgeInsets.only(
+                                                            top: 2,
+                                                            bottom: 2,
+                                                            left: 25,
+                                                            right: 25),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        25.0)),
                                                     textColor: Colors.white,
                                                     color: Color(0xff017EFF),
                                                     onPressed: () async {
@@ -913,7 +1040,7 @@ class _LoginWithLogoState extends State<ReViewMCQ> {
                                                           fontSize: 14,
                                                           letterSpacing: 1,
                                                           fontWeight:
-                                                          FontWeight.w400),
+                                                              FontWeight.w400),
                                                     ),
                                                   ),
                                                 ),
@@ -922,34 +1049,37 @@ class _LoginWithLogoState extends State<ReViewMCQ> {
                                           ),
                                           Align(
                                             alignment:
-                                            FractionalOffset.bottomRight,
+                                                FractionalOffset.bottomRight,
                                             child: ButtonTheme(
                                               minWidth: 50.0,
                                               height: 34.0,
                                               child: Align(
                                                 alignment: Alignment.topRight,
                                                 child: Container(
-                                                  margin:
-                                                  EdgeInsets.only(right: 20),
+                                                  margin: EdgeInsets.only(
+                                                      right: 20),
                                                   child: RaisedButton(
                                                     padding:
-                                                    const EdgeInsets.only(
-                                                        top: 2,
-                                                        bottom: 2,
-                                                        left: 25,
-                                                        right: 25),
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                        BorderRadius.circular(
-                                                            25.0)),
+                                                        const EdgeInsets.only(
+                                                            top: 2,
+                                                            bottom: 2,
+                                                            left: 25,
+                                                            right: 25),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        25.0)),
                                                     textColor: Colors.white,
                                                     color: Color(0xff017EFF),
                                                     onPressed: () async {
                                                       XMLJSON xmljson =
-                                                      new XMLJSON();
+                                                          new XMLJSON();
 
                                                       if (itemIndex ==
-                                                          (response.length - 1)) {
+                                                          (response.length -
+                                                              1)) {
                                                         setState(() {
                                                           lastAns = true;
                                                         });
@@ -962,38 +1092,33 @@ class _LoginWithLogoState extends State<ReViewMCQ> {
                                                           fontSize: 14,
                                                           letterSpacing: 1,
                                                           fontWeight:
-                                                          FontWeight.w400),
+                                                              FontWeight.w400),
                                                     ),
                                                   ),
                                                 ),
                                               ),
                                             ),
                                           ),
-
-                                        ]
-                                    )
-                                        : Align(
-                                      alignment:
-                                      FractionalOffset.bottomRight,
+                                        ])
+                                  : Align(
+                                      alignment: FractionalOffset.bottomRight,
                                       child: ButtonTheme(
                                         minWidth: 50.0,
                                         height: 34.0,
                                         child: Align(
                                           alignment: Alignment.topRight,
                                           child: Container(
-                                            margin:
-                                            EdgeInsets.only(right: 20),
+                                            margin: EdgeInsets.only(right: 20),
                                             child: RaisedButton(
-                                              padding:
-                                              const EdgeInsets.only(
+                                              padding: const EdgeInsets.only(
                                                   top: 2,
                                                   bottom: 2,
                                                   left: 25,
                                                   right: 25),
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                  BorderRadius.circular(
-                                                      25.0)),
+                                                      BorderRadius.circular(
+                                                          25.0)),
                                               textColor: Colors.white,
                                               color: Color(0xff017EFF),
                                               onPressed: () async {
@@ -1007,116 +1132,125 @@ class _LoginWithLogoState extends State<ReViewMCQ> {
                                                     fontSize: 14,
                                                     letterSpacing: 1,
                                                     fontWeight:
-                                                    FontWeight.w400),
+                                                        FontWeight.w400),
                                               ),
                                             ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(
-                                      height: 10,
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Container(
+                                width: deviceSize.width,
+                                decoration: new BoxDecoration(
+                                    color: Color(0xffF9F9FB),
+                                    borderRadius: new BorderRadius.only(
+                                        topLeft: const Radius.circular(10.0),
+                                        bottomLeft: const Radius.circular(10.0),
+                                        bottomRight:
+                                            const Radius.circular(10.0),
+                                        topRight: const Radius.circular(10.0))),
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: 20.0, vertical: 20),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10.0, vertical: 20),
+                                child: Column(children: [
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Container(
+                                      child:
+                                          Text("Reason:", style: normalText6),
                                     ),
-                                      Container(
-                                      width: deviceSize.width,
-
-                                      decoration: new BoxDecoration(
-                                          color: Color(0xffF9F9FB),
-                                          borderRadius: new BorderRadius.only(
-                                              topLeft: const Radius.circular(10.0),
-                                              bottomLeft: const Radius.circular(10.0),
-                                              bottomRight: const Radius.circular(10.0),
-                                              topRight: const Radius.circular(10.0))),
-                                      margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
-                                      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
-                                      child: Column(
-                                          children: [
-                                            Align(
-                                              alignment: Alignment.topLeft,
-                                              child: Container(
-                                                child: Text("Reason:",
-                                                    style: normalText6),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  response[itemIndex]['reason'].contains("<")
+                                      ? Container(
+                                          child: Html(
+                                            data: response[itemIndex]['reason'],
+                                            style: {
+                                              "table": Style(
+                                                backgroundColor: Color.fromARGB(
+                                                    0x50, 0xee, 0xee, 0xee),
                                               ),
-                                            ),
-                                            SizedBox(
-                                              height: 10,
-                                            ),
-                                             response[itemIndex]
-                                              ['reason'].contains("<")?Container(
-                                              child: Html(
-                                                data: response[itemIndex][
-                                                'reason'],
-                                                style: {
-                                                  "table": Style(
-                                                    backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
-                                                  ),
-                                                  "tr": Style(
-                                                    border: Border(bottom: BorderSide(color: Colors.grey)),
-                                                  ),
-                                                  "th": Style(
-                                                    padding: EdgeInsets.all(6),
-                                                    backgroundColor: Colors.grey,
-                                                  ),
-                                                  "td": Style(
-                                                    padding: EdgeInsets.all(6),
-                                                    alignment: Alignment.topLeft,
-                                                  ),
-                                                  'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
-                                                },
-
+                                              "tr": Style(
+                                                border: Border(
+                                                    bottom: BorderSide(
+                                                        color: Colors.grey)),
                                               ),
-                                            ):  Container(
-                                                child: Text(
-                                                    response[itemIndex]
-                                                    ['reason'],
-                                                    textAlign: TextAlign.justify,
-                                                    style: normalText5),
-                                              )
-                                          ]),
-                                    ),
-
-                                    Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: Container(
-                                        width: double.infinity,
-                                        child: Center(
+                                              "th": Style(
+                                                padding: EdgeInsets.all(6),
+                                                backgroundColor: Colors.grey,
+                                              ),
+                                              "td": Style(
+                                                padding: EdgeInsets.all(6),
+                                                alignment: Alignment.topLeft,
+                                              ),
+                                              'h5': Style(
+                                                  maxLines: 2,
+                                                  textOverflow:
+                                                      TextOverflow.ellipsis),
+                                            },
+                                          ),
+                                        )
+                                      : Container(
                                           child: Text(
-                                            '${itemIndex+1}/15',
-                                            style: normalText6,
-                                          ),
-                                        ),
-                                      ),
+                                              response[itemIndex]['reason'],
+                                              textAlign: TextAlign.justify,
+                                              style: normalText5),
+                                        )
+                                ]),
+                              ),
+                              Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Container(
+                                  width: double.infinity,
+                                  child: Center(
+                                    child: Text(
+                                      '${itemIndex + 1}/15',
+                                      style: normalText6,
                                     ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                  ])),
-                            ]);
-                      }),
-                )
-                    : Container()
-              ],
-            );
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                            ])),
+                          ]);
+                        }),
+                  )
+                : Container(
+                    child: Center(
+                      child: Text("No Answer Key Available"),
+                    ),
+                  );
           } else {
-            return Container();
+            return Container(
+              child: Center(child: Text("Error!")),
+            );
           }
         } else {
           return Center(
               child: Align(
-                alignment: Alignment.center,
-                child: Container(
-                  child: SpinKitFadingCube(
-                    itemBuilder: (_, int index) {
-                      return DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: index.isEven ? Color(0xff017EFF) :Color(0xffFFC700),
-                        ),
-                      );
-                    },
-                    size: 30.0,
-                  ),
-                ),
-              ));
+            alignment: Alignment.center,
+            child: Container(
+              child: SpinKitFadingCube(
+                itemBuilder: (_, int index) {
+                  return DecoratedBox(
+                    decoration: BoxDecoration(
+                      color:
+                          index.isEven ? Color(0xff017EFF) : Color(0xffFFC700),
+                    ),
+                  );
+                },
+                size: 30.0,
+              ),
+            ),
+          ));
         }
       },
     );
@@ -1127,10 +1261,53 @@ class _LoginWithLogoState extends State<ReViewMCQ> {
     Size deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        elevation: 0.0,
+        leading: InkWell(
+          child: Row(children: <Widget>[
+            IconButton(
+              icon: Image(
+                image: AssetImage("assets/images/Icon.png"),
+                height: 20.0,
+                width: 10.0,
+                color: Color(0xff2E2A4A),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+                // Navigator.pushNamed(context, '/dashboard');
+              },
+            ),
+          ]),
+        ),
+        centerTitle: true,
+        title: Container(
+          child: Text("Answer Key",
+              textAlign: TextAlign.center, style: normalText6),
+        ),
+        flexibleSpace: Container(
+          height: 100,
+          color: Color(0xffffffff),
+        ),
+        actions: <Widget>[
+          Align(
+            alignment: Alignment.center,
+            child: CircleAvatar(
+              backgroundColor: Colors.white,
+              radius: 30,
+              // child: _networkImage1(
+              //   profile_image,
+              // ),
+            ),
+          ),
+        ],
+        iconTheme: IconThemeData(
+          color: Colors.white, //change your color here
+        ),
+        backgroundColor: Colors.transparent,
+      ),
       body: ModalProgressHUD(
         inAsyncCall: _loading,
-        child:  _customContent(deviceSize),
-
+        child: _customContent(deviceSize),
       ),
     );
   }
